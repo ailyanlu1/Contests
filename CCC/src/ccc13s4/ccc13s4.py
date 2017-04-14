@@ -1,8 +1,7 @@
 import sys
 
 
-def taller(a, N, p, q):
-    # v is a "visited" list for track (don't go to same guy twice)
+def bfs(a, N, p, q):
     v = []
     for r in range(N):
         v.append(False)
@@ -24,7 +23,6 @@ x = sys.stdin.readline().strip().split()
 N = int(x[0])
 M = int(x[1])
 
-# a is the main array holding all the links
 a = []
 for r in range(N):
     row = []
@@ -41,9 +39,9 @@ x = sys.stdin.readline().strip().split()
 p = int(x[0]) - 1
 q = int(x[1]) - 1
 
-if taller(a, N, p, q):
+if bfs(a, N, p, q):
     print("yes")
-elif taller(a, N, q, p):
+elif bfs(a, N, q, p):
     print("no")
 else:
     print("unknown")
