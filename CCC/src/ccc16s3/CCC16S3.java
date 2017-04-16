@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 import java.util.HashSet;
 import java.util.Stack;
 
-public class CCC16S3 { // INCOMPLETE
+public class CCC16S3 {
 	private static CCC16S3 o = new CCC16S3();
 	public class Reader {
 		private BufferedReader in;
