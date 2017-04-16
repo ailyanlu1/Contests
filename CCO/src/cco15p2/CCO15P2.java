@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-public class CCO15P2 { // PARTIAL POINTS
+public class CCO15P2 { // PARTIAL POINTS (7/50)
 	private static CCO15P2 o = new CCO15P2();
 	
 	public class Reader {

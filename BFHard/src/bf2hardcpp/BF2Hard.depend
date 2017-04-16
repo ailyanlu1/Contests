@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1492376232 source:c:\users\wleung\documents\c++\bf2hard\bf2hard\main.cpp
+	<bits/stdc++.h>
+	<string>
+

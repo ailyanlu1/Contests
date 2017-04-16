@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class LexicographicallyLeastSubstringHard { // PARTIAL POINTS
+public class LexicographicallyLeastSubstringHard { // PARTIAL POINTS (53/100)
 	private static LexicographicallyLeastSubstringHard o = new LexicographicallyLeastSubstringHard();
 	public class Reader {
 		private BufferedReader in;
