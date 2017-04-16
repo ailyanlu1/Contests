@@ -1,4 +1,4 @@
-package stringfindinghard;
+package bf4hard;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
