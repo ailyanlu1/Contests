@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class LexicographicallyLeastSubstringHard { // PARTIAL POINTS (53/100)
+public class LexicographicallyLeastSubstringHard { // PARTIAL POINTS (56/100)
 	private static LexicographicallyLeastSubstringHard o = new LexicographicallyLeastSubstringHard();
 	public class Reader {
 		private BufferedReader in;
@@ -49,9 +49,9 @@ public class LexicographicallyLeastSubstringHard { // PARTIAL POINTS (53/100)
 	public class SuffixArrayX {
 	    private static final int CUTOFF =  5;   // cutoff to insertion sort (any value between 0 and 12)
 
-	    private final char[] text;
-	    private final int[] index;   // index[i] = j means text.substring(j) is ith largest suffix
-	    private final int n;         // number of characters in text
+	    public final char[] text;
+	    public final int[] index;   // index[i] = j means text.substring(j) is ith largest suffix
+	    public final int n;         // number of characters in text
 
 	    /**
 	     * Initializes a suffix array for the given {@code text} string.
@@ -218,12 +218,11 @@ public class LexicographicallyLeastSubstringHard { // PARTIAL POINTS (53/100)
 		String str = in.nextLine();
 		int k = in.nextInt();
 		SuffixArrayX sa = o.new SuffixArrayX(str);
-		String shortest = "";
 		for (int i = 0; i < sa.length(); i++) {
-			shortest = sa.select(i);
-			if (shortest.length() >= k) break;
+			if (sa.n - sa.index[i] >= k) {
+				System.out.println(str.substring(sa.index[i], sa.index[i] + k));
+				break;
+			}
 		}
-		System.out.println(shortest.substring(0, k));
 	}
-
 }

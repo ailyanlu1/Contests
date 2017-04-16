@@ -3,8 +3,6 @@
 
 using namespace std;
 
-// PARTIAL POINTS (90/100)
-
 struct Suffix {
     int index;
     pair<int, int> rank;
@@ -51,11 +49,11 @@ int main() {
     int k;
     cin >> k;
     vector<int> sa = buildSuffixArray(str);
-    string shortest;
     for (int i = 0; i < sa.size(); i++) {
-        shortest = str.substr(sa.at(i));
-        if (shortest.length() >= k) break;
+        if (str.length() - sa.at(i) >= k) {
+            cout << str.substr(sa.at(i), k) << "\n";
+            break;
+        }
     }
-    cout << shortest.substr(0, k) << "\n";
     return 0;
 }
