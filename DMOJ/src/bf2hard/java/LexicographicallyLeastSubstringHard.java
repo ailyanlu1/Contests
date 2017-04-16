@@ -1,4 +1,4 @@
-package bf2hard;
+package bf2hard.java;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
