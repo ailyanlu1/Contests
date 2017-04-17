@@ -9,8 +9,8 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 import java.util.PriorityQueue;
 
-public class ListMinimumHard {
-	private static ListMinimumHard o = new ListMinimumHard();
+public class BF1Hard {
+	private static BF1Hard o = new BF1Hard();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;

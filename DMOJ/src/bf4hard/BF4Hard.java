@@ -8,8 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class StringFindingHard {
-	private static StringFindingHard o = new StringFindingHard();
+public class BF4Hard {
+	private static BF4Hard o = new BF4Hard();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;

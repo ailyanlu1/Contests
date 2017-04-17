@@ -8,8 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class LexicographicallyLeastSubstringHard { // PARTIAL POINTS (56/100)
-	private static LexicographicallyLeastSubstringHard o = new LexicographicallyLeastSubstringHard();
+public class BF2Hard { // PARTIAL POINTS (56/100)
+	private static BF2Hard o = new BF2Hard();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
