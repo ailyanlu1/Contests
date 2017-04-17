@@ -1,3 +1,10 @@
+/*
+* bf2hard.cpp
+ *
+ *  Created on: Apr 16, 2017
+ *      Author: wleung
+ */
+
 #include <bits/stdc++.h>
 #include <string>
 
@@ -57,3 +64,6 @@ int main() {
     }
     return 0;
 }
+
+
+
