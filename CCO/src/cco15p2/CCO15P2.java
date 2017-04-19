@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-public class CCO15P2 { // PARTIAL POINTS (7/50)
+public class CCO15P2 { // 12/50 points
 	private static CCO15P2 o = new CCO15P2();
 	
 	public class Reader {
@@ -639,6 +639,9 @@ public class CCO15P2 { // PARTIAL POINTS (7/50)
 	    private double[] distTo;          // distTo[v] = distance  of longest s->v path
 	    private DirectedWeightedEdge[] edgeTo;    // edgeTo[v] = last edge on longest s->v path
 	    private IndexMinPQ<Double> pq;    // priority queue of vertices
+	    private boolean[] visited;        // visited[v] = vertex has been checked
+	    private int f;                    // the source vertex
+	    
 
 	    /**
 	     * Computes a longest-paths tree from the source vertex {@code s} to every other
@@ -646,10 +649,11 @@ public class CCO15P2 { // PARTIAL POINTS (7/50)
 	     *
 	     * @param  G the edge-weighted digraph
 	     * @param  s the source vertex
+	     * @param  f the source vertex
 	     * @throws IllegalArgumentException if an edge weight is negative
 	     * @throws IllegalArgumentException unless {@code 0 <= s < V}
 	     */
-	    public DijkstraLP(EdgeWeightedDigraph G, int s) {
+	    public DijkstraLP(EdgeWeightedDigraph G, int s, int f) {
 	        for (DirectedWeightedEdge e : G.edges()) {
 	            if (e.weight() < 0)
 	                throw new IllegalArgumentException("edge " + e + " has negative weight");
@@ -657,6 +661,7 @@ public class CCO15P2 { // PARTIAL POINTS (7/50)
 
 	        distTo = new double[G.V()];
 	        edgeTo = new DirectedWeightedEdge[G.V()];
+	        visited = new boolean[G.V()];
 
 	        validateVertex(s);
 
@@ -669,6 +674,7 @@ public class CCO15P2 { // PARTIAL POINTS (7/50)
 	        pq.insert(s, distTo[s]);
 	        while (!pq.isEmpty()) {
 	            int v = pq.delMin();
+	            if (v == f) continue;
 	            for (DirectedWeightedEdge e : G.adj(v))
 	                relax(e);
 	        }
@@ -678,10 +684,20 @@ public class CCO15P2 { // PARTIAL POINTS (7/50)
 	    private void relax(DirectedWeightedEdge e) {
 	        int v = e.from(), w = e.to();
 	        if (distTo[w] > distTo[v] - e.weight()) {
+	        	if (hasPathTo(w)) {
+		        	for (DirectedWeightedEdge x: pathTo(w)) {
+		        		visited[x.from()] = false;
+		        	}
+	        	}
 	            distTo[w] = distTo[v] - e.weight();
 	            edgeTo[w] = e;
+	            for (DirectedWeightedEdge x: pathTo(w)) {
+	        		visited[x.from()] = true;
+	        	}
 	            if (pq.contains(w)) pq.decreaseKey(w, distTo[w]);
 	            else                pq.insert(w, distTo[w]);
+	        } else {
+	        	visited[v] = true;
 	        }
 	    }
 
@@ -744,7 +760,7 @@ public class CCO15P2 { // PARTIAL POINTS (7/50)
 		for (int i = 0; i < m; i++) {
 			G.addEdge(o.new DirectedWeightedEdge(in.nextInt(), in.nextInt(), in.nextInt()));
 		}
-		DijkstraLP lp = o.new DijkstraLP(G, 0);
+		DijkstraLP lp = o.new DijkstraLP(G, 0, n-1);
 		System.out.println((int)(lp.distTo(n-1)));	
 	}
 }
