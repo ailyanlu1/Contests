@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 
-public class CCO15P2 { // 12/50 points
+public class CCO15P2 { // 30/50 points
 	private static CCO15P2 o = new CCO15P2();
 	
 	public class Reader {
@@ -674,7 +674,7 @@ public class CCO15P2 { // 12/50 points
 	        pq.insert(s, distTo[s]);
 	        while (!pq.isEmpty()) {
 	            int v = pq.delMin();
-	            if (v == f) continue;
+	            if (visited[v] || v == f) continue;
 	            for (DirectedWeightedEdge e : G.adj(v))
 	                relax(e);
 	        }
@@ -683,6 +683,14 @@ public class CCO15P2 { // 12/50 points
 	    // relax edge e and update pq if changed
 	    private void relax(DirectedWeightedEdge e) {
 	        int v = e.from(), w = e.to();
+	        if (visited[w]) {
+	        	for (DirectedWeightedEdge x: pathTo(v)) {
+	        		if (x.from() == w || x.to() == w) {
+	        			return;
+	        		}
+	        	}
+	        	visited[w] = false;
+	        }
 	        if (distTo[w] > distTo[v] - e.weight()) {
 	        	if (hasPathTo(w)) {
 		        	for (DirectedWeightedEdge x: pathTo(w)) {
@@ -696,8 +704,6 @@ public class CCO15P2 { // 12/50 points
 	        	}
 	            if (pq.contains(w)) pq.decreaseKey(w, distTo[w]);
 	            else                pq.insert(w, distTo[w]);
-	        } else {
-	        	visited[v] = true;
 	        }
 	    }
 
