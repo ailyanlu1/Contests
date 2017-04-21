@@ -1,56 +1,36 @@
 package ccc17s3;
 
 import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-public class CCC17S3 { // only 9/15 points
+public class CCC17S3 {
 	public static Scanner keyboard = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		HashMap<Integer, ArrayList<int[]>> board = new HashMap<Integer, ArrayList<int[]>>();
+		int[] b = new int[2001];
+		int[] s = new int[4001];
 		int n = keyboard.nextInt();
-		int[] b = new int[n];
 		int length = 0;
 		int count = 0;
 		for (int i = 0; i < n; i++) {
-			b[i] = keyboard.nextInt();
+			int l = keyboard.nextInt();
+			b[l]++;
 		}
-		for (int i = 0; i < n; i++) {
-			for (int j = i + 1; j < n; j++) {
-				int sum = b[i] + b[j];
-				ArrayList<int[]> list = board.get(sum);
-				boolean duplicate = false;
-				int[] arr = new int[2];
-				arr[0] = i;
-				arr[1] = j;
-				if (list == null) {
-					list = new ArrayList<int[]>(1);
-				}
-				for (int[] a:list) {
-					if (a[0] == i || a[1] == j || a[1] == i || a[0] == j) {
-						duplicate = true;
-					}
-				}
-				if (!duplicate) {
-					list.add(arr);
-					board.put(sum, list);
-				}
-			}
-		}
-		for (int sum:board.keySet()) {
-			int testLength = board.get(sum).size();
-			if (testLength > length) {
-				length = testLength;
-			}
-		}
-		for (int sum:board.keySet()) {
-			if (board.get(sum).size() == length) {
-				count++;
-			}
-		}
-		System.out.println(length + " " + count);
-		
+		for (int i = 1 ; i < b.length; i++) {
+	        if (b[i] > 0) {
+	            for (int j = i; j < b.length; j++) {
+	                if (i == j) s[i + j] += b[i] >> 1;
+	                else if (b[j] > 0) s[i + j] += Math.min(b[i], b[j]);
+	            }
+	        }
+	    }
+	    for (int i = 1; i < s.length; i++) {
+	        if (s[i] > length) {
+	            length = s[i];
+	            count = 1;
+	        } else if (s[i] == length) {
+	            count++;
+	        }
+	    }
+		System.out.println(length + " " + count);	
 	} // main method
-}
+} // CCC17S3
