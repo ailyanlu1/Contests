@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class DS2 {
-private static DS2 o = new DS2();
+	private static DS2 o = new DS2();
 	
 	public class Reader {
 		private BufferedReader in;
