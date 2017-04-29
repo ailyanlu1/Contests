@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Stack;
 
-public class COI06P3 { // 0/10 TLE, OutOfMemoryErro, Negative ArraySizeException
+public class COI06P3 { // 0/10 TLE, OutOfMemoryError, NegativeArraySizeException
 	private static COI06P3 o = new COI06P3();
 	public class Reader {
 		private BufferedReader in;
