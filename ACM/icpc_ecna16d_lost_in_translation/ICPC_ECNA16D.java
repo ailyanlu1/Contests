@@ -541,25 +541,22 @@ public class ICPC_ECNA16D {
 	public static void main(String[] args) throws IOException {
 		Reader in = o.new Reader(System.in);
 		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
-		HashMap<Integer, String> iToS = new HashMap<Integer, String>();
-		HashMap<String, Integer> sToI = new HashMap<String, Integer>();
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		int n = in.nextInt();
 		int m = in.nextInt();
-		iToS.put(0, "English");
-		sToI.put("English", 0);
+		map.put("English", 0);
 		for (int i = 1; i <= n; i++) {
 			String lang = in.next();
-			iToS.put(i, lang);
-			sToI.put(lang, i);
+			map.put(lang, i);
 		}
 		EdgeWeightedGraph G = o.new EdgeWeightedGraph(n + 1);
 		for (int i = 0; i < m; i++) {
 			String a = in.next();
 			String b = in.next();
 			int c = in.nextInt();
-			G.addEdge(o.new WeightedEdge(sToI.get(a), sToI.get(b), c));
+			G.addEdge(o.new WeightedEdge(map.get(a), map.get(b), c));
 		}
-		BreadthFirstPaths bfs = o.new BreadthFirstPaths(G, sToI.get("English"));
+		BreadthFirstPaths bfs = o.new BreadthFirstPaths(G, map.get("English"));
 		int sum = 0;
 		for (int i = 1; i <= n; i++) {
 			int dist = bfs.distTo(i);
