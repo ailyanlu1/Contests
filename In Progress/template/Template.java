@@ -48,9 +48,10 @@ public class Template {
 		} // nextLine method
 	} // Reader class
 	
+	private static Reader in = o.new Reader(System.in);
+	private static PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+	
 	public static void main(String[] args) throws IOException {
-		Reader in = o.new Reader(System.in);
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
 		// TODO INSERT CODE HERE
 		out.close();
 	}
