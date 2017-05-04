@@ -239,7 +239,6 @@ public class DMOPC14CE1P4 {
 	        int min = pq[1];
 	        exch(1, n--);
 	        sink(1);
-	        assert min == pq[n+1];
 	        qp[min] = -1;        // delete
 	        keys[min] = null;    // to help with garbage collection
 	        pq[n+1] = -1;        // not needed
@@ -562,12 +561,6 @@ public class DMOPC14CE1P4 {
 	        return E;
 	    }
 
-	    // throw an IllegalArgumentException unless {@code 0 <= v < V}
-	    private void validateVertex(int v) {
-	        if (v < 0 || v >= V)
-	            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
-	    }
-
 	    /**
 	     * Adds the undirected edge {@code e} to this edge-weighted graph.
 	     *
@@ -577,8 +570,6 @@ public class DMOPC14CE1P4 {
 	    public void addEdge(WeightedEdge e) {
 	        int v = e.either();
 	        int w = e.other(v);
-	        validateVertex(v);
-	        validateVertex(w);
 	        adj[v].add(e);
 	        adj[w].add(e);
 	        E++;
@@ -592,7 +583,6 @@ public class DMOPC14CE1P4 {
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public Iterable<WeightedEdge> adj(int v) {
-	        validateVertex(v);
 	        return adj[v];
 	    }
 
@@ -604,7 +594,6 @@ public class DMOPC14CE1P4 {
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public int degree(int v) {
-	        validateVertex(v);
 	        return adj[v].size();
 	    }
 
@@ -679,8 +668,6 @@ public class DMOPC14CE1P4 {
 	        degree = new int[G.V()];
 	        edgeTo = new WeightedEdge[G.V()];
 
-	        validateVertex(s);
-
 	        for (int v = 0; v < G.V(); v++) {
 	            distTo[v] = Double.POSITIVE_INFINITY;
 	            degree[v] = Integer.MAX_VALUE;
@@ -721,12 +708,10 @@ public class DMOPC14CE1P4 {
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public double distTo(int v) {
-	        validateVertex(v);
 	        return distTo[v];
 	    }
 	    
 	    public int degreeOf(int v) {
-	    	validateVertex(v);
 	    	return degree[v];
 	    }
 
@@ -740,7 +725,6 @@ public class DMOPC14CE1P4 {
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public boolean hasPathTo(int v) {
-	        validateVertex(v);
 	        return distTo[v] < Double.POSITIVE_INFINITY;
 	    }
 
@@ -753,7 +737,6 @@ public class DMOPC14CE1P4 {
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public Iterable<WeightedEdge> pathTo(int v) {
-	        validateVertex(v);
 	        if (!hasPathTo(v)) return null;
 	        Stack<WeightedEdge> path = new Stack<WeightedEdge>();
 	        int x = v;
@@ -814,13 +797,6 @@ public class DMOPC14CE1P4 {
 	            }
 	        }
 	        return true;
-	    }
-
-	    // throw an IllegalArgumentException unless {@code 0 <= v < V}
-	    private void validateVertex(int v) {
-	        int V = distTo.length;
-	        if (v < 0 || v >= V)
-	            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
 	    }
 	}
 	
