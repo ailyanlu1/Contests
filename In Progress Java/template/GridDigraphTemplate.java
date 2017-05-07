@@ -349,25 +349,26 @@ public class GridDigraphTemplate {
 	        }
 	    }
 	}
-
-	public class Graph {
+	
+	public class Digraph {
 	    private final String NEWLINE = System.getProperty("line.separator");
 
-	    private final int V;
-	    private int E;
-	    private Bag<Integer>[] adj;
+	    private final int V;           // number of vertices in this digraph
+	    private int E;                 // number of edges in this digraph
+	    private Bag<Integer>[] adj;    // adj[v] = adjacency list for vertex v
+	    private int[] indegree;        // indegree[v] = indegree of vertex v
 	    
 	    /**
-	     * Initializes an empty graph with {@code V} vertices and 0 edges.
-	     * param V the number of vertices
+	     * Initializes an empty digraph with <em>V</em> vertices.
 	     *
-	     * @param  V number of vertices
+	     * @param  V the number of vertices
 	     * @throws IllegalArgumentException if {@code V < 0}
 	     */
-	    public Graph(int V) {
-	        if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
+	    public Digraph(int V) {
+	        if (V < 0) throw new IllegalArgumentException("Number of vertices in a Digraph must be nonnegative");
 	        this.V = V;
 	        this.E = 0;
+	        indegree = new int[V];
 	        adj = (Bag<Integer>[]) new Bag[V];
 	        for (int v = 0; v < V; v++) {
 	            adj[v] = new Bag<Integer>();
@@ -375,13 +376,15 @@ public class GridDigraphTemplate {
 	    }
 
 	    /**
-	     * Initializes a new graph that is a deep copy of {@code G}.
+	     * Initializes a new digraph that is a deep copy of the specified digraph.
 	     *
-	     * @param  G the graph to copy
+	     * @param  G the digraph to copy
 	     */
-	    public Graph(Graph G) {
+	    public Digraph(Digraph G) {
 	        this(G.V());
 	        this.E = G.E();
+	        for (int v = 0; v < V; v++)
+	            this.indegree[v] = G.indegree(v);
 	        for (int v = 0; v < G.V(); v++) {
 	            // reverse so that adjacency list is in same order as original
 	            Stack<Integer> reverse = new Stack<Integer>();
@@ -393,24 +396,25 @@ public class GridDigraphTemplate {
 	            }
 	        }
 	    }
-
+	        
 	    /**
-	     * Returns the number of vertices in this graph.
+	     * Returns the number of vertices in this digraph.
 	     *
-	     * @return the number of vertices in this graph
+	     * @return the number of vertices in this digraph
 	     */
 	    public int V() {
 	        return V;
 	    }
 
 	    /**
-	     * Returns the number of edges in this graph.
+	     * Returns the number of edges in this digraph.
 	     *
-	     * @return the number of edges in this graph
+	     * @return the number of edges in this digraph
 	     */
 	    public int E() {
 	        return E;
 	    }
+
 
 	    // throw an IllegalArgumentException unless {@code 0 <= v < V}
 	    private void validateVertex(int v) {
@@ -419,26 +423,25 @@ public class GridDigraphTemplate {
 	    }
 
 	    /**
-	     * Adds the undirected edge v-w to this graph.
+	     * Adds the directed edge v→w to this digraph.
 	     *
-	     * @param  v one vertex in the edge
-	     * @param  w the other vertex in the edge
+	     * @param  v the tail vertex
+	     * @param  w the head vertex
 	     * @throws IllegalArgumentException unless both {@code 0 <= v < V} and {@code 0 <= w < V}
 	     */
 	    public void addEdge(int v, int w) {
 	        validateVertex(v);
 	        validateVertex(w);
-	        E++;
 	        adj[v].add(w);
-	        adj[w].add(v);
+	        indegree[w]++;
+	        E++;
 	    }
 
-
 	    /**
-	     * Returns the vertices adjacent to vertex {@code v}.
+	     * Returns the vertices adjacent from vertex {@code v} in this digraph.
 	     *
 	     * @param  v the vertex
-	     * @return the vertices adjacent to vertex {@code v}, as an iterable
+	     * @return the vertices adjacent from vertex {@code v} in this digraph, as an iterable
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public Iterable<Integer> adj(int v) {
@@ -447,38 +450,66 @@ public class GridDigraphTemplate {
 	    }
 
 	    /**
-	     * Returns the degree of vertex {@code v}.
+	     * Returns the number of directed edges incident from vertex {@code v}.
+	     * This is known as the <em>outdegree</em> of vertex {@code v}.
 	     *
 	     * @param  v the vertex
-	     * @return the degree of vertex {@code v}
+	     * @return the outdegree of vertex {@code v}               
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
-	    public int degree(int v) {
+	    public int outdegree(int v) {
 	        validateVertex(v);
 	        return adj[v].size();
 	    }
 
+	    /**
+	     * Returns the number of directed edges incident to vertex {@code v}.
+	     * This is known as the <em>indegree</em> of vertex {@code v}.
+	     *
+	     * @param  v the vertex
+	     * @return the indegree of vertex {@code v}               
+	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
+	     */
+	    public int indegree(int v) {
+	        validateVertex(v);
+	        return indegree[v];
+	    }
 
 	    /**
-	     * Returns a string representation of this graph.
+	     * Returns the reverse of the digraph.
 	     *
-	     * @return the number of vertices <em>V</em>, followed by the number of edges <em>E</em>,
+	     * @return the reverse of the digraph
+	     */
+	    public Digraph reverse() {
+	        Digraph reverse = new Digraph(V);
+	        for (int v = 0; v < V; v++) {
+	            for (int w : adj(v)) {
+	                reverse.addEdge(w, v);
+	            }
+	        }
+	        return reverse;
+	    }
+
+	    /**
+	     * Returns a string representation of the graph.
+	     *
+	     * @return the number of vertices <em>V</em>, followed by the number of edges <em>E</em>,  
 	     *         followed by the <em>V</em> adjacency lists
 	     */
 	    public String toString() {
 	        StringBuilder s = new StringBuilder();
 	        s.append(V + " vertices, " + E + " edges " + NEWLINE);
 	        for (int v = 0; v < V; v++) {
-	            s.append(v + ": ");
+	            s.append(String.format("%d: ", v));
 	            for (int w : adj[v]) {
-	                s.append(w + " ");
+	                s.append(String.format("%d ", w));
 	            }
 	            s.append(NEWLINE);
 	        }
 	        return s.toString();
 	    }
 	}
-	
+
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
 	
