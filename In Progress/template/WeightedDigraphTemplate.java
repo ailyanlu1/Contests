@@ -11,9 +11,6 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-
-import template.GraphTemplate.Reader;
-
 import java.util.Stack;
 
 public class WeightedDigraphTemplate {

@@ -13,8 +13,8 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Stack;
 
-public class WeightedGraphTemplate {
-	private static WeightedGraphTemplate o = new WeightedGraphTemplate();
+public class GridGraphTemplate {
+	private static GridGraphTemplate o = new GridGraphTemplate();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -350,161 +350,63 @@ public class WeightedGraphTemplate {
 	    }
 	}
 
-	public class WeightedEdge implements Comparable<WeightedEdge> { 
-
-	    private final int v;
-	    private final int w;
-	    private final double weight;
-
-	    /**
-	     * Initializes an edge between vertices {@code v} and {@code w} of
-	     * the given {@code weight}.
-	     *
-	     * @param  v one vertex
-	     * @param  w the other vertex
-	     * @param  weight the weight of this edge
-	     * @throws IllegalArgumentException if either {@code v} or {@code w} 
-	     *         is a negative integer
-	     * @throws IllegalArgumentException if {@code weight} is {@code NaN}
-	     */
-	    public WeightedEdge(int v, int w, double weight) {
-	        if (v < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
-	        if (w < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
-	        if (Double.isNaN(weight)) throw new IllegalArgumentException("Weight is NaN");
-	        this.v = v;
-	        this.w = w;
-	        this.weight = weight;
-	    }
-
-	    /**
-	     * Returns the weight of this edge.
-	     *
-	     * @return the weight of this edge
-	     */
-	    public double weight() {
-	        return weight;
-	    }
-
-	    /**
-	     * Returns either endpoint of this edge.
-	     *
-	     * @return either endpoint of this edge
-	     */
-	    public int either() {
-	        return v;
-	    }
-
-	    /**
-	     * Returns the endpoint of this edge that is different from the given vertex.
-	     *
-	     * @param  vertex one endpoint of this edge
-	     * @return the other endpoint of this edge
-	     * @throws IllegalArgumentException if the vertex is not one of the
-	     *         endpoints of this edge
-	     */
-	    public int other(int vertex) {
-	        if      (vertex == v) return w;
-	        else if (vertex == w) return v;
-	        else throw new IllegalArgumentException("Illegal endpoint");
-	    }
-
-	    /**
-	     * Compares two edges by weight.
-	     * Note that {@code compareTo()} is not consistent with {@code equals()},
-	     * which uses the reference equality implementation inherited from {@code Object}.
-	     *
-	     * @param  that the other edge
-	     * @return a negative integer, zero, or positive integer depending on whether
-	     *         the weight of this is less than, equal to, or greater than the
-	     *         argument edge
-	     */
-	    @Override
-	    public int compareTo(WeightedEdge that) {
-	        return Double.compare(this.weight, that.weight);
-	    }
-
-	    /**
-	     * Returns a string representation of this edge.
-	     *
-	     * @return a string representation of this edge
-	     */
-	    public String toString() {
-	        return String.format("%d-%d %.5f", v, w, weight);
-	    }
-	    
-	    @Override
-	    public int hashCode() {
-	    	return toString().hashCode();
-	    }
-	    
-	    @Override
-		public boolean equals(Object o) {
-	    	if (o == this) return true;
-	        if (!(o instanceof WeightedEdge)) {
-	            return false;
-	        }
-	        WeightedEdge e = (WeightedEdge) o;
-			return e.v == v && e.w == w && e.weight() == weight;
-		}
-	}
-
-	public class WeightedGraph {
+	public class Graph {
 	    private final String NEWLINE = System.getProperty("line.separator");
 
 	    private final int V;
 	    private int E;
-	    private Bag<WeightedEdge>[] adj;
+	    private Bag<Integer>[] adj;
 	    
 	    /**
-	     * Initializes an empty edge-weighted graph with {@code V} vertices and 0 edges.
+	     * Initializes an empty graph with {@code V} vertices and 0 edges.
+	     * param V the number of vertices
 	     *
-	     * @param  V the number of vertices
+	     * @param  V number of vertices
 	     * @throws IllegalArgumentException if {@code V < 0}
 	     */
-	    public WeightedGraph(int V) {
+	    public Graph(int V) {
 	        if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
 	        this.V = V;
 	        this.E = 0;
-	        adj = (Bag<WeightedEdge>[]) new Bag[V];
+	        adj = (Bag<Integer>[]) new Bag[V];
 	        for (int v = 0; v < V; v++) {
-	            adj[v] = new Bag<WeightedEdge>();
+	            adj[v] = new Bag<Integer>();
 	        }
 	    }
 
 	    /**
-	     * Initializes a new edge-weighted graph that is a deep copy of {@code G}.
+	     * Initializes a new graph that is a deep copy of {@code G}.
 	     *
-	     * @param  G the edge-weighted graph to copy
+	     * @param  G the graph to copy
 	     */
-	    public WeightedGraph(WeightedGraph G) {
+	    public Graph(Graph G) {
 	        this(G.V());
 	        this.E = G.E();
 	        for (int v = 0; v < G.V(); v++) {
 	            // reverse so that adjacency list is in same order as original
-	            Stack<WeightedEdge> reverse = new Stack<WeightedEdge>();
-	            for (WeightedEdge e : G.adj[v]) {
-	                reverse.push(e);
+	            Stack<Integer> reverse = new Stack<Integer>();
+	            for (int w : G.adj[v]) {
+	                reverse.push(w);
 	            }
-	            for (WeightedEdge e : reverse) {
-	                adj[v].add(e);
+	            for (int w : reverse) {
+	                adj[v].add(w);
 	            }
 	        }
 	    }
 
-
 	    /**
-	     * Returns the number of vertices in this edge-weighted graph.
+	     * Returns the number of vertices in this graph.
 	     *
-	     * @return the number of vertices in this edge-weighted graph
+	     * @return the number of vertices in this graph
 	     */
 	    public int V() {
 	        return V;
 	    }
 
 	    /**
-	     * Returns the number of edges in this edge-weighted graph.
+	     * Returns the number of edges in this graph.
 	     *
-	     * @return the number of edges in this edge-weighted graph
+	     * @return the number of edges in this graph
 	     */
 	    public int E() {
 	        return E;
@@ -517,29 +419,29 @@ public class WeightedGraphTemplate {
 	    }
 
 	    /**
-	     * Adds the undirected edge {@code e} to this edge-weighted graph.
+	     * Adds the undirected edge v-w to this graph.
 	     *
-	     * @param  e the edge
-	     * @throws IllegalArgumentException unless both endpoints are between {@code 0} and {@code V-1}
+	     * @param  v one vertex in the edge
+	     * @param  w the other vertex in the edge
+	     * @throws IllegalArgumentException unless both {@code 0 <= v < V} and {@code 0 <= w < V}
 	     */
-	    public void addEdge(WeightedEdge e) {
-	        int v = e.either();
-	        int w = e.other(v);
+	    public void addEdge(int v, int w) {
 	        validateVertex(v);
 	        validateVertex(w);
-	        adj[v].add(e);
-	        adj[w].add(e);
 	        E++;
+	        adj[v].add(w);
+	        adj[w].add(v);
 	    }
 
+
 	    /**
-	     * Returns the edges incident on vertex {@code v}.
+	     * Returns the vertices adjacent to vertex {@code v}.
 	     *
 	     * @param  v the vertex
-	     * @return the edges incident on vertex {@code v} as an Iterable
+	     * @return the vertices adjacent to vertex {@code v}, as an iterable
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
-	    public Iterable<WeightedEdge> adj(int v) {
+	    public Iterable<Integer> adj(int v) {
 	        validateVertex(v);
 	        return adj[v];
 	    }
@@ -548,7 +450,7 @@ public class WeightedGraphTemplate {
 	     * Returns the degree of vertex {@code v}.
 	     *
 	     * @param  v the vertex
-	     * @return the degree of vertex {@code v}               
+	     * @return the degree of vertex {@code v}
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public int degree(int v) {
@@ -556,45 +458,20 @@ public class WeightedGraphTemplate {
 	        return adj[v].size();
 	    }
 
-	    /**
-	     * Returns all edges in this edge-weighted graph.
-	     * To iterate over the edges in this edge-weighted graph, use foreach notation:
-	     * {@code for (Edge e : G.edges())}.
-	     *
-	     * @return all edges in this edge-weighted graph, as an iterable
-	     */
-	    public Iterable<WeightedEdge> edges() {
-	        Bag<WeightedEdge> list = new Bag<WeightedEdge>();
-	        for (int v = 0; v < V; v++) {
-	            int selfLoops = 0;
-	            for (WeightedEdge e : adj(v)) {
-	                if (e.other(v) > v) {
-	                    list.add(e);
-	                }
-	                // only add one copy of each self loop (self loops will be consecutive)
-	                else if (e.other(v) == v) {
-	                    if (selfLoops % 2 == 0) list.add(e);
-	                    selfLoops++;
-	                }
-	            }
-	        }
-	        return list;
-	    }
 
 	    /**
-	     * Returns a string representation of the edge-weighted graph.
-	     * This method takes time proportional to <em>E</em> + <em>V</em>.
+	     * Returns a string representation of this graph.
 	     *
 	     * @return the number of vertices <em>V</em>, followed by the number of edges <em>E</em>,
-	     *         followed by the <em>V</em> adjacency lists of edges
+	     *         followed by the <em>V</em> adjacency lists
 	     */
 	    public String toString() {
 	        StringBuilder s = new StringBuilder();
-	        s.append(V + " " + E + NEWLINE);
+	        s.append(V + " vertices, " + E + " edges " + NEWLINE);
 	        for (int v = 0; v < V; v++) {
 	            s.append(v + ": ");
-	            for (WeightedEdge e : adj[v]) {
-	                s.append(e + "  ");
+	            for (int w : adj[v]) {
+	                s.append(w + " ");
 	            }
 	            s.append(NEWLINE);
 	        }
@@ -605,8 +482,17 @@ public class WeightedGraphTemplate {
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
 	
+	private static char[][] grid;
+	
 	public static void main(String[] args) throws IOException {
 		// TODO INSERT CODE HERE
 		out.close();
+	}
+	
+	private static boolean isPoint(int i, int j) {
+		return (i >= 0 && i < grid.length && j >= 0 && j < grid[0].length);
+	}
+	private static int toPoint(int i, int j) {
+		return i * grid[0].length + j;
 	}
 }
