@@ -77,8 +77,8 @@ public class DMOPC14C8P6 {
 	        	change(n, value);
 	        	return;
 	        }
-	        if (heap[v].perm != 0) {
-	        	propagate(v, heap[v].perm);
+	        if (heap[v].pending != 0) {
+	        	propagate(v, heap[v].pending);
 	        }
 	        int mid = (heap[v].from + heap[v].to) / 2;
 	        if (to <= mid) update(2 * v, from, to, value);
@@ -93,17 +93,17 @@ public class DMOPC14C8P6 {
 	    private void propagate(int v, int value) {
 	    	change(heap[2 * v], value);
 	        change(heap[2 * v + 1], value);
-	        heap[v].perm = 0;
+	        heap[v].pending = 0;
 	    }
 
 	    private void change(Node n, int value) {
 	        n.min += value;
-	        n.perm += value;
+	        n.pending += value;
 	    }
 
 	    class Node {
 	        int min;
-	        int perm;
+	        int pending;
 	        int from;
 	        int to;
 
