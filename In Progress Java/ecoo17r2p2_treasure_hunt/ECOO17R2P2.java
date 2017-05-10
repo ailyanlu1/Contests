@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Stack;
 
-public class ECOO17R2P2 {
+public class ECOO17R2P2 { // MLE
 	private static ECOO17R2P2 o = new ECOO17R2P2();
 	public class Reader {
 		private BufferedReader in;
