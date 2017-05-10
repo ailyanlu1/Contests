@@ -1,4 +1,4 @@
-package tle16c8p5_prom_night;
+package template;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,14 +8,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
-public class TLE16C8P5 {
-	private static TLE16C8P5 o = new TLE16C8P5();
+public class MaxMatchTemplate {
+	private static MaxMatchTemplate o = new MaxMatchTemplate();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -876,28 +875,11 @@ public class TLE16C8P5 {
 	    }
 	}
 	
+	private static Reader in = o.new Reader(System.in);
+	private static PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+	
 	public static void main(String[] args) throws IOException {
-		Reader in = o.new Reader(System.in);
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
-		int N = in.nextInt();
-		int M = in.nextInt();
-		Graph G = o.new Graph(N + M + 2);
-		HashSet<Integer> csF = new HashSet<Integer>();
-		int tCS = in.nextInt();
-		for (int j = 0; j < tCS; j++) {
-			csF.add(in.nextInt());
-		}
-		for (int i = 2; i <= N; i++) {
-			int t = in.nextInt();
-			for (int j = 0; j < t; j++) {
-				int f = in.nextInt();
-				if (csF.contains(f)) {
-					G.addEdge(i, f + N);
-				}
-			}
-		}
-		HopcroftKarpMaxMatch mm = o.new HopcroftKarpMaxMatch(G);
-		out.println(tCS - mm.size());
+		// TODO INSERT CODE HERE
 		out.close();
 	}
 }
