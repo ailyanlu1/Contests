@@ -56,11 +56,9 @@ public class DMPGS2 {
 		long K = in.nextInt();
 		long D = in.nextInt();
 		long ans = 0;
-		while (D > 0) {
-			long mod = N % K;
-			if (mod != 0) ans += mod;
+		while (D-- > 0) {
+			ans += N % K;
 			N /= K;
-			D--;
 		}
 		ans += N;
 		out.println(ans);
