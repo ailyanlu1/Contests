@@ -1119,6 +1119,5 @@ public class TLE16C1P5 {
 				dfs(f.other(v), f, depth + 1);
 			}
 		}
-		st.update(depth, depth, Integer.MAX_VALUE);
 	}
 }
