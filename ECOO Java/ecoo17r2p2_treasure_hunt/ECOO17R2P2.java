@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class ECOO17R2P2 { // MLE DMOJ Only
+public class ECOO17R2P2 { 
 	private static ECOO17R2P2 o = new ECOO17R2P2();
 	public class Reader {
 		private BufferedReader in;

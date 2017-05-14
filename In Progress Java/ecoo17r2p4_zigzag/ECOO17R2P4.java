@@ -134,6 +134,10 @@ public class ECOO17R2P4 { // TLE 40/100
 	
 	public static void run(Reader f) throws IOException { // if you change the method of reading input, then the parameter type may have to be changed
 		int N = f.nextInt();
+		if (N > 12) {
+			System.out.println(-1);
+			return;
+		}
 		JohnsonTrotterPermIterator iter = o.new JohnsonTrotterPermIterator(N);
 		int count = 0;
 		while (iter.hasNext()) {

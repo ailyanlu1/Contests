@@ -342,6 +342,10 @@ public class ECOO17R2P3 { // TLE 70/100
 		for (int i = 1; i <= N; i++) {
 			pq.insert(i, f.nextInt());
 		}
+		if (K > 1e7) {
+			System.out.println(-1);
+			return;
+		}
 		int maxIndex = 0;
 		for (int i = 0; i < K; i++) {
 			maxIndex = pq.maxIndex();
