@@ -337,7 +337,7 @@ public class ECOO17R2P3 { // TLE 70/100
 	public static void run(Reader f) throws IOException { // if you change the method of reading input, then the parameter type may have to be changed
 		int N = f.nextInt();
 		int M = f.nextInt();
-		int K = f.nextInt();
+		long K = f.nextLong();
 		IndexMaxPQ<Integer> pq = o.new IndexMaxPQ<Integer>(N);
 		for (int i = 1; i <= N; i++) {
 			pq.insert(i, f.nextInt());
