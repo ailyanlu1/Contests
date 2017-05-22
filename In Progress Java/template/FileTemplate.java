@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
@@ -50,10 +51,15 @@ public class FileTemplate {
 	private static Reader in;
 	private static PrintWriter out;
 	
+	// TODO CHANGE FILE NAMES
+	private static final String input = "input.txt";
+	private static final String output = "output.txt";
+	
 	public static void main(String[] args) throws IOException {
-		// TODO CHANGE FILE NAMES
-		in = o.new Reader("template/input.in");
-		out = new PrintWriter("template/output.out");
+		in = o.new Reader(o.getClass().getPackage().toString().split(" ")[1] + "/" + input);
+		out = new PrintWriter(o.getClass().getPackage().toString().split(" ")[1] + "/" + output);
+		// in = o.new Reader(System.in);
+		// out = new PrintWriter(new OutputStreamWriter(System.out));
 		// TODO INSERT CODE HERE
 		out.close();
 	}

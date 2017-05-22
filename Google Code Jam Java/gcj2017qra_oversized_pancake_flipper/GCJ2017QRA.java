@@ -1,4 +1,4 @@
-package template;
+package gcj2017qra_oversized_pancake_flipper;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,8 +10,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class MultiTestCaseFileTemplate {
-	private static MultiTestCaseFileTemplate o = new MultiTestCaseFileTemplate();
+// https://code.google.com/codejam/contest/dashboard?c=3264486#s=p0&a=0
+public class GCJ2017QRA {
+	private static GCJ2017QRA o = new GCJ2017QRA();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -50,25 +51,42 @@ public class MultiTestCaseFileTemplate {
 	
 	private static Reader in;
 	private static PrintWriter out;
-	
-	private static final int NUM_OF_TEST_CASES = 10; // TODO CHANGE NUMBER OF TEST CASES
-	
+		
 	// TODO CHANGE FILE NAMES
-	private static final String input = "input.txt";
-	private static final String output = "output.txt";
+	private static final String input = "A-large-practice.in";
+	private static final String output = "output-large.txt";
 	
 	public static void main(String[] args) throws IOException {
 		in = o.new Reader(o.getClass().getPackage().toString().split(" ")[1] + "/" + input);
 		out = new PrintWriter(o.getClass().getPackage().toString().split(" ")[1] + "/" + output);
 		// in = o.new Reader(System.in);
 		// out = new PrintWriter(new OutputStreamWriter(System.out));
-		for (int i = 0; i < NUM_OF_TEST_CASES; i++) {
-			run();
+		int T = in.nextInt();
+		for (int i = 1; i <= T; i++) {
+			run(i);
 		}
 		out.close();
 	}
 	
-	public static void run() throws IOException {
-		// TODO INSERT CODE HERE
+	public static void run(int t) throws IOException {
+		char[] S = in.next().toCharArray();
+		int K = in.nextInt();
+		int ans = 0;
+		for (int i = 0; i <= S.length - K; i++) {
+			if (S[i] == '-') {
+				for (int j = 0; j < K; j++) {
+					S[i + j] = (char) ('-' - S[i + j] + '+');
+				}
+				ans++;
+			}
+		}
+		out.print("Case #" + t + ": ");
+		for (int i = 0; i < S.length; i++) {
+			if (S[i] =='-') {
+				out.println("IMPOSSIBLE");
+				return;
+			}
+		}
+		out.println(ans);
 	}
 }

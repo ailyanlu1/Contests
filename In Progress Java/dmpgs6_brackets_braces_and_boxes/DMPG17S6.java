@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
-public class DMPGS6 { // 30/100 WA
-	private static DMPGS6 o = new DMPGS6();
+public class DMPG17S6 { // 30/100 WA
+	private static DMPG17S6 o = new DMPG17S6();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
