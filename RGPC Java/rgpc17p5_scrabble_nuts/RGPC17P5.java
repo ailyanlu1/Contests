@@ -64,34 +64,34 @@ public class RGPC17P5 {
 	}
 	
 	public static int minDistance() {
-		int ans = 0;
 		int[][] dp = new int[2][M + 1];
 		
-		//iterate though, and check last char
+		int ans = 0;
+		
+		int s = 1;
+		
 		for (int i = 0; i <= N; i++) {
+			s = 1 - s;
 			for (int j = 0; j <= M; j++) {
 				if (i == 0) {
-					dp[1][j] = j;
+					dp[s][j] = j;
 				} else if (j == 0) {
-					dp[1][j] = i;
+					dp[s][j] = i;
 				} else if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
-					dp[1][j] = dp[0][j - 1];
+					dp[s][j] = dp[1 - s][j - 1];
 				} else {
-					int replace = dp[0][j - 1] + 1;
-					int insert = dp[0][j] + 1;
-					int delete = dp[1][j - 1] + 1;
+					int replace = dp[1 - s][j - 1] + 1;
+					int insert = dp[1 - s][j] + 1;
+					int delete = dp[s][j - 1] + 1;
 	 
 					int min = replace > insert ? insert : replace;
 					min = delete > min ? min : delete;
-					dp[1][j] = min;
+					dp[s][j] = min;
 				}
-			}
-			for (int j = 0; j <= M; j++) {
-				dp[0][j] = dp[1][j];
 			}
 		}
 		for (int i = 1; i < M; i++) {
-			ans += dp[1][i];
+			ans += dp[s][i];
 		}
 		return ans;
 	}
