@@ -1,4 +1,5 @@
 package dmpgs5_bit_matrix;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,8 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class DMPGS5 { // 20/100 WA (Long Integer Overflow)
-	private static DMPGS5 o = new DMPGS5();
+public class DMPG17S5 {
+	private static DMPG17S5 o = new DMPG17S5();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -50,24 +51,10 @@ public class DMPGS5 { // 20/100 WA (Long Integer Overflow)
 	public static void main(String[] args) throws IOException {
 		int N = in.nextInt();
 		int M = in.nextInt();
-		long[][] arr = new long[N][M];
-		arr[N - 1][M - 1] = (1L << (N + M - 2)) - 1;
-		for (int i = M - 2; i >= 0; i--) {
-			arr[N - 1][i] = arr[N - 1][i + 1] >> 1;
-		}
-		long shift = 1L;
-		for (int i = N - 2; i >= 0; i--) {
-			arr[i][M - 1] = arr[i + 1][M - 1] - shift;
-			shift = shift << 1;
-		}
-		for (int i = N - 2; i >= 0; i--) {
-			for (int j = M - 2; j >= 0; j--) {
-				arr[i][j] = arr[i + 1][j] & arr[i][j + 1];
-			}
-		}
 		for (int i = 0; i < N; i++) {
+			int x = (i ^ (i >> 1)) << 10;
 			for (int j = 0; j < M; j++) {
-				System.out.print(arr[i][j] + " ");
+				System.out.print((x | (j ^ (j >> 1))) + " ");
 			}
 			System.out.println();
 		}
