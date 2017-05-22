@@ -1,0 +1,27 @@
+Coin Change
+
+Problem code: CCHANGE
+
+Given a value of x cents, and an infinite supply of coins of n denominations, followed by their denominations, find the least amount of coins required to make change for x.
+
+Input
+Line 1: x, an integer between 1 and 10000
+Line 2: n, the number of different denominations
+Line 3..3+n: the denominations of the coins
+
+Output
+An integer, on a single line - the least coins required to make change for x.
+
+
+Example
+
+Input:
+24
+4
+12
+13
+5
+6
+
+Output:
+2
