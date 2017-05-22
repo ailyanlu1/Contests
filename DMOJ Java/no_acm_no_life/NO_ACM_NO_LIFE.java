@@ -500,7 +500,7 @@ public class NO_ACM_NO_LIFE {
 		}
 		out.close();
 	}
-	
+
 	public static void run() throws IOException {
 		N = in.nextInt();
 		K = in.nextInt();
@@ -545,7 +545,7 @@ public class NO_ACM_NO_LIFE {
 		}
 		out.println(ans / choose(N, K));
 	}
-	
+
 	private static double choose(int n, int k) {
 		double ans = 1;
 		for (int i = 0; i < k; i++) {
@@ -553,32 +553,32 @@ public class NO_ACM_NO_LIFE {
 		}
 		return ans;
 	}
-	
+
 	private static void bfs(int s) {
 		curDist = new int[N];
 		marked = new boolean[N];
-        Queue<Integer> q = o.new Queue<Integer>();
-        for (int v = 0; v < G.V(); v++)
-            curDist[v] = Integer.MAX_VALUE;
-        curDist[s] = 0;
-        marked[s] = true;
-        q.enqueue(s);
+		Queue<Integer> q = o.new Queue<Integer>();
+		for (int v = 0; v < G.V(); v++)
+			curDist[v] = Integer.MAX_VALUE;
+		curDist[s] = 0;
+		marked[s] = true;
+		q.enqueue(s);
 
-        while (!q.isEmpty()) {
-            int v = q.dequeue();
-            for (int w : G.adj(v)) {
-                if (!marked[w]) {
-                    curDist[w] = curDist[v] + 1;
-                    marked[w] = true;
-                    q.enqueue(w);
-                }
-            }
-        }
-        for (int i = 0; i < N; i++) {
-        	dist[s][i] = curDist[i];
-        }
-    }
-	
+		while (!q.isEmpty()) {
+			int v = q.dequeue();
+			for (int w : G.adj(v)) {
+				if (!marked[w]) {
+					curDist[w] = curDist[v] + 1;
+					marked[w] = true;
+					q.enqueue(w);
+				}
+			}
+		}
+		for (int i = 0; i < N; i++) {
+			dist[s][i] = curDist[i];
+		}
+	}
+
 	private static void dfs(int v, int s) {
 		if (!count.containsKey(labels[v])) {
 			count.put(labels[v], 0);
@@ -586,7 +586,7 @@ public class NO_ACM_NO_LIFE {
 		count.put(labels[v], (count.get(labels[v]) + 1));
 		countLabels[s][v] = count.size();
 		marked[v] = true;
-		for (int w: G.adj(v)) {
+		for (int w : G.adj(v)) {
 			if (!marked[w]) {
 				dfs(w, s);
 			}
