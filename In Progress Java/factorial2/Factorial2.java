@@ -1,4 +1,4 @@
-package factorial;
+package factorial2;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,9 +10,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class Factorial { // 10/100 points
+public class Factorial2 {
 	
-	private static Factorial o = new Factorial();
+	private static Factorial2 o = new Factorial2();
 	
 	public class Reader {
 		private BufferedReader in;
@@ -56,11 +56,15 @@ public class Factorial { // 10/100 points
 		int N = in.nextInt();
 		for (int i = 0; i < N; i++) {
 			String str = in.nextLine();
+			if (str.length() >= 3) {
+				out.println(0);
+				continue;
+			}
 			long n = Long.parseLong(str);
 			long ans = 1;
-			for (int j = 1; j <= n; j++) {
-				ans = (ans * j) % (1l << 32);
-			}
+			long mod = 1L << 32;
+			for (int j = 2; j <= Math.min(n, 32); j++)
+				ans = (ans * j) % mod;
 			out.println(ans);
 		}
 		out.close();
