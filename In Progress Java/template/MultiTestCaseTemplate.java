@@ -1,6 +1,7 @@
 package template;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class MultiTestCaseTemplate {
 	} // Reader class
 	
 	private static Reader in = o.new Reader(System.in);
-	private static PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+	private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 	
 	private static final int NUM_OF_TEST_CASES = 10; // TODO CHANGE NUMBER OF TEST CASES
 	

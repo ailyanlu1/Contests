@@ -1,6 +1,7 @@
 package template;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -480,7 +481,7 @@ public class GraphTemplate {
 	}
 	
 	private static Reader in = o.new Reader(System.in);
-	private static PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+	private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 	
 	public static void main(String[] args) throws IOException {
 		// TODO INSERT CODE HERE

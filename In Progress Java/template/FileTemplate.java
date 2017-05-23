@@ -1,8 +1,10 @@
 package template;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -57,9 +59,9 @@ public class FileTemplate {
 	
 	public static void main(String[] args) throws IOException {
 		in = o.new Reader(o.getClass().getPackage().toString().split(" ")[1] + "/" + input);
-		out = new PrintWriter(o.getClass().getPackage().toString().split(" ")[1] + "/" + output);
+		out = new PrintWriter(new BufferedWriter(new FileWriter(o.getClass().getPackage().toString().split(" ")[1] + "/" + output)));
 		// in = o.new Reader(System.in);
-		// out = new PrintWriter(new OutputStreamWriter(System.out));
+		// out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 		// TODO INSERT CODE HERE
 		out.close();
 	}
