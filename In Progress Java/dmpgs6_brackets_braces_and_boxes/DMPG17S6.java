@@ -1,4 +1,5 @@
 package dmpgs6_brackets_braces_and_boxes;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -125,8 +126,12 @@ public class DMPG17S6 { // 30/100 WA
 				}
 			}
 		}
-		if (K % 2 != 0 || !stack.isEmpty()) {
+		if (!stack.isEmpty()) {
 			System.out.println("impossible");
+			return;
+		}
+		if (K % 2 == 1) {
+			// Go back and check where 1 change can be made
 			return;
 		}
 		int x = 0;

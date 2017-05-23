@@ -1,4 +1,4 @@
-package dp1p3_longest_increasing_subsequence;
+package ecoo17r3p2_family_trees;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,10 +8,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
-public class DP1P3 {
-	private static DP1P3 o = new DP1P3();
+public class ECOO17R3P2 {
+	private static ECOO17R3P2 o = new ECOO17R3P2();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -48,11 +49,61 @@ public class DP1P3 {
 		} // nextLine method
 	} // Reader class
 	
+	public static class Node {
+		public HashMap<Integer, Node> map;
+		public int max;
+		
+		public Node() {
+			map = new HashMap<Integer, Node>();
+			max = 0;
+		}
+	}
+	
+	public static void add(String id) {
+		String[] x = id.split("\\.");
+		int[] arr = new int[x.length];
+		for (int i = 0; i < x.length; i++) {
+			arr[i] = Integer.parseInt(x[i]);
+		}
+		Node cur = root;
+		for (int i: arr) {
+			if (cur.map.get(i) == null) {
+				cur.map.put(i, new Node());
+				cur.max = Math.max(cur.max, i);
+			}
+			cur = cur.map.get(i);
+		}
+	}
+	
+	public static long count(Node cur) {
+		long count = cur.max % MOD;
+		for (int key: cur.map.keySet()) {
+			count = (count + count(cur.map.get(key))) % MOD;
+		}
+		return count;
+	}
+	
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
 	
+	private static final int NUM_OF_TEST_CASES = 10; // TODO CHANGE NUMBER OF TEST CASES
+	private static final long MOD = (long) (1e9 + 7);
+	private static Node root;
+	
 	public static void main(String[] args) throws IOException {
-		// TODO INSERT CODE HERE
+		for (int i = 0; i < NUM_OF_TEST_CASES; i++) {
+			run();
+		}
 		out.close();
+	}
+	
+	public static void run() throws IOException {
+		int N = in.nextInt();
+		root = new Node();
+		root.max = 1;
+		for (int i = 0; i < N; i++) {
+			add(in.nextLine());
+		}
+		out.println(count(root));
 	}
 }
