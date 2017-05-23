@@ -1,4 +1,4 @@
-package dmpgs6_brackets_braces_and_boxes;
+package dmpg17s6_brackets_braces_and_boxes;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
