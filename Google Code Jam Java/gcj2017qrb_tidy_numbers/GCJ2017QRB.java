@@ -1,4 +1,4 @@
-package gcj2017qra_oversized_pancake_flipper;
+package gcj2017qrb_tidy_numbers;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,9 +10,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-// https://code.google.com/codejam/contest/dashboard?c=3264486#s=p0&a=0
-public class GCJ2017QRA {
-	private static GCJ2017QRA o = new GCJ2017QRA();
+public class GCJ2017QRB {
+	private static GCJ2017QRB o = new GCJ2017QRB();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -53,8 +52,8 @@ public class GCJ2017QRA {
 	private static PrintWriter out;
 		
 	// TODO CHANGE FILE NAMES
-	private static final String input = "A-large-practice.in";
-	private static final String output = "A-large-practice.out";
+	private static final String input = "B-large-practice.in";
+	private static final String output = "B-large-practice.out";
 	
 	public static void main(String[] args) throws IOException {
 		in = o.new Reader(o.getClass().getPackage().toString().split(" ")[1] + "/" + input);
@@ -69,24 +68,17 @@ public class GCJ2017QRA {
 	}
 	
 	public static void run(int t) throws IOException {
-		char[] S = in.next().toCharArray();
-		int K = in.nextInt();
-		int ans = 0;
-		for (int i = 0; i <= S.length - K; i++) {
-			if (S[i] == '-') {
-				for (int j = 0; j < K; j++) {
-					S[i + j] = (char) ('-' - S[i + j] + '+');
-				}
-				ans++;
-			}
+		long N = in.nextLong();
+		out.println("Case #" + t + ": " + rec(N, 0L, 1));
+	}
+	
+	public static long rec(long N, long cur, int last) {
+		if (cur > N) return 0;
+		long ret = cur;
+		while (last < 10) {
+			ret = Math.max(ret, rec(N, cur * 10 + last, last));
+			last++;
 		}
-		out.print("Case #" + t + ": ");
-		for (int i = 0; i < S.length; i++) {
-			if (S[i] =='-') {
-				out.println("IMPOSSIBLE");
-				return;
-			}
-		}
-		out.println(ans);
+		return ret;
 	}
 }
