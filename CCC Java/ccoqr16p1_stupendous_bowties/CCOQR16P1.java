@@ -1,4 +1,4 @@
-package cco16p4_o_canada;
+package ccoqr16p1_stupendous_bowties;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,11 +8,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-public class CCO16P4 {
-	private static CCO16P4 o = new CCO16P4();
+public class CCOQR16P1 {
+	private static CCOQR16P1 o = new CCOQR16P1();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -54,38 +56,38 @@ public class CCO16P4 {
 	
 	public static void main(String[] args) throws IOException {
 		int N = in.nextInt();
-		int G = in.nextInt();
-		boolean[][] grid;
-		HashMap<Integer, Integer> occ = new HashMap<Integer, Integer>();
-		for (int g = 0; g < G; g++) {
-			grid = new boolean[N][N];
-			for (int i = 0; i < N; i++) {
-				String line = in.nextLine();
-				for (int j = 0; j < N; j++) {
-					grid[i][j] = (line.charAt(j) == 'R');
-				}
-			}
-			for (int i = 0; i < N - 1; i++) {
-				for (int j = 0; j < N - 1; j++) {
-					if (grid[i][j]) {
-						grid[i][j] ^= true;
-						grid[i][j + 1] ^= true;
-						grid[i + 1][j] ^= true;
-						grid[i + 1][j + 1] ^= true;
-					}
-				}
-			}
-			int res = 0;
-			for (int i = 0; i < N; i++) {
-				if (grid[N - 1][i]) res += (1 << i);
-				if (grid[i][N - 1]) res += (1 << (i + N));
-			}
-			if (occ.get(res) == null) occ.put(res, 1);
-			else occ.put(res, occ.get(res) + 1);
+		int[] x = new int[N];
+		int[] y = new int[N];
+		ArrayList<Integer>[] X = new ArrayList[N];
+		ArrayList<Integer>[] Y = new ArrayList[N];
+		HashMap<Integer, Integer> xInd = new HashMap<Integer, Integer>();
+		HashMap<Integer, Integer> yInd = new HashMap<Integer, Integer>();
+		for (int i = 0; i < N; i++) {
+			X[i] = new ArrayList<Integer>();
+			Y[i] = new ArrayList<Integer>();
 		}
-		int ans = 0;
-		for (Integer key: occ.keySet()) {
-			ans += occ.get(key) * (occ.get(key) - 1) / 2;
+		int xCount = 0;
+		int yCount = 0;
+		for (int i = 0; i < N; i++) {
+			x[i] = in.nextInt();
+			y[i] = in.nextInt();
+			if (xInd.get(x[i]) == null) xInd.put(x[i], xCount++);
+			if (yInd.get(y[i]) == null) yInd.put(y[i], yCount++);
+			X[xInd.get(x[i])].add(y[i]);
+			Y[yInd.get(y[i])].add(x[i]);
+		}
+		for (int i = 0; i < N; i++) {
+			Collections.sort(X[i]);
+			Collections.sort(Y[i]);
+		}
+		
+		long ans = 0;
+		for (int i = 0; i < N; i++) {
+			long x1 = Collections.binarySearch(Y[yInd.get(y[i])], x[i]);
+			long y1 = Collections.binarySearch(X[xInd.get(x[i])], y[i]);
+			long x2 = Y[yInd.get(y[i])].size() - x1 - 1;
+			long y2 = X[xInd.get(x[i])].size() - y1 - 1;
+			ans += (x1 * y1) * (x2 * y2) + (x1 * y2) * (x2 * y1);
 		}
 		out.println(ans);
 		out.close();
