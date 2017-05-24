@@ -60,17 +60,15 @@ public class IOI00P1 {
 	
 	private static int process(String s1, String s2) {
 		int[][] dp = new int[2][s2.length() + 1];
-		int s = 1;
 		for (int i = 1; i <= s1.length(); i++) {
-			s = 1 - s;
 			for (int j = 1; j <= s2.length(); j++) {
 				if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
-					dp[s][j] = 1 + dp[1 - s][j - 1];
+					dp[i%2][j] = 1 + dp[1 - i%2][j - 1];
 				} else {
-					dp[s][j] = Math.max(dp[1 - s][j], dp[s][j - 1]);
+					dp[i%2][j] = Math.max(dp[1 - i%2][j], dp[i%2][j - 1]);
 				}
 			}
 		}
-		return dp[s][s2.length()];
+		return dp[s1.length() % 2][s2.length()];
 	}
 }
