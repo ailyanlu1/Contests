@@ -1,4 +1,3 @@
-
 /*
  * COCI15C2P5.cpp
  *
@@ -13,34 +12,37 @@
 using namespace std;
 
 struct FenwickTree {
-	private:
-		long long* array;
+private:
+	long long* array;
+	int length;
 
-	public:
-		int size;
+public:
+	FenwickTree(int size) {
+		this->length = size + 1;
+		array = new long long[length];
+	}
 
-		FenwickTree(int size) {
-			this->size = size;
-			array = new long long[size + 1];
+	long long rsq(int ind) {
+		long long sum = 0;
+		for (int x = ind; x > 0; x -= (x & -x)) {
+			sum += array[x];
 		}
+		return sum;
+	}
 
-	    long long rsq(int ind) {
-	        long long sum = 0;
-	        for (int x = ind; x > 0; x -= (x & -x)) {
-	        	sum += array[x];
-	        }
-	        return sum;
-	    }
+	long long rsq(int a, int b) {
+		return rsq(b) - rsq(a - 1);
+	}
 
-	    long long rsq(int a, int b) {
-			return rsq(b) - rsq(a - 1);
+	void update(int ind, long long value) {
+		for (int x = ind; x < length; x += (x & -x)) {
+			array[x] += value;
 		}
+	}
 
-	    void update(int ind, long long value) {
-	    	for (int x = ind; x <= size; x += (x & -x)) {
-	    		array[x] += value;
-	    	}
-	    }
+	int size() {
+		return length - 1;
+	}
 };
 
 int N, P;
