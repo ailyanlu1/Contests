@@ -1,4 +1,3 @@
-package template;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -60,8 +59,12 @@ public class MultiTestCaseFileTemplate {
 	private static final String output = "output.txt";
 	
 	public static void main(String[] args) throws IOException {
-		in = o.new Reader(o.getClass().getPackage().toString().split(" ")[1] + "/" + input);
-		out = new PrintWriter(new BufferedWriter(new FileWriter(o.getClass().getPackage().toString().split(" ")[1] + "/" + output)));
+		String packageName = "";
+		try {
+			packageName = o.getClass().getPackage().toString().split(" ")[1] + "/";
+		} catch (NullPointerException e) {}
+		in = o.new Reader(packageName + input);
+		out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + output)));
 		// in = o.new Reader(System.in);
 		// out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 		for (int i = 0; i < NUM_OF_TEST_CASES; i++) {

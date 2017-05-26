@@ -1,4 +1,3 @@
-package template;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,8 +10,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class MultiTestCaseTemplate {
-	private static MultiTestCaseTemplate o = new MultiTestCaseTemplate();
+public class Template {
+	private static Template o = new Template();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -52,16 +51,8 @@ public class MultiTestCaseTemplate {
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 	
-	private static final int NUM_OF_TEST_CASES = 10; // TODO CHANGE NUMBER OF TEST CASES
-	
 	public static void main(String[] args) throws IOException {
-		for (int i = 0; i < NUM_OF_TEST_CASES; i++) {
-			run();
-		}
-		out.close();
-	}
-	
-	public static void run() throws IOException {
 		// TODO INSERT CODE HERE
+		out.close();
 	}
 }

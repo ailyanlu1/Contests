@@ -1,4 +1,3 @@
-package template;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,8 +13,8 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Stack;
 
-public class GridGraphTemplate {
-	private static GridGraphTemplate o = new GridGraphTemplate();
+public class GraphTemplate {
+	private static GraphTemplate o = new GraphTemplate();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -483,17 +482,8 @@ public class GridGraphTemplate {
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 	
-	private static char[][] grid;
-	
 	public static void main(String[] args) throws IOException {
 		// TODO INSERT CODE HERE
 		out.close();
-	}
-	
-	private static boolean isPoint(int i, int j) {
-		return (i >= 0 && i < grid.length && j >= 0 && j < grid[0].length);
-	}
-	private static int toPoint(int i, int j) {
-		return i * grid[0].length + j;
 	}
 }
