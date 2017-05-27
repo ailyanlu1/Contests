@@ -14,12 +14,12 @@ using namespace std;
 struct FenwickTree {
 private:
 	long long* array;
-	int length;
+	int _size;
 
 public:
 	FenwickTree(int size) {
-		this->length = size + 1;
-		array = new long long[length];
+		this->_size = size;
+		array = new long long[size];
 	}
 
 	long long rsq(int ind) {
@@ -35,13 +35,13 @@ public:
 	}
 
 	void update(int ind, long long value) {
-		for (int x = ind; x < length; x += (x & -x)) {
+		for (int x = ind; x <= _size; x += (x & -x)) {
 			array[x] += value;
 		}
 	}
 
 	int size() {
-		return length - 1;
+		return _size;
 	}
 };
 

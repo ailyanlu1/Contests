@@ -42,6 +42,6 @@ int main() {
 	for (int i = 0; i < N; i++) {
 		scanf("%d", &positions[i]);
 	}
-	printf("%I64d\n", delivery(N, K, L, positions));
+	printf("%lld\n", delivery(N, K, L, positions));
 	return 0;
 }
