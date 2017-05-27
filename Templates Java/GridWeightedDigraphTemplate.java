@@ -8,10 +8,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 import java.util.Stack;
+import java.util.StringTokenizer;
+
 
 public class GridWeightedDigraphTemplate {
 	private static GridWeightedDigraphTemplate o = new GridWeightedDigraphTemplate();
@@ -50,86 +52,6 @@ public class GridWeightedDigraphTemplate {
 			return in.readLine().trim();
 		} // nextLine method
 	} // Reader class
-	
-	public class Bag<Item> implements Iterable<Item> {
-	    private Node<Item> first;    // beginning of bag
-	    private int n;               // number of elements in bag
-
-	    // helper linked list class
-	    private class Node<Item> {
-	        private Item item;
-	        private Node<Item> next;
-	    }
-
-	    /**
-	     * Initializes an empty bag.
-	     */
-	    public Bag() {
-	        first = null;
-	        n = 0;
-	    }
-
-	    /**
-	     * Returns true if this bag is empty.
-	     *
-	     * @return {@code true} if this bag is empty;
-	     *         {@code false} otherwise
-	     */
-	    public boolean isEmpty() {
-	        return first == null;
-	    }
-
-	    /**
-	     * Returns the number of items in this bag.
-	     *
-	     * @return the number of items in this bag
-	     */
-	    public int size() {
-	        return n;
-	    }
-
-	    /**
-	     * Adds the item to this bag.
-	     *
-	     * @param  item the item to add to this bag
-	     */
-	    public void add(Item item) {
-	        Node<Item> oldfirst = first;
-	        first = new Node<Item>();
-	        first.item = item;
-	        first.next = oldfirst;
-	        n++;
-	    }
-
-
-	    /**
-	     * Returns an iterator that iterates over the items in this bag in arbitrary order.
-	     *
-	     * @return an iterator that iterates over the items in this bag in arbitrary order
-	     */
-	    public Iterator<Item> iterator()  {
-	        return new ListIterator<Item>(first);  
-	    }
-
-	    // an iterator, doesn't implement remove() since it's optional
-	    private class ListIterator<Item> implements Iterator<Item> {
-	        private Node<Item> current;
-
-	        public ListIterator(Node<Item> first) {
-	            current = first;
-	        }
-
-	        public boolean hasNext()  { return current != null;                     }
-	        public void remove()      { throw new UnsupportedOperationException();  }
-
-	        public Item next() {
-	            if (!hasNext()) throw new NoSuchElementException();
-	            Item item = current.item;
-	            current = current.next; 
-	            return item;
-	        }
-	    }
-	}
 	
 	public class Queue<Item> implements Iterable<Item> {
 	    private Node<Item> first;    // beginning of queue
@@ -712,8 +634,9 @@ public class GridWeightedDigraphTemplate {
 
 	    private final int V;                // number of vertices in this digraph
 	    private int E;                      // number of edges in this digraph
-	    private Bag<DirectedWeightedEdge>[] adj;    // adj[v] = adjacency list for vertex v
+	    private HashSet<DirectedWeightedEdge>[] adj;    // adj[v] = adjacency list for vertex v
 	    private int[] indegree;             // indegree[v] = indegree of vertex v
+	    private HashSet<DirectedWeightedEdge> removed;
 	    
 	    /**
 	     * Initializes an empty edge-weighted digraph with {@code V} vertices and 0 edges.
@@ -726,9 +649,10 @@ public class GridWeightedDigraphTemplate {
 	        this.V = V;
 	        this.E = 0;
 	        this.indegree = new int[V];
-	        adj = (Bag<DirectedWeightedEdge>[]) new Bag[V];
+	        adj = (HashSet<DirectedWeightedEdge>[]) new HashSet[V];
+	        removed = new HashSet<DirectedWeightedEdge>();
 	        for (int v = 0; v < V; v++)
-	            adj[v] = new Bag<DirectedWeightedEdge>();
+	            adj[v] = new HashSet<DirectedWeightedEdge>();
 	    }
 
 	    /**
@@ -793,7 +717,42 @@ public class GridWeightedDigraphTemplate {
 	        indegree[w]++;
 	        E++;
 	    }
-
+	    
+	    /**
+	     * Removes the directed edge from {@code e} from this edge-weighted digraph.
+	     *
+	     * @param  e the edge
+	     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
+	     *         and {@code V-1}
+	     */
+	    public void removeEdge(DirectedWeightedEdge e) {
+	    	int v = e.from();
+	        int w = e.to();
+	        validateVertex(v);
+	        validateVertex(w);
+	        removed.add(e);
+	        adj[v].remove(e);
+	        indegree[w]--;
+	        E--;
+	    }
+	    
+	    /**
+	     * Restores all the edges removed from this edge-weighted digraph.
+	     */
+	    public void restoreEdges() {
+	    	for (DirectedWeightedEdge e: removed) {
+	            addEdge(e);
+	    	}
+	    	removed.clear();
+	    }
+	    
+	    /**
+	     * Clears the edges removed from this edge-weighted digraph so they can no longer
+	     * be restored
+	     */
+	    public void clearRemoved() {
+	    	removed.clear();
+	    }
 
 	    /**
 	     * Returns the directed edges incident from vertex {@code v}.
@@ -841,7 +800,7 @@ public class GridWeightedDigraphTemplate {
 	     * @return all edges in this edge-weighted digraph, as an iterable
 	     */
 	    public Iterable<DirectedWeightedEdge> edges() {
-	        Bag<DirectedWeightedEdge> list = new Bag<DirectedWeightedEdge>();
+	        HashSet<DirectedWeightedEdge> list = new HashSet<DirectedWeightedEdge>();
 	        for (int v = 0; v < V; v++) {
 	            for (DirectedWeightedEdge e : adj(v)) {
 	                list.add(e);

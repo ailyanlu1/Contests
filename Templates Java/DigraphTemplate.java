@@ -8,10 +8,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class DigraphTemplate {
 	private static DigraphTemplate o = new DigraphTemplate();
@@ -50,86 +51,6 @@ public class DigraphTemplate {
 			return in.readLine().trim();
 		} // nextLine method
 	} // Reader class
-	
-	public class Bag<Item> implements Iterable<Item> {
-	    private Node<Item> first;    // beginning of bag
-	    private int n;               // number of elements in bag
-
-	    // helper linked list class
-	    private class Node<Item> {
-	        private Item item;
-	        private Node<Item> next;
-	    }
-
-	    /**
-	     * Initializes an empty bag.
-	     */
-	    public Bag() {
-	        first = null;
-	        n = 0;
-	    }
-
-	    /**
-	     * Returns true if this bag is empty.
-	     *
-	     * @return {@code true} if this bag is empty;
-	     *         {@code false} otherwise
-	     */
-	    public boolean isEmpty() {
-	        return first == null;
-	    }
-
-	    /**
-	     * Returns the number of items in this bag.
-	     *
-	     * @return the number of items in this bag
-	     */
-	    public int size() {
-	        return n;
-	    }
-
-	    /**
-	     * Adds the item to this bag.
-	     *
-	     * @param  item the item to add to this bag
-	     */
-	    public void add(Item item) {
-	        Node<Item> oldfirst = first;
-	        first = new Node<Item>();
-	        first.item = item;
-	        first.next = oldfirst;
-	        n++;
-	    }
-
-
-	    /**
-	     * Returns an iterator that iterates over the items in this bag in arbitrary order.
-	     *
-	     * @return an iterator that iterates over the items in this bag in arbitrary order
-	     */
-	    public Iterator<Item> iterator()  {
-	        return new ListIterator<Item>(first);  
-	    }
-
-	    // an iterator, doesn't implement remove() since it's optional
-	    private class ListIterator<Item> implements Iterator<Item> {
-	        private Node<Item> current;
-
-	        public ListIterator(Node<Item> first) {
-	            current = first;
-	        }
-
-	        public boolean hasNext()  { return current != null;                     }
-	        public void remove()      { throw new UnsupportedOperationException();  }
-
-	        public Item next() {
-	            if (!hasNext()) throw new NoSuchElementException();
-	            Item item = current.item;
-	            current = current.next; 
-	            return item;
-	        }
-	    }
-	}
 	
 	public class Queue<Item> implements Iterable<Item> {
 	    private Node<Item> first;    // beginning of queue
@@ -355,7 +276,8 @@ public class DigraphTemplate {
 
 	    private final int V;           // number of vertices in this digraph
 	    private int E;                 // number of edges in this digraph
-	    private Bag<Integer>[] adj;    // adj[v] = adjacency list for vertex v
+	    private HashSet<Integer>[] adj;    // adj[v] = adjacency list for vertex v
+	    private HashSet<DirectedEdge> removed;
 	    private int[] indegree;        // indegree[v] = indegree of vertex v
 	    
 	    /**
@@ -369,9 +291,10 @@ public class DigraphTemplate {
 	        this.V = V;
 	        this.E = 0;
 	        indegree = new int[V];
-	        adj = (Bag<Integer>[]) new Bag[V];
+	        adj = (HashSet<Integer>[]) new HashSet[V];
+	        removed = new HashSet<DirectedEdge>();
 	        for (int v = 0; v < V; v++) {
-	            adj[v] = new Bag<Integer>();
+	            adj[v] = new HashSet<Integer>();
 	        }
 	    }
 
@@ -435,6 +358,41 @@ public class DigraphTemplate {
 	        adj[v].add(w);
 	        indegree[w]++;
 	        E++;
+	    }
+	    
+	    /**
+	     * Removes the directed edge from {@code e} from this edge-weighted digraph.
+	     *
+	     * @param  v the start vertex in the edge
+	     * @param  w the end vertex in the edge
+	     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
+	     *         and {@code V-1}
+	     */
+	    public void removeEdge(int v, int w) {
+	        validateVertex(v);
+	        validateVertex(w);
+	        removed.add(new DirectedEdge(v, w));
+	        adj[v].remove(w);
+	        indegree[w]--;
+	        E--;
+	    }
+	    
+	    /**
+	     * Restores all the edges removed from this edge-weighted digraph.
+	     */
+	    public void restoreEdges() {
+	    	for (DirectedEdge e: removed) {
+	            addEdge(e.from, e.to);
+	    	}
+	    	removed.clear();
+	    }
+	    
+	    /**
+	     * Clears the edges removed from this digraph so they can no longer
+	     * be restored
+	     */
+	    public void clearRemoved() {
+	    	removed.clear();
 	    }
 
 	    /**
@@ -508,8 +466,33 @@ public class DigraphTemplate {
 	        }
 	        return s.toString();
 	    }
+	    
+	    public class DirectedEdge {
+	    	public int from;
+	    	public int to;
+	    	
+	    	public DirectedEdge(int v, int w) {
+	    		this.from = v;
+	    		this.to= w;
+	    	}
+	    	
+			@Override
+			public int hashCode() {
+				return 31 * from + to;
+			}
+	    		
+			@Override
+			public boolean equals(Object o) {
+				if (o == this) return true;
+			    if (!(o instanceof DirectedEdge)) {
+			        return false;
+			    }
+			    DirectedEdge e = (DirectedEdge) o;
+				return e.from == from && e.to == to;
+			}
+	    }
 	}
-
+	
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 	

@@ -8,10 +8,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class GraphTemplate {
 	private static GraphTemplate o = new GraphTemplate();
@@ -50,86 +51,6 @@ public class GraphTemplate {
 			return in.readLine().trim();
 		} // nextLine method
 	} // Reader class
-	
-	public class Bag<Item> implements Iterable<Item> {
-	    private Node<Item> first;    // beginning of bag
-	    private int n;               // number of elements in bag
-
-	    // helper linked list class
-	    private class Node<Item> {
-	        private Item item;
-	        private Node<Item> next;
-	    }
-
-	    /**
-	     * Initializes an empty bag.
-	     */
-	    public Bag() {
-	        first = null;
-	        n = 0;
-	    }
-
-	    /**
-	     * Returns true if this bag is empty.
-	     *
-	     * @return {@code true} if this bag is empty;
-	     *         {@code false} otherwise
-	     */
-	    public boolean isEmpty() {
-	        return first == null;
-	    }
-
-	    /**
-	     * Returns the number of items in this bag.
-	     *
-	     * @return the number of items in this bag
-	     */
-	    public int size() {
-	        return n;
-	    }
-
-	    /**
-	     * Adds the item to this bag.
-	     *
-	     * @param  item the item to add to this bag
-	     */
-	    public void add(Item item) {
-	        Node<Item> oldfirst = first;
-	        first = new Node<Item>();
-	        first.item = item;
-	        first.next = oldfirst;
-	        n++;
-	    }
-
-
-	    /**
-	     * Returns an iterator that iterates over the items in this bag in arbitrary order.
-	     *
-	     * @return an iterator that iterates over the items in this bag in arbitrary order
-	     */
-	    public Iterator<Item> iterator()  {
-	        return new ListIterator<Item>(first);  
-	    }
-
-	    // an iterator, doesn't implement remove() since it's optional
-	    private class ListIterator<Item> implements Iterator<Item> {
-	        private Node<Item> current;
-
-	        public ListIterator(Node<Item> first) {
-	            current = first;
-	        }
-
-	        public boolean hasNext()  { return current != null;                     }
-	        public void remove()      { throw new UnsupportedOperationException();  }
-
-	        public Item next() {
-	            if (!hasNext()) throw new NoSuchElementException();
-	            Item item = current.item;
-	            current = current.next; 
-	            return item;
-	        }
-	    }
-	}
 	
 	public class Queue<Item> implements Iterable<Item> {
 	    private Node<Item> first;    // beginning of queue
@@ -349,13 +270,14 @@ public class GraphTemplate {
 	        }
 	    }
 	}
-
+	
 	public class Graph {
 	    private final String NEWLINE = System.getProperty("line.separator");
 
 	    private final int V;
 	    private int E;
-	    private Bag<Integer>[] adj;
+	    private HashSet<Integer>[] adj;
+	    private HashSet<Edge> removed;
 	    
 	    /**
 	     * Initializes an empty graph with {@code V} vertices and 0 edges.
@@ -368,9 +290,10 @@ public class GraphTemplate {
 	        if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
 	        this.V = V;
 	        this.E = 0;
-	        adj = (Bag<Integer>[]) new Bag[V];
+	        adj = (HashSet<Integer>[]) new HashSet[V];
+	        removed = new HashSet<Edge>();
 	        for (int v = 0; v < V; v++) {
-	            adj[v] = new Bag<Integer>();
+	            adj[v] = new HashSet<Integer>();
 	        }
 	    }
 
@@ -432,6 +355,41 @@ public class GraphTemplate {
 	        adj[v].add(w);
 	        adj[w].add(v);
 	    }
+	    
+	    /**
+	     * Removes the edge from from this graph.
+	     *
+	     * @param  v one vertex in the edge
+	     * @param  w the other vertex in the edge
+	     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
+	     *         and {@code V-1}
+	     */
+	    public void removeEdge(int v, int w) {
+	        validateVertex(v);
+	        validateVertex(w);
+	        removed.add(new Edge(v, w));
+	        adj[v].remove(w);
+	        adj[w].remove(v);
+	        E--;
+	    }
+	    
+	    /**
+	     * Restores all the edges removed from this graph.
+	     */
+	    public void restoreEdges() {
+	    	for (Edge e: removed) {
+	            addEdge(e.v, e.w);
+	    	}
+	    	removed.clear();
+	    }
+	    
+	    /**
+	     * Clears the edges removed from this graph so they can no longer
+	     * be restored
+	     */
+	    public void clearRemoved() {
+	    	removed.clear();
+	    }
 
 
 	    /**
@@ -477,8 +435,33 @@ public class GraphTemplate {
 	        }
 	        return s.toString();
 	    }
+	    
+	    public class Edge {
+	    	public int v;
+	    	public int w;
+	    	
+	    	public Edge(int v, int w) {
+	    		this.v = Math.min(v, w);
+	    		this.w = Math.max(v, w);
+	    	}
+	    	
+			@Override
+			public int hashCode() {
+				return 31 * v + w;
+			}
+	    		
+			@Override
+			public boolean equals(Object o) {
+				if (o == this) return true;
+			    if (!(o instanceof Edge)) {
+			        return false;
+			    }
+			    Edge e = (Edge) o;
+				return e.v == v && e.w == w;
+			}
+	    }
 	}
-	
+
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 	
