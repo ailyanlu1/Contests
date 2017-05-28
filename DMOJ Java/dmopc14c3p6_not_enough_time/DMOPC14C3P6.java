@@ -58,10 +58,10 @@ public class DMOPC14C3P6 {
 		int[][] P = new int[N][3];
 		int[][] V = new int[N][3];
 		int[] dp = new int[T + 1];
-		for (int i = 0; i <= T; i++) {
+		dp[0] = 0;
+		for (int i = 1; i <= T; i++) {
 			dp[i] = -1;
 		}
-		dp[0] = 0;
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < 3; j++) {
 				P[i][j] = in.nextInt();
