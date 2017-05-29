@@ -16,37 +16,93 @@ public class MultiTestCaseFileTemplate {
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
-		
+
 		public Reader(InputStream inputStream) {
 			in = new BufferedReader(new InputStreamReader(inputStream));
-		} // Reader InputStream constructor
-		
+		}
+
 		public Reader(String fileName) throws FileNotFoundException {
 			in = new BufferedReader(new FileReader(fileName));
-		} // Reader String constructor
+		}
 
 		public String next() throws IOException {
 			while (st == null || !st.hasMoreTokens()) {
 				st = new StringTokenizer(in.readLine().trim());
-			} // while
+			}
 			return st.nextToken();
-		} // next method
-		
-		public long nextLong() throws IOException {
-			return Long.parseLong(next());
-		} // nextLong method
-		
-		public int nextInt() throws IOException {
-			return Integer.parseInt(next());
-		} // nextInt method
-		
+		}
+
+		public String next(String delim) throws IOException {
+			while (st == null || !st.hasMoreTokens()) {
+				st = new StringTokenizer(in.readLine().trim());
+			}
+			return st.nextToken(delim);
+		}
+
+		/*public BigInteger nextBigInteger() throws IOException {
+			return new BigInteger(next());
+		}*/
+
+		public byte nextByte() throws IOException {
+			return Byte.parseByte(next());
+		}
+
+		public byte nextByte(String delim) throws IOException {
+			return Byte.parseByte(next(delim));
+		}
+
+		public char nextChar() throws IOException {
+			return next().charAt(0);
+		}
+
+		public char nextChar(String delim) throws IOException {
+			return next(delim).charAt(0);
+		}
+
 		public double nextDouble() throws IOException {
 			return Double.parseDouble(next());
-		} // nextDouble method
-		
+		}
+
+		public double nextDouble(String delim) throws IOException {
+			return Double.parseDouble(next(delim));
+		}
+
+		public float nextFloat() throws IOException {
+			return Float.parseFloat(next());
+		}
+
+		public float nextFloat(String delim) throws IOException {
+			return Float.parseFloat(next(delim));
+		}
+
+		public int nextInt() throws IOException {
+			return Integer.parseInt(next());
+		}
+
+		public int nextInt(String delim) throws IOException {
+			return Integer.parseInt(next(delim));
+		}
+
+		public long nextLong() throws IOException {
+			return Long.parseLong(next());
+		}
+
+		public long nextLong(String delim) throws IOException {
+			return Long.parseLong(next(delim));
+		}
+
+		public short nextShort() throws IOException {
+			return Short.parseShort(next());
+		}
+
+		public short nextShort(String delim) throws IOException {
+			return Short.parseShort(next(delim));
+		}
+
 		public String nextLine() throws IOException {
-			return in.readLine().trim();
-		} // nextLine method
+			st = null;
+			return in.readLine();
+		}
 	} // Reader class
 	
 	private static Reader in;
@@ -55,25 +111,26 @@ public class MultiTestCaseFileTemplate {
 	private static final int NUM_OF_TEST_CASES = 10; // TODO CHANGE NUMBER OF TEST CASES
 	
 	// TODO CHANGE FILE NAMES
-	private static final String input = "input.txt";
-	private static final String output = "output.txt";
+	private static final String INPUT_FILE_NAME = "input.txt";
+	private static final String OUTPUT_FILE_NAME = "output.txt";
 	
 	public static void main(String[] args) throws IOException {
 		String packageName = "";
 		try {
 			packageName = o.getClass().getPackage().toString().split(" ")[1] + "/";
 		} catch (NullPointerException e) {}
-		in = o.new Reader(packageName + input);
-		out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + output)));
+		in = o.new Reader(packageName + INPUT_FILE_NAME);
+		out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + OUTPUT_FILE_NAME)));
 		// in = o.new Reader(System.in);
 		// out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
-		for (int i = 0; i < NUM_OF_TEST_CASES; i++) {
-			run();
+		
+		for (int i = 1; i <= NUM_OF_TEST_CASES; i++) {
+			run(i);
 		}
 		out.close();
 	}
 	
-	public static void run() throws IOException {
+	public static void run(int testCaseNum) throws IOException {
 		// TODO INSERT CODE HERE
 	}
 }
