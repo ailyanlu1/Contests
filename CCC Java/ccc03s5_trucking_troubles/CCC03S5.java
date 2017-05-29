@@ -190,6 +190,13 @@ public class CCC03S5 {
 	    }
 	    
 	    @Override
+	    public int hashCode() {
+	    	int result = 31 * v + w;
+	    	result = 31 * result + (int) (new Double(weight).hashCode() ^ (new Double(weight).hashCode() >>> 32));
+	    	return result;
+	    }
+	    
+	    @Override
 		public boolean equals(Object o) {
 	    	if (o == this) return true;
 	        if (!(o instanceof WeightedEdge)) {
