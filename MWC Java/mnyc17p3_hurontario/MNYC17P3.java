@@ -1,4 +1,4 @@
-package fhc15c2p2_all_critical;
+package mnyc17p3_hurontario;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,8 +11,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class FHC15C2P2 {
-	private static FHC15C2P2 o = new FHC15C2P2();
+public class MNYC17P3 {
+	private static MNYC17P3 o = new MNYC17P3();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
@@ -108,57 +108,23 @@ public class FHC15C2P2 {
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 	
-	private static int B = 20;
-	private static int[][] comb = new int[B + 1][B + 1];
-	
-	private static void pre() {
-		for (int i = 0; i <= B; i++) {
-			for (int j = 0; j <= B; j++) {
-				if (i == j || j == 0) comb[i][j] = 1;
-				else if (j > i) comb[i][j] = 0;
-				else comb[i][j] = comb[i - 1][j - 1] + comb[i - 1][j];
-			}
-		}
-	}
-	
 	public static void main(String[] args) throws IOException {
-		pre();
-		int T = in.nextInt();
-		for (int i = 1; i <= T; i++) {
-			run(i);
+		String A = in.next();
+		String B = in.next();
+		long[] hash = new long[Math.min(A.length(), B.length())];
+		hash[0] = 1;
+		for (int i = 1; i < hash.length; i++) {
+			hash[i] = hash[i - 1] * 31;
 		}
+		int ind = 0;
+		long h1 = 0;
+		long h2 = 0;
+		for (int i = 0; i < hash.length; i++) {
+			h1 = h1 + hash[i] * (A.charAt(A.length() - i - 1) - 'A');
+			h2 = h2 * 31 + (B.charAt(i) - 'A');
+			if (h1 == h2) ind = i + 1;
+		}
+		out.println(A + B.substring(ind));
 		out.close();
-	}
-	
-	public static void run(int testCaseNum) throws IOException {
-		double p = in.nextDouble();
-		double[][] prob = new double[2000][B + 1];
-		for (int i = 0; i < prob.length; i++) {
-			for (int j = 0; j <= B; j++) {
-				if (i == 0) {
-					if (j == 0) prob[i][j] = 1;
-					else prob[i][j] = 0;
-				} else {
-					for (int k = 0; k <= j; k++) {
-						prob[i][j] += prob[i-1][k] * pow(p, j-k) * pow(1-p, B-j) * comb[B-k][j-k];
-					}
-				}
-			}
-		}
-		double ans = 0;
-		for (int i = 1; i < prob.length; i++) {
-			ans += i * (prob[i][20] - prob[i - 1][20]);
-		}
-		out.printf("Case #%d: %.5f\n", testCaseNum, ans);
-	}
-	
-	public static double pow(double base, long pow) {
-		if (pow == 0)
-			return 1;
-		if (pow == 1)
-			return base;
-		if (pow % 2 == 0)
-			return pow(base * base, pow / 2);
-		return base * pow(base * base, pow / 2);
 	}
 }
