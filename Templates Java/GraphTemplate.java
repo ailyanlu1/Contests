@@ -293,6 +293,16 @@ public class GraphTemplate {
 	    public boolean connected(int p, int q) {
 	        return find(p) == find(q);
 	    }
+	    
+	    /**
+	     * Returns the rank by size of the component containing p
+	     * 
+	     * @param p the integer representing one site
+	     * @return the rank by size of the component containing p
+	     */
+	    public byte rank(int p) {
+	    	return rank[find(p)];
+	    }
 	  
 	    /**
 	     * Merges the component containing site {@code p} with the 
@@ -316,6 +326,30 @@ public class GraphTemplate {
 	            rank[rootP]++;
 	        }
 	        count--;
+	    }
+	    
+	    /**
+	     * Unmerges the component containing site {@code p} with the 
+	     * the component containing site {@code q}.
+	     *
+	     * @param  p the integer representing one site
+	     * @param  q the integer representing the other site
+	     * @throws IndexOutOfBoundsException unless
+	     *         both {@code 0 <= p < n} and {@code 0 <= q < n}
+	     */
+	    public void disjoin(int p, int q) {
+	        int rootP = find(p);
+	        int rootQ = find(q);
+	        if (rootP == rootQ) return;
+
+	        // make root of smaller rank point to root of larger rank
+	        if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
+	        else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
+	        else {
+	            parent[rootQ] = rootP;
+	            rank[rootP]--;
+	        }
+	        count++;
 	    }
 
 	    // validate that p is a valid index
@@ -492,30 +526,28 @@ public class GraphTemplate {
 	        return s.toString();
 	    }
 	    
-	    public class Edge {
-	    	public int v;
-	    	public int w;
-	    	
-	    	public Edge(int v, int w) {
-	    		this.v = Math.min(v, w);
-	    		this.w = Math.max(v, w);
-	    	}
-	    	
+		public class Edge {
+			public int v;
+			public int w;
+
+			public Edge(int v, int w) {
+				this.v = Math.min(v, w);
+				this.w = Math.max(v, w);
+			}
+
 			@Override
 			public int hashCode() {
 				return 31 * v + w;
 			}
-	    		
+
 			@Override
 			public boolean equals(Object o) {
 				if (o == this) return true;
-			    if (!(o instanceof Edge)) {
-			        return false;
-			    }
-			    Edge e = (Edge) o;
+				if (!(o instanceof Edge)) return false;
+				Edge e = (Edge) o;
 				return e.v == v && e.w == w;
 			}
-	    }
+		}
 	}
 
 	private static Reader in = o.new Reader(System.in);

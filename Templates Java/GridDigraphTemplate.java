@@ -293,6 +293,16 @@ public class GridDigraphTemplate {
 	    public boolean connected(int p, int q) {
 	        return find(p) == find(q);
 	    }
+	    
+	    /**
+	     * Returns the rank by size of the component containing p
+	     * 
+	     * @param p the integer representing one site
+	     * @return the rank by size of the component containing p
+	     */
+	    public byte rank(int p) {
+	    	return rank[find(p)];
+	    }
 	  
 	    /**
 	     * Merges the component containing site {@code p} with the 
@@ -316,6 +326,30 @@ public class GridDigraphTemplate {
 	            rank[rootP]++;
 	        }
 	        count--;
+	    }
+	    
+	    /**
+	     * Unmerges the component containing site {@code p} with the 
+	     * the component containing site {@code q}.
+	     *
+	     * @param  p the integer representing one site
+	     * @param  q the integer representing the other site
+	     * @throws IndexOutOfBoundsException unless
+	     *         both {@code 0 <= p < n} and {@code 0 <= q < n}
+	     */
+	    public void disjoin(int p, int q) {
+	        int rootP = find(p);
+	        int rootQ = find(q);
+	        if (rootP == rootQ) return;
+
+	        // make root of smaller rank point to root of larger rank
+	        if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
+	        else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
+	        else {
+	            parent[rootQ] = rootP;
+	            rank[rootP]--;
+	        }
+	        count++;
 	    }
 
 	    // validate that p is a valid index
@@ -523,30 +557,28 @@ public class GridDigraphTemplate {
 	        return s.toString();
 	    }
 	    
-	    public class DirectedEdge {
-	    	public int from;
-	    	public int to;
-	    	
-	    	public DirectedEdge(int v, int w) {
-	    		this.from = v;
-	    		this.to= w;
-	    	}
-	    	
+		public class DirectedEdge {
+			public int from;
+			public int to;
+
+			public DirectedEdge(int v, int w) {
+				this.from = v;
+				this.to = w;
+			}
+
 			@Override
 			public int hashCode() {
 				return 31 * from + to;
 			}
-	    		
+
 			@Override
 			public boolean equals(Object o) {
 				if (o == this) return true;
-			    if (!(o instanceof DirectedEdge)) {
-			        return false;
-			    }
-			    DirectedEdge e = (DirectedEdge) o;
+				if (!(o instanceof DirectedEdge)) return false;
+				DirectedEdge e = (DirectedEdge) o;
 				return e.from == from && e.to == to;
 			}
-	    }
+		}
 	}
 	
 	private static Reader in = o.new Reader(System.in);
