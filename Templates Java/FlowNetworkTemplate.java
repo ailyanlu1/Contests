@@ -578,7 +578,7 @@ public class FlowNetworkTemplate {
 	    }
 	}
 
-	public class FordFulkersonMaxFlow {
+	public class EdmondsKarpMaxFlow {
 	    private static final double FLOATING_POINT_EPSILON = 1E-11;
 
 	    private final int V;          // number of vertices
@@ -598,7 +598,7 @@ public class FlowNetworkTemplate {
 	     * @throws IllegalArgumentException if {@code s == t}
 	     * @throws IllegalArgumentException if initial flow is infeasible
 	     */
-	    public FordFulkersonMaxFlow(FlowNetwork G, int s, int t) {
+	    public EdmondsKarpMaxFlow(FlowNetwork G, int s, int t) {
 	        V = G.V();
 	        validate(s);
 	        validate(t);
