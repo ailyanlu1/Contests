@@ -40,9 +40,11 @@ public class FlowNetworkTemplate {
 			return st.nextToken(delim);
 		}
 
-		/*public BigInteger nextBigInteger() throws IOException {
+		/*
+		public BigInteger nextBigInteger() throws IOException {
 			return new BigInteger(next());
-		}*/
+		}
+		*/
 
 		public byte nextByte() throws IOException {
 			return Byte.parseByte(next());

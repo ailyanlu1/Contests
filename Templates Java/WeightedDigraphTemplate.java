@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
@@ -42,9 +41,11 @@ public class WeightedDigraphTemplate {
 			return st.nextToken(delim);
 		}
 
-		/*public BigInteger nextBigInteger() throws IOException {
+		/*
+		public BigInteger nextBigInteger() throws IOException {
 			return new BigInteger(next());
-		}*/
+		}
+		*/
 
 		public byte nextByte() throws IOException {
 			return Byte.parseByte(next());
@@ -107,6 +108,86 @@ public class WeightedDigraphTemplate {
 			return in.readLine();
 		}
 	} // Reader class
+	
+	public class Bag<Item> implements Iterable<Item> {
+	    private Node<Item> first;    // beginning of bag
+	    private int n;               // number of elements in bag
+
+	    // helper linked list class
+	    private class Node<Item> {
+	        private Item item;
+	        private Node<Item> next;
+	    }
+
+	    /**
+	     * Initializes an empty bag.
+	     */
+	    public Bag() {
+	        first = null;
+	        n = 0;
+	    }
+
+	    /**
+	     * Returns true if this bag is empty.
+	     *
+	     * @return {@code true} if this bag is empty;
+	     *         {@code false} otherwise
+	     */
+	    public boolean isEmpty() {
+	        return first == null;
+	    }
+
+	    /**
+	     * Returns the number of items in this bag.
+	     *
+	     * @return the number of items in this bag
+	     */
+	    public int size() {
+	        return n;
+	    }
+
+	    /**
+	     * Adds the item to this bag.
+	     *
+	     * @param  item the item to add to this bag
+	     */
+	    public void add(Item item) {
+	        Node<Item> oldfirst = first;
+	        first = new Node<Item>();
+	        first.item = item;
+	        first.next = oldfirst;
+	        n++;
+	    }
+
+
+	    /**
+	     * Returns an iterator that iterates over the items in this bag in arbitrary order.
+	     *
+	     * @return an iterator that iterates over the items in this bag in arbitrary order
+	     */
+	    public Iterator<Item> iterator()  {
+	        return new ListIterator<Item>(first);  
+	    }
+
+	    // an iterator, doesn't implement remove() since it's optional
+	    private class ListIterator<Item> implements Iterator<Item> {
+	        private Node<Item> current;
+
+	        public ListIterator(Node<Item> first) {
+	            current = first;
+	        }
+
+	        public boolean hasNext()  { return current != null;                     }
+	        public void remove()      { throw new UnsupportedOperationException();  }
+
+	        public Item next() {
+	            if (!hasNext()) throw new NoSuchElementException();
+	            Item item = current.item;
+	            current = current.next; 
+	            return item;
+	        }
+	    }
+	}
 	
 	public class Queue<Item> implements Iterable<Item> {
 	    private Node<Item> first;    // beginning of queue
@@ -725,9 +806,8 @@ public class WeightedDigraphTemplate {
 
 	    private final int V;                // number of vertices in this digraph
 	    private int E;                      // number of edges in this digraph
-	    private HashSet<DirectedWeightedEdge>[] adj;    // adj[v] = adjacency list for vertex v
+	    private Bag<DirectedWeightedEdge>[] adj;    // adj[v] = adjacency list for vertex v
 	    private int[] indegree;             // indegree[v] = indegree of vertex v
-	    private HashSet<DirectedWeightedEdge> removed;
 	    
 	    /**
 	     * Initializes an empty edge-weighted digraph with {@code V} vertices and 0 edges.
@@ -740,10 +820,9 @@ public class WeightedDigraphTemplate {
 	        this.V = V;
 	        this.E = 0;
 	        this.indegree = new int[V];
-	        adj = (HashSet<DirectedWeightedEdge>[]) new HashSet[V];
-	        removed = new HashSet<DirectedWeightedEdge>();
+	        adj = (Bag<DirectedWeightedEdge>[]) new Bag[V];
 	        for (int v = 0; v < V; v++)
-	            adj[v] = new HashSet<DirectedWeightedEdge>();
+	            adj[v] = new Bag<DirectedWeightedEdge>();
 	    }
 
 	    /**
@@ -786,14 +865,8 @@ public class WeightedDigraphTemplate {
 	        return E;
 	    }
 
-	    // throw an IllegalArgumentException unless {@code 0 <= v < V}
-	    private void validateVertex(int v) {
-	        if (v < 0 || v >= V)
-	            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
-	    }
-
 	    /**
-	     * Adds the directed edge {@code e} to this edge-weighted digraph.
+	     * Adds the directed weighted edge {@code e} to this edge-weighted digraph.
 	     *
 	     * @param  e the edge
 	     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
@@ -802,58 +875,20 @@ public class WeightedDigraphTemplate {
 	    public void addEdge(DirectedWeightedEdge e) {
 	        int v = e.from();
 	        int w = e.to();
-	        validateVertex(v);
-	        validateVertex(w);
 	        adj[v].add(e);
 	        indegree[w]++;
 	        E++;
 	    }
-	    
-	    /**
-	     * Removes the directed edge from {@code e} from this edge-weighted digraph.
-	     *
-	     * @param  e the edge
-	     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
-	     *         and {@code V-1}
-	     */
-	    public void removeEdge(DirectedWeightedEdge e) {
-	    	int v = e.from();
-	        int w = e.to();
-	        validateVertex(v);
-	        validateVertex(w);
-	        removed.add(e);
-	        adj[v].remove(e);
-	        indegree[w]--;
-	        E--;
-	    }
-	    
-	    /**
-	     * Restores all the edges removed from this edge-weighted digraph.
-	     */
-	    public void restoreEdges() {
-	    	for (DirectedWeightedEdge e: removed) {
-	            addEdge(e);
-	    	}
-	    	removed.clear();
-	    }
-	    
-	    /**
-	     * Clears the edges removed from this edge-weighted digraph so they can no longer
-	     * be restored
-	     */
-	    public void clearRemoved() {
-	    	removed.clear();
-	    }
+
 
 	    /**
-	     * Returns the directed edges incident from vertex {@code v}.
+	     * Returns the directed weighted edges incident from vertex {@code v}.
 	     *
 	     * @param  v the vertex
-	     * @return the directed edges incident from vertex {@code v} as an Iterable
+	     * @return the directed weighted edges incident from vertex {@code v} as an Iterable
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public Iterable<DirectedWeightedEdge> adj(int v) {
-	        validateVertex(v);
 	        return adj[v];
 	    }
 
@@ -866,7 +901,6 @@ public class WeightedDigraphTemplate {
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public int outdegree(int v) {
-	        validateVertex(v);
 	        return adj[v].size();
 	    }
 
@@ -879,19 +913,18 @@ public class WeightedDigraphTemplate {
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public int indegree(int v) {
-	        validateVertex(v);
 	        return indegree[v];
 	    }
 
 	    /**
-	     * Returns all directed edges in this edge-weighted digraph.
+	     * Returns all directed weighted edges in this edge-weighted digraph.
 	     * To iterate over the edges in this edge-weighted digraph, use foreach notation:
-	     * {@code for (DirectedEdge e : G.edges())}.
+	     * {@code for (DirectedWeightedEdge e : G.edges())}.
 	     *
 	     * @return all edges in this edge-weighted digraph, as an iterable
 	     */
 	    public Iterable<DirectedWeightedEdge> edges() {
-	        HashSet<DirectedWeightedEdge> list = new HashSet<DirectedWeightedEdge>();
+	        Bag<DirectedWeightedEdge> list = new Bag<DirectedWeightedEdge>();
 	        for (int v = 0; v < V; v++) {
 	            for (DirectedWeightedEdge e : adj(v)) {
 	                list.add(e);
@@ -922,6 +955,17 @@ public class WeightedDigraphTemplate {
 	
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+	
+	/*
+	private static char[][] grid;
+	
+	private static boolean isPoint(int i, int j) {
+		return (i >= 0 && i < grid.length && j >= 0 && j < grid[0].length);
+	}
+	private static int toPoint(int i, int j) {
+		return i * grid[0].length + j;
+	}
+	*/
 	
 	public static void main(String[] args) throws IOException {
 		// TODO INSERT CODE HERE
