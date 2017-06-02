@@ -9,13 +9,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
-public class MNYC17P5 { // 40/100 TLE
+public class MNYC17P5 {
 	private static MNYC17P5 o = new MNYC17P5();
 	public class Reader {
 		private BufferedReader in;
@@ -53,50 +56,84 @@ public class MNYC17P5 { // 40/100 TLE
 		} // nextLine method
 	} // Reader class
 	
-	public static void main(String[] args) throws IOException {
-		Reader in = o.new Reader(System.in);
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
-    	int N = in.nextInt();
-    	int M = in.nextInt();
-    	int A = in.nextInt();
-    	int B = in.nextInt();
-    	int Q = in.nextInt();
-    	int[] k = new int[Q];
-    	VariableWeightedGraph G = o.new VariableWeightedGraph(N + 1);
-    	for (int i = 0; i < M; i++) {
-    		G.addEdge(o.new WeightedEdge(in.nextInt(), in.nextInt(), in.nextInt()));
-    	}
-    	YenKSP ksp = o.new YenKSP(G, A, B);
-    	int max = 0;
-    	for (int i = 0; i < Q; i++) {
-    		k[i] = in.nextInt();
-    		max = Integer.max(max, k[i]);
-    	}
-    	WeightedPath[] sp = new WeightedPath[max+1];
-    	sp[0] = ksp.KSP(0);
-    	int cur = 1;
-    	boolean escape = false;
-    	for (int i = 1; !escape; i++) {
-    		WeightedPath path = ksp.KSP(i);
-    		if (path.length() == 0) {
-    			if (cur < sp.length) sp[cur++] = path;
-    			else escape = true;
-    		} else if (path.length() == sp[cur - 1].length()) {
-    			if (path.shortest() < sp[cur - 1].shortest()) sp[cur - 1] = path;
-    		} else {
-    			if (cur < sp.length) sp[cur++] = path;
-    			else escape = true;
-    		}
-    	}
-    	for (int i = 0; i < k.length; i++) {
-    		WeightedPath path = sp[k[i] - 1];
-    		if (path.length() == 0) {
-    			System.out.println(-1);
-    		} else {
-    			System.out.println((int) path.length() + " " + (int) path.shortest());
-    		}
-    	}
-		out.close();
+	public class Bag<Item> implements Iterable<Item> {
+	    private Node<Item> first;    // beginning of bag
+	    private int n;               // number of elements in bag
+
+	    // helper linked list class
+	    private class Node<Item> {
+	        private Item item;
+	        private Node<Item> next;
+	    }
+
+	    /**
+	     * Initializes an empty bag.
+	     */
+	    public Bag() {
+	        first = null;
+	        n = 0;
+	    }
+
+	    /**
+	     * Returns true if this bag is empty.
+	     *
+	     * @return {@code true} if this bag is empty;
+	     *         {@code false} otherwise
+	     */
+	    public boolean isEmpty() {
+	        return first == null;
+	    }
+
+	    /**
+	     * Returns the number of items in this bag.
+	     *
+	     * @return the number of items in this bag
+	     */
+	    public int size() {
+	        return n;
+	    }
+
+	    /**
+	     * Adds the item to this bag.
+	     *
+	     * @param  item the item to add to this bag
+	     */
+	    public void add(Item item) {
+	        Node<Item> oldfirst = first;
+	        first = new Node<Item>();
+	        first.item = item;
+	        first.next = oldfirst;
+	        n++;
+	    }
+
+
+	    /**
+	     * Returns an iterator that iterates over the items in this bag in arbitrary order.
+	     *
+	     * @return an iterator that iterates over the items in this bag in arbitrary order
+	     */
+	    public Iterator<Item> iterator()  {
+	        return new ListIterator<Item>(first);  
+	    }
+
+	    // an iterator, doesn't implement remove() since it's optional
+	    private class ListIterator<Item> implements Iterator<Item> {
+	        private Node<Item> current;
+
+	        public ListIterator(Node<Item> first) {
+	            current = first;
+	        }
+
+	        public boolean hasNext()  { return current != null;                     }
+	        public void remove()      { throw new UnsupportedOperationException();  }
+
+	        public Item next() {
+	            if (!hasNext()) throw new NoSuchElementException();
+	            Item item = current.item;
+	            current = current.next; 
+	            return item;
+	        }
+	    }
 	}
 	
 	public class Stack<Item> implements Iterable<Item> {
@@ -809,7 +846,9 @@ public class MNYC17P5 { // 40/100 TLE
 	    
 	    @Override
 	    public int hashCode() {
-	    	return toString().hashCode();
+	    	int result = 31 * v + w;
+	    	result = 31 * result + (int) (new Double(weight).hashCode() ^ (new Double(weight).hashCode() >>> 32));
+	    	return result;
 	    }
 	    
 	    @Override
@@ -823,13 +862,12 @@ public class MNYC17P5 { // 40/100 TLE
 		}
 	}
 	
-	public class VariableWeightedGraph {
+	public class WeightedGraph {
 	    private final String NEWLINE = System.getProperty("line.separator");
 
 	    private final int V;
 	    private int E;
-	    private HashSet<WeightedEdge>[] adj;
-	    private HashSet<WeightedEdge> removed;
+	    private Bag<WeightedEdge>[] adj;
 	    
 	    /**
 	     * Initializes an empty edge-weighted graph with {@code V} vertices and 0 edges.
@@ -837,14 +875,13 @@ public class MNYC17P5 { // 40/100 TLE
 	     * @param  V the number of vertices
 	     * @throws IllegalArgumentException if {@code V < 0}
 	     */
-	    public VariableWeightedGraph(int V) {
+	    public WeightedGraph(int V) {
 	        if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
 	        this.V = V;
 	        this.E = 0;
-	        adj = (HashSet<WeightedEdge>[]) new HashSet[V];
-	        removed = new HashSet<WeightedEdge>();
+	        adj = (Bag<WeightedEdge>[]) new Bag[V];
 	        for (int v = 0; v < V; v++) {
-	            adj[v] = new HashSet<WeightedEdge>();
+	            adj[v] = new Bag<WeightedEdge>();
 	        }
 	    }
 
@@ -853,7 +890,7 @@ public class MNYC17P5 { // 40/100 TLE
 	     *
 	     * @param  G the edge-weighted graph to copy
 	     */
-	    public VariableWeightedGraph(VariableWeightedGraph G) {
+	    public WeightedGraph(WeightedGraph G) {
 	        this(G.V());
 	        this.E = G.E();
 	        for (int v = 0; v < G.V(); v++) {
@@ -888,7 +925,7 @@ public class MNYC17P5 { // 40/100 TLE
 	    }
 
 	    /**
-	     * Adds the undirected edge {@code e} to this edge-weighted graph.
+	     * Adds the undirected weighted edge {@code e} to this edge-weighted graph.
 	     *
 	     * @param  e the edge
 	     * @throws IllegalArgumentException unless both endpoints are between {@code 0} and {@code V-1}
@@ -900,38 +937,12 @@ public class MNYC17P5 { // 40/100 TLE
 	        adj[w].add(e);
 	        E++;
 	    }
-	    
-	    /**
-	     * Removes the edge from {@code e} from this edge-weighted graph.
-	     *
-	     * @param  e the edge
-	     * @throws IllegalArgumentException unless endpoints of edge are between {@code 0}
-	     *         and {@code V-1}
-	     */
-	    public void removeEdge(WeightedEdge e) {
-	    	int v = e.either();
-	        int w = e.other(v);
-	        removed.add(e);
-	        adj[v].remove(e);
-	        adj[w].remove(e);
-	        E--;
-	    }
-	    
-	    /**
-	     * Restores all the edges removed from this edge-weighted graph.
-	     */
-	    public void restoreEdges() {
-	    	for (WeightedEdge e: removed) {
-	            addEdge(e);
-	    	}
-	    	removed.clear();
-	    }
 
 	    /**
-	     * Returns the edges incident on vertex {@code v}.
+	     * Returns the weighted edges incident on vertex {@code v}.
 	     *
 	     * @param  v the vertex
-	     * @return the edges incident on vertex {@code v} as an Iterable
+	     * @return the weighted edges incident on vertex {@code v} as an Iterable
 	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
 	     */
 	    public Iterable<WeightedEdge> adj(int v) {
@@ -952,12 +963,12 @@ public class MNYC17P5 { // 40/100 TLE
 	    /**
 	     * Returns all edges in this edge-weighted graph.
 	     * To iterate over the edges in this edge-weighted graph, use foreach notation:
-	     * {@code for (Edge e : G.edges())}.
+	     * {@code for (WeightedEdge e : G.edges())}.
 	     *
 	     * @return all edges in this edge-weighted graph, as an iterable
 	     */
 	    public Iterable<WeightedEdge> edges() {
-	    	HashSet<WeightedEdge> list = new HashSet<WeightedEdge>();
+	        Bag<WeightedEdge> list = new Bag<WeightedEdge>();
 	        for (int v = 0; v < V; v++) {
 	            int selfLoops = 0;
 	            for (WeightedEdge e : adj(v)) {
@@ -992,176 +1003,6 @@ public class MNYC17P5 { // 40/100 TLE
 	            s.append(NEWLINE);
 	        }
 	        return s.toString();
-	    }
-	}
-	
-	public class DijkstraUndirectedVariableSP {
-	    private double[] distTo;          // distTo[v] = distance  of shortest s->v path
-	    private WeightedEdge[] edgeTo;            // edgeTo[v] = last edge on shortest s->v path
-	    private IndexMinPQ<Double> pq;    // priority queue of vertices
-
-	    /**
-	     * Computes a shortest-paths tree from the source vertex {@code s} to every
-	     * other vertex in the edge-weighted graph {@code G}.
-	     *
-	     * @param  G the edge-weighted digraph
-	     * @param  s the source vertex
-	     * @throws IllegalArgumentException if an edge weight is negative
-	     * @throws IllegalArgumentException unless {@code 0 <= s < V}
-	     */
-	    public DijkstraUndirectedVariableSP(VariableWeightedGraph G, int s) {
-	        for (WeightedEdge e : G.edges()) {
-	            if (e.weight() < 0)
-	                throw new IllegalArgumentException("edge " + e + " has negative weight");
-	        }
-
-	        distTo = new double[G.V()];
-	        edgeTo = new WeightedEdge[G.V()];
-
-	        for (int v = 0; v < G.V(); v++)
-	            distTo[v] = Double.POSITIVE_INFINITY;
-	        distTo[s] = 0.0;
-
-	        // relax vertices in order of distance from s
-	        pq = new IndexMinPQ<Double>(G.V());
-	        pq.insert(s, distTo[s]);
-	        while (!pq.isEmpty()) {
-	            int v = pq.delMin();
-	            for (WeightedEdge e : G.adj(v))
-	                relax(e, v);
-	        }
-
-	    }
-
-	    // relax edge e and update pq if changed
-	    private void relax(WeightedEdge e, int v) {
-	        int w = e.other(v);
-	        if (distTo[w] > distTo[v] + e.weight()) {
-	            distTo[w] = distTo[v] + e.weight();
-	            edgeTo[w] = e;
-	            if (pq.contains(w)) pq.decreaseKey(w, distTo[w]);
-	            else                pq.insert(w, distTo[w]);
-	        }
-	    }
-
-	    /**
-	     * Returns the length of a shortest path between the source vertex {@code s} and
-	     * vertex {@code v}.
-	     *
-	     * @param  v the destination vertex
-	     * @return the length of a shortest path between the source vertex {@code s} and
-	     *         the vertex {@code v}; {@code Double.POSITIVE_INFINITY} if no such path
-	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
-	     */
-	    public double distTo(int v) {
-	        return distTo[v];
-	    }
-
-	    /**
-	     * Returns true if there is a path between the source vertex {@code s} and
-	     * vertex {@code v}.
-	     *
-	     * @param  v the destination vertex
-	     * @return {@code true} if there is a path between the source vertex
-	     *         {@code s} to vertex {@code v}; {@code false} otherwise
-	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
-	     */
-	    public boolean hasPathTo(int v) {
-	        return distTo[v] < Double.POSITIVE_INFINITY;
-	    }
-
-	    /**
-	     * Returns a shortest path between the source vertex {@code s} and vertex {@code v}.
-	     *
-	     * @param  v the destination vertex
-	     * @return a shortest path between the source vertex {@code s} and vertex {@code v};
-	     *         {@code null} if no such path
-	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
-	     */
-	    public Iterable<WeightedEdge> pathTo(int v) {
-	        if (!hasPathTo(v)) return null;
-	        Stack<WeightedEdge> path = new Stack<WeightedEdge>();
-	        int x = v;
-	        for (WeightedEdge e = edgeTo[v]; e != null; e = edgeTo[x]) {
-	            path.push(e);
-	            x = e.other(x);
-	        }
-	        return path;
-	    }
-	    
-	    /**
-	     * Returns a shortest path from the source vertex {@code s} to vertex {@code v}.
-	     *
-	     * @param  v the destination vertex
-	     * @return a shortest path from the source vertex {@code s} to vertex {@code v}
-	     *         as an ArrayList of edges, and {@code null} if no such path
-	     * @throws IllegalArgumentException unless {@code 0 <= v < V}
-	     */
-	    public ArrayList<WeightedEdge> pathList(int v) {;
-	        if (!hasPathTo(v)) return null;
-	        Stack<WeightedEdge> path = new Stack<WeightedEdge>();
-	        int x = v;
-	        for (WeightedEdge e = edgeTo[v]; e != null; e = edgeTo[x]) {
-	            path.push(e);
-	            x = e.other(x);
-	        }
-	        ArrayList<WeightedEdge> list = new ArrayList<WeightedEdge>();
-	        while (!path.isEmpty()) {
-	        	list.add(path.pop());
-	        }
-	        return list;
-	    }
-
-
-	    // check optimality conditions:
-	    // (i) for all edges e = v-w:            distTo[w] <= distTo[v] + e.weight()
-	    // (ii) for all edge e = v-w on the SPT: distTo[w] == distTo[v] + e.weight()
-	    private boolean check(VariableWeightedGraph G, int s) {
-
-	        // check that edge weights are nonnegative
-	        for (WeightedEdge e : G.edges()) {
-	            if (e.weight() < 0) {
-	                System.err.println("negative edge weight detected");
-	                return false;
-	            }
-	        }
-
-	        // check that distTo[v] and edgeTo[v] are consistent
-	        if (distTo[s] != 0.0 || edgeTo[s] != null) {
-	            System.err.println("distTo[s] and edgeTo[s] inconsistent");
-	            return false;
-	        }
-	        for (int v = 0; v < G.V(); v++) {
-	            if (v == s) continue;
-	            if (edgeTo[v] == null && distTo[v] != Double.POSITIVE_INFINITY) {
-	                System.err.println("distTo[] and edgeTo[] inconsistent");
-	                return false;
-	            }
-	        }
-
-	        // check that all edges e = v-w satisfy distTo[w] <= distTo[v] + e.weight()
-	        for (int v = 0; v < G.V(); v++) {
-	            for (WeightedEdge e : G.adj(v)) {
-	                int w = e.other(v);
-	                if (distTo[v] + e.weight() < distTo[w]) {
-	                    System.err.println("edge " + e + " not relaxed");
-	                    return false;
-	                }
-	            }
-	        }
-
-	        // check that all edges e = v-w on SPT satisfy distTo[w] == distTo[v] + e.weight()
-	        for (int w = 0; w < G.V(); w++) {
-	            if (edgeTo[w] == null) continue;
-	            WeightedEdge e = edgeTo[w];
-	            if (w != e.either() && w != e.other(e.either())) return false;
-	            int v = e.other(w);
-	            if (distTo[v] + e.weight() != distTo[w]) {
-	                System.err.println("edge " + e + " on shortest path not tight");
-	                return false;
-	            }
-	        }
-	        return true;
 	    }
 	}
 	
@@ -1241,12 +1082,11 @@ public class MNYC17P5 { // 40/100 TLE
 		}
 
 		@Override
-		public int compareTo(WeightedPath o) {
-			if (length > o.length) {
-				return 1;
-			} else if (length < o.length) {
-				return -1;
-			}
+		public int compareTo(WeightedPath p) {
+			if (length > p.length) return 1;
+			else if (length < p.length) return -1;
+			if (shortest > p.shortest) return 1;
+			else if (shortest < p.shortest) return -1;
 			return 0;
 		}
 
@@ -1269,74 +1109,176 @@ public class MNYC17P5 { // 40/100 TLE
 	public class YenKSP {
 		private final int source;
 		private final int sink;
-		private VariableWeightedGraph G;
+		private WeightedGraph G;
 		private final int V;
 		private ArrayList<WeightedPath> paths;
-		MinPQ<WeightedPath> pq;
+		private MinPQ<WeightedPath> pq;
+		private HashSet<WeightedEdge> removedEdges = new HashSet<WeightedEdge>();
+		HashSet<Integer> removedVerticies = new HashSet<Integer>();
+		private double[] distTo;
+		private WeightedEdge[] edgeTo;
+		private IndexMinPQ<Double> ipq;
 		
-		public YenKSP(VariableWeightedGraph G, int source, int sink) {
+		public YenKSP(WeightedGraph G, int source, int sink) {
 			this.G = G;
 			this.V = G.V();
+			validateVertex(source);
+			validateVertex(sink);
 			this.source = source;
 			this.sink = sink;
 			this.paths = new ArrayList<WeightedPath>();
 			pq = new MinPQ<WeightedPath>();
-			paths.add(new WeightedPath(new DijkstraUndirectedVariableSP(G, source).pathList(sink)));
+			paths.add(dijkstraSP(source, sink));
+			noDup.put((int) paths.get(0).length(), (int) paths.get(0).shortest());
 		}
 		
-		private void find(int k) {
-			if (paths.get(k - 1).size() == 0) {
+		private boolean find(int k) {
+			if (paths.get(k - 1) == null || paths.get(k - 1).size() == 0) {
 				paths.add(new WeightedPath());
-				return;
+				return true;
 			}
 			int spurNode = source;
 			for (int i = 0; i < paths.get(k - 1).size(); i++) {
 				WeightedPath rootPath = new WeightedPath();
+				removedEdges.clear();
+				removedVerticies.clear();
 				for (int j = 0; j < i; j++) {
 					rootPath.add(paths.get(k - 1).get(j));
 				}
 				for (WeightedPath p: paths) {
+					if (p.size() < rootPath.size()) continue;
 					WeightedPath pPath = new WeightedPath();
 					for (int j = 0; j < i && j < p.size(); j++) {
 						pPath.add(p.get(j));
 					}
 					if (rootPath.equals(pPath) || rootPath.size() == 0) {
-						G.removeEdge(p.get(i));
+						removedEdges.add(p.get(i));
 					}
 				}
 				int last = source;
+				removedVerticies.add(source);
 				for (WeightedEdge e: rootPath) {
-					G.removeEdge(e);
-					HashSet<WeightedEdge> remove = new HashSet<WeightedEdge>();
-					for (WeightedEdge f: G.adj(last)) {
-						remove.add(f);
-					}
-					for (WeightedEdge f: remove) {
-						G.removeEdge(f);
-					}
+					removedVerticies.add(e.other(last));
 					last = e.other(last);
 				}
-				DijkstraUndirectedVariableSP sp = new DijkstraUndirectedVariableSP(G, spurNode);
-				WeightedPath spurPath = new WeightedPath(sp.pathList(sink));
+				WeightedPath spurPath = dijkstraSP(spurNode, sink);
 				WeightedPath totalPath = new WeightedPath();
 				totalPath.addAll(rootPath);
 				totalPath.addAll(spurPath);
-				if (totalPath.length() > 0 && sp.hasPathTo(sink)) pq.insert(totalPath);
-				G.restoreEdges();
+				if (totalPath.length() > 0 && spurPath != null) pq.insert(totalPath);
 				spurNode = paths.get(k - 1).get(i).other(spurNode);
 			}
-			if (pq.isEmpty()) paths.add(new WeightedPath());
-			else paths.add(pq.delMin());
+			if (pq.isEmpty()) return true;
+			WeightedPath next = pq.delMin();
+			paths.add(next);
+			if (!noDup.containsKey((int) next.length())) {
+				noDup.put((int) next.length(), (int) next.shortest());
+			}
+			noDup.put((int) next.length(), Math.min((int) next.shortest, noDup.get((int) next.length())));
+			return false;
 		}
 		
 		public WeightedPath KSP(int K) {
 			if (K >= paths.size()) {
-				for (int k = paths.size(); k <= K; k++) {
-					find(k);
+				for (int k = paths.size(); noDup.size() < K; k++) {
+					if (find(k)) return null;
 				}
 			}
 			return paths.get(K);
 		}
+		
+		private WeightedPath dijkstraSP(int s, int t) {
+			distTo = new double[G.V()];
+	        edgeTo = new WeightedEdge[G.V()];
+
+	        validateVertex(s);
+
+	        for (int v = 0; v < G.V(); v++)
+	            distTo[v] = Double.POSITIVE_INFINITY;
+	        distTo[s] = 0.0;
+
+	        // relax vertices in order of distance from s
+	        ipq = new IndexMinPQ<Double>(G.V());
+	        ipq.insert(s, distTo[s]);
+	        while (!ipq.isEmpty()) {
+	            int v = ipq.delMin();
+	            for (WeightedEdge e : G.adj(v)) {
+	            	if (removedEdges.contains(e) || removedVerticies.contains(e.other(v))) continue;
+	            	relax(e, v);
+	            }
+	        }
+	        if(edgeTo[t] == null) return null;
+	        Stack<WeightedEdge> path = new Stack<WeightedEdge>();
+	        int x = t;
+	        for (WeightedEdge e = edgeTo[t]; e != null; e = edgeTo[x]) {
+	            path.push(e);
+	            x = e.other(x);
+	        }
+	        WeightedPath ret = new WeightedPath();
+	        while (!path.isEmpty()) {
+	        	ret.add(path.pop());
+	        }
+	        return ret;
+		}
+		
+	    private void relax(WeightedEdge e, int v) {
+	        int w = e.other(v);
+	        if (distTo[w] > distTo[v] + e.weight()) {
+	            distTo[w] = distTo[v] + e.weight();
+	            edgeTo[w] = e;
+	            if (ipq.contains(w)) ipq.decreaseKey(w, distTo[w]);
+	            else                ipq.insert(w, distTo[w]);
+	        }
+	    }
+		
+		
+		
+	    // throw an IllegalArgumentException unless {@code 0 <= v < V}
+	    private void validateVertex(int v) {
+	        if (v < 0 || v >= V)
+	            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
+	    }
 	}
 	
+	private static TreeMap<Integer, Integer> noDup = new TreeMap<Integer, Integer>();
+	
+	public static void main(String[] args) throws IOException {
+		Reader in = o.new Reader(System.in);
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+    	int N = in.nextInt();
+    	int M = in.nextInt();
+    	int A = in.nextInt() - 1;
+    	int B = in.nextInt() - 1;
+    	int Q = in.nextInt();
+    	int[] k = new int[Q];
+    	WeightedGraph G = o.new WeightedGraph(N);
+    	for (int i = 0; i < M; i++) {
+    		G.addEdge(o.new WeightedEdge(in.nextInt() - 1, in.nextInt() - 1, in.nextInt()));
+    	}
+    	YenKSP ksp = o.new YenKSP(G, A, B);
+    	int max = 0;
+    	for (int i = 0; i < Q; i++) {
+    		k[i] = in.nextInt() - 1;
+    		max = Integer.max(max, k[i]);
+    	}
+    	int[] length = new int[max + 1];
+    	int[] shortest = new int[max + 1];
+    	ksp.KSP(max);
+    	int ind = 0;
+    	Arrays.fill(length, -1);
+    	Arrays.fill(shortest, -1);
+    	for (Map.Entry<Integer, Integer> p: noDup.entrySet()) {
+    		length[ind] = p.getKey();
+    		shortest[ind] = p.getValue();
+    		ind++;
+    	}
+    	for (int i = 0; i < k.length; i++) {
+    		if (length[k[i]] == -1) {
+    			System.out.println(-1);
+    		} else {
+    			System.out.println(length[k[i]] + " " + shortest[k[i]]);
+    		}
+    	}
+		out.close();
+	}
 }
