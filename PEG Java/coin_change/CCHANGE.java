@@ -1,4 +1,4 @@
-package cchange;
+package coin_change;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
