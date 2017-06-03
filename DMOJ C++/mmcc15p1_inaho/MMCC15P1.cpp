@@ -68,6 +68,8 @@ int GetSize(int U) {
 	return uf[find(U)].size;
 }
 
+///// GRADER /////
+
 #define ensured(x, y) ensure(x, y)
 
 static inline void ensure(int cond, const char *msg) {
