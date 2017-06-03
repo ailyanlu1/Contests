@@ -11,37 +11,38 @@
 using namespace std;
 
 struct Node {
-	int parent, rank;
+	int parent, size;
 };
 
 vector<Node> uf;
 stack<pair<int, int>> order;
 
 int find(int p) {
-	while (p != uf[p].parent) {
-		uf[p].parent = uf[uf[p].parent].parent;
-		p = uf[p].parent;
+	if (uf[p].parent != p) {
+		return find(uf[p].parent);
 	}
-	return p;
+	return uf[p].parent;
 }
 
 void join(int rootP, int rootQ) {
 	if (rootP == rootQ) return;
-	if (uf[rootP].rank < uf[rootQ].rank) uf[rootP].parent = rootQ;
-	else if (uf[rootP].rank > uf[rootQ].rank) uf[rootQ].parent = rootP;
-	else {
+	if (uf[rootP].size < uf[rootQ].size) {
+		uf[rootQ].size += uf[rootP].size;
+		uf[rootP].parent = rootQ;
+	} else {
+		uf[rootP].size += uf[rootQ].size;
 		uf[rootQ].parent = rootP;
-		uf[rootP].rank++;
 	}
 }
 
 void disjoin(int rootP, int rootQ) {
 	if (rootP == rootQ) return;
-	if (uf[rootP].rank < uf[rootQ].rank) uf[rootP].parent = rootP;
-	else if (uf[rootP].rank > uf[rootQ].rank) uf[rootQ].parent = rootQ;
-	else {
-		uf[rootQ].parent = rootP;
-		uf[rootP].rank--;
+	if (uf[rootP].size < uf[rootQ].size) {
+		uf[rootQ].size -= uf[rootP].size;
+		uf[rootP].parent = rootP;
+	} else {
+		uf[rootP].size -= uf[rootQ].size;
+		uf[rootQ].parent = rootQ;
 	}
 }
 
@@ -64,7 +65,7 @@ void RemoveLastEdge() {
 }
 
 int GetSize(int U) {
-	return uf[find(U)].rank;
+	return uf[find(U)].size;
 }
 
 #define ensured(x, y) ensure(x, y)
