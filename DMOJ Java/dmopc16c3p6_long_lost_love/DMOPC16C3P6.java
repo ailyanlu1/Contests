@@ -127,10 +127,10 @@ public class DMOPC16C3P6 {
 		rev[0] = build(1, size);
 	}
 	
-	private static Node build(int l, int r) {
-		if (l == r) return new Node(arr[l]);
-		int m = (l + r) >> 1;
-		return new Node(build(l , m), build(m + 1, r));
+	private static Node build(int cL, int cR) {
+		if (cL == cR) return new Node(arr[cL]);
+		int m = (cL + cR) >> 1;
+		return new Node(build(cL , m), build(m + 1, cR));
 	}
 	
 	public static void update(int ind, int val) {
@@ -139,26 +139,26 @@ public class DMOPC16C3P6 {
 		revInd++;
 	}
 	
-	private static Node update(Node cur, int l, int r, int ind) {
-		if (l <= ind && ind <= r) {
-			if (l == r) return new Node(arr[l]);
-			int m = (l + r) >> 1;
-			return new Node(update(cur.left, l, m, ind), update(cur.right, m + 1, r, ind));
+	private static Node update(Node cur, int cL, int cR, int ind) {
+		if (cL <= ind && ind <= cR) {
+			if (cL == cR) return new Node(arr[cL]);
+			int m = (cL + cR) >> 1;
+			return new Node(update(cur.left, cL, m, ind), update(cur.right, m + 1, cR, ind));
 		}
 		return cur;
 	}
 	
-	public static int query(int type, int ql, int qr) {
-		if (type == 1) return query(rev[revInd], 1, arr.length - 1, ql, qr).pre;
-		return query(rev[revInd], 1, arr.length - 1, ql, qr).suf;
+	public static int query(int type, int l, int r) {
+		if (type == 1) return query(rev[revInd], 1, arr.length - 1, l, r).pre;
+		return query(rev[revInd], 1, arr.length - 1, l, r).suf;
 	}
 	
-	private static Query query(Node cur, int l, int r, int ql, int qr) {
-		if (l > qr || r < ql) return null;
-		if (l >= ql && r <= qr) return new Query(cur.pre, cur.suf, cur.sum);
-		int m = (l + r) >> 1;
-		Query left = query(cur.left, l, m, ql, qr);
-		Query right = query(cur.right, m + 1, r, ql, qr);
+	private static Query query(Node cur, int cL, int cR, int l, int r) {
+		if (cL > r || cR < l) return null;
+		if (cL >= l && cR <= r) return new Query(cur.pre, cur.suf, cur.sum);
+		int m = (cL + cR) >> 1;
+		Query left = query(cur.left, cL, m, l, r);
+		Query right = query(cur.right, m + 1, cR, l, r);
 		if (left == null) return right;
 		if (right == null) return left;
 		return new Query(left, right);
