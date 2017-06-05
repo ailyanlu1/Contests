@@ -114,6 +114,7 @@ public class MultiTestCaseTemplate {
 	public static void main(String[] args) throws IOException {
 		for (int i = 1; i <= NUM_OF_TEST_CASES; i++) {
 			run(i);
+			out.flush();
 		}
 		out.close();
 	}
