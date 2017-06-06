@@ -51,12 +51,12 @@ public class DMPG17S1 {
 	
 	public static void main(String[] args) throws IOException {
 		int N = in.nextInt();
-		long[] arr = new long[N];
+		int[] arr = new int[N];
 		for (int i = 0; i < N; i++) {
-			arr[i] = in.nextLong();
+			arr[i] = in.nextInt();
 		}
 		Arrays.sort(arr);
-		long min = Long.MAX_VALUE;
+		int min = Integer.MAX_VALUE;
 		for (int i = 1; i < N; i++) {
 			min = Math.min(Math.abs(arr[i] - arr[i - 1]), min);
 		}
