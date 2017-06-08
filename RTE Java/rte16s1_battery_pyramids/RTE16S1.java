@@ -122,12 +122,13 @@ public class RTE16S1 {
 	public static void run(int testCaseNum) throws IOException {
 		int N = in.nextInt();
 		int K = in.nextInt();
+		N -= K;
 		int i = 0;
 		int cur = 0;
 		int sum = 0;
 		while (true) {
 			cur += ++i;
-			if (sum + cur > N - K) break;
+			if (sum + cur > N) break;
 			else sum += cur;
 		}
 		out.println(sum);
