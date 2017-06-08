@@ -743,9 +743,6 @@ public class WeightedDigraphTemplate {
 	     * @throws IllegalArgumentException if {@code weight} is {@code NaN}
 	     */
 	    public DirectedWeightedEdge(int v, int w, double weight) {
-	        if (v < 0) throw new IllegalArgumentException("Vertex names must be nonnegative integers");
-	        if (w < 0) throw new IllegalArgumentException("Vertex names must be nonnegative integers");
-	        if (Double.isNaN(weight)) throw new IllegalArgumentException("Weight is NaN");
 	        this.v = v;
 	        this.w = w;
 	        this.weight = weight;
@@ -793,9 +790,7 @@ public class WeightedDigraphTemplate {
 	    @Override
 		public boolean equals(Object o) {
 	    	if (o == this) return true;
-	        if (!(o instanceof DirectedWeightedEdge)) {
-	            return false;
-	        }
+	        if (!(o instanceof DirectedWeightedEdge)) return false;
 	        DirectedWeightedEdge e = (DirectedWeightedEdge) o;
 			return e.from() == v && e.to() == w && e.weight() == weight;
 		}

@@ -18,17 +18,24 @@
 #define ri(x) scanf("%d", &x)
 #define rll(x) scanf("%lld", &x)
 #define rllu(x) scanf('%llu', &x)
+#define rf(x) scanf("%f", &x)
 #define rd(x) scanf("%lf", &x)
 #define rc(x) scanf("%c", &x)
 #define pri(x) printf("%d", x)
 #define prll(x) printf("%lld", x)
 #define prllu(x) printf("%llu", x)
 #define prd(x) printf("%f", x)
-#define prs(x) printf(x)
+#define prs(x) printf("%s", x)
 #define prsi(x, s) printf("%d" s, x)
 #define prsll(x, s) printf("%lld" s, x)
 #define prsllu(x, s) printf("%llu" s, x)
 #define prsd(x, s) printf("%f" s, x)
+#define prss(x, s) printf("%s" s, x)
+#define prlni(x) prsi(x, "\n")
+#define prlnll(x) prsll(x, "\n")
+#define prlnllu(x) prsllu(x, "\n")
+#define prlnd(x) prsd(x, "\n")
+#define prlns(x) prss(x, "\n")
 #define For(i, a, n) for (int i = a; i < n; i++)
 #define Fore(i, a, n) for (int i = a; i <= n; i++)
 #define For0(i, n) For(i, 0, n)
@@ -97,8 +104,10 @@ float angle(pii x, pii y, pii z) {
 }
 
 void prepare(pff* v, int L) {
-	for (int i = 0; i < N; i++)
-		scanf("%d %d", &c[i].x, &c[i].y);
+	for (int i = 0; i < N; i++) {
+		ri(c[i].x);
+		ri(c[i].y);
+	}
 	for (int i = 0; i <= L; i++) {
 		v[i].x = angle(c[i % N], c[(i + 1) % N], c[(i + 2) % N]);
 		v[i].y = rat(c[i % N], c[(i + 1) % N], c[(i + 2) % N]);
@@ -106,15 +115,15 @@ void prepare(pff* v, int L) {
 }
 
 void run() {
-	scanf("%d", &N);
+	ri(N);
 	prepare(b, B = N);
 	prepare(a, A = 2 * N);
 	faliure();
-	printf("%d\n", KMP());
+	prlni(KMP());
 }
 
 int main() {
-	scanf("%d", &t);
+	ri(t);
 	for (int i = 0; i < t; i++) {
 		run();
 	}

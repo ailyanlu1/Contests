@@ -648,35 +648,6 @@ public class MaxMatchTemplate {
 	        return cycle; 
 	    }
 
-	    private boolean check(Graph G) {
-	        // graph is bipartite
-	        if (isBipartite) {
-	            for (int v = 0; v < G.V(); v++) {
-	                for (int w : G.adj(v)) {
-	                    if (color[v] == color[w]) {
-	                        System.err.printf("edge %d-%d with %d and %d in same side of bipartition\n", v, w, v, w);
-	                        return false;
-	                    }
-	                }
-	            }
-	        }
-
-	        // graph has an odd-length cycle
-	        else {
-	            // verify cycle
-	            int first = -1, last = -1;
-	            for (int v : oddCycle()) {
-	                if (first == -1) first = v;
-	                last = v;
-	            }
-	            if (first != last) {
-	                System.err.printf("cycle begins with %d and ends with %d\n", first, last);
-	                return false;
-	            }
-	        }
-	        return true;
-	    }
-
 	    // throw an IllegalArgumentException unless {@code 0 <= v < V}
 	    private void validateVertex(int v) {
 	        int V = marked.length;

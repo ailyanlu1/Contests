@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Stack;
@@ -317,7 +316,7 @@ public class RTE16S3 {
 
 	    private final int v;
 	    private final int w;
-	    private final long weight;
+	    private final double weight;
 
 	    /**
 	     * Initializes an edge between vertices {@code v} and {@code w} of
@@ -330,10 +329,7 @@ public class RTE16S3 {
 	     *         is a negative integer
 	     * @throws IllegalArgumentException if {@code weight} is {@code NaN}
 	     */
-	    public WeightedEdge(int v, int w, long weight) {
-	        if (v < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
-	        if (w < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
-	        if (Double.isNaN(weight)) throw new IllegalArgumentException("Weight is NaN");
+	    public WeightedEdge(int v, int w, double weight) {
 	        this.v = v;
 	        this.w = w;
 	        this.weight = weight;
@@ -344,7 +340,7 @@ public class RTE16S3 {
 	     *
 	     * @return the weight of this edge
 	     */
-	    public long weight() {
+	    public double weight() {
 	        return weight;
 	    }
 
@@ -383,7 +379,7 @@ public class RTE16S3 {
 	     */
 	    @Override
 	    public int compareTo(WeightedEdge that) {
-	        return Long.compare(this.weight, that.weight);
+	        return Double.compare(this.weight, that.weight);
 	    }
 
 	    /**
@@ -394,8 +390,25 @@ public class RTE16S3 {
 	    public String toString() {
 	        return String.format("%d-%d %.5f", v, w, weight);
 	    }
+	    
+	    @Override
+	    public int hashCode() {
+	    	int result = 31 * v + w;
+	    	result = 31 * result + (int) (new Double(weight).hashCode() ^ (new Double(weight).hashCode() >>> 32));
+	    	return result;
+	    }
+	    
+	    @Override
+		public boolean equals(Object o) {
+	    	if (o == this) return true;
+	        if (!(o instanceof WeightedEdge)) {
+	            return false;
+	        }
+	        WeightedEdge e = (WeightedEdge) o;
+			return e.v == v && e.w == w && e.weight() == weight;
+		}
 	}
-	
+
 	public class WeightedGraph {
 	    private final String NEWLINE = System.getProperty("line.separator");
 
@@ -540,6 +553,131 @@ public class RTE16S3 {
 	    }
 	}
 	
+	public class WeightedLCA {
+		private int[] depth, parent, chain, size, head;
+		private int chainNum;
+		
+		public WeightedLCA(WeightedGraph G) {
+			depth = new int[G.V()];
+			parent = new int[G.V()];
+			chain = new int[G.V()];
+			size = new int[G.V()];
+			head = new int[G.V()];
+			for (int i = 0; i < G.V(); i++) {
+				head[i] = -1;
+			}
+			dfs(G, 0, 0, -1);
+			hld(G, 0, -1);
+		}
+		
+		private void dfs(WeightedGraph G, int v, int d, int prev) {
+			depth[v] = d;
+			parent[v] = prev;
+			size[v] = 1;
+			for (WeightedEdge e: G.adj(v)) {
+				int w = e.other(v);
+				if (w != prev) {
+					dfs(G, w, d + 1, v);
+					size[v] += size[w];
+				}
+			}
+		}
+		
+		private void hld(WeightedGraph G, int v, int prev) {
+			if (head[chainNum] == -1) head[chainNum] = v;
+			chain[v] = chainNum;
+			int maxIndex = -1;
+			for (WeightedEdge e: G.adj(v)) {
+				int w = e.other(v);
+				if (w != prev && (maxIndex == -1 || size[maxIndex] < size[w])) maxIndex = w;
+			}
+			if (maxIndex != -1) hld(G, maxIndex, v);
+			for (WeightedEdge e: G.adj(v)) {
+				int w = e.other(v);
+				if (w != prev && w != maxIndex) {
+					chainNum++;
+					hld(G, w, v);
+				}
+			}
+		}
+		
+		/**
+		 * Returns the lowest common ancestor of vertex {@code v} and {@code w}.
+		 * 
+		 * @param v the first vertex
+		 * @param w the first vertex
+		 * @return the lowest common ancestor of vertex {@code v} and {@code w}
+		 */
+		public int lca(int v, int w) {
+			validateVertex(v);
+			validateVertex(w);
+			while (chain[v] != chain[w]) {
+				if (depth[head[chain[v]]] < depth[head[chain[w]]]) w = parent[head[chain[w]]];
+				else v = parent[head[chain[v]]];
+			}
+			if (depth[v] < depth[w]) return v;
+			return w;
+		}
+		
+	    private void validateVertex(int v) {
+	        int V = size.length;
+	        if (v < 0 || v >= V)
+	            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
+	    }
+	}
+	
+	public class UndirectedAcyclicAllPairsSP {
+		private double distTo[]; // stores the distance from an arbitrary root
+		private WeightedLCA LCA;
+		
+		public UndirectedAcyclicAllPairsSP(WeightedGraph G) {
+			distTo = new double[G.V()];
+			LCA = new WeightedLCA(G); // will handle the illegal argument exception for acyclic graph
+			bfs(G, 0);
+		}
+		
+		private void bfs(WeightedGraph G, int s) {
+	        Queue<Integer> q = new Queue<Integer>();
+	        boolean[] marked = new boolean[G.V()];
+	        distTo[s] = 0;
+	        marked[s] = true;
+	        q.enqueue(s);
+
+	        while (!q.isEmpty()) {
+	            int v = q.dequeue();
+	            for (WeightedEdge e: G.adj(v)) {
+	            	int w = e.other(v);
+	                if (!marked[w]) {
+	                    distTo[w] = distTo[v] + e.weight();
+	                    marked[w] = true;
+	                    q.enqueue(w);
+	                }
+	            }
+	        }
+	    }
+		
+		/**
+	     * Returns the length of a shortest path from vertex {@code s} to vertex {@code t}.
+	     * @param  s the source vertex
+	     * @param  t the destination vertex
+	     * @return the length of a shortest path from vertex {@code s} to vertex {@code t};
+	     * @throws IllegalArgumentException unless {@code 0 <= s < V}
+	     * @throws IllegalArgumentException unless {@code 0 <= t < V}
+	     */
+		public double dist(int s, int t) {
+			validateVertex(s);
+			validateVertex(t);
+			return distTo[s] + distTo[t] - 2 * distTo[LCA.lca(s, t)];
+		}
+		
+		private void validateVertex(int v) {
+	        int V = distTo.length;
+	        if (v < 0 || v >= V)
+	            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
+	    }
+	}
+
+	
 	private static Reader in = o.new Reader(System.in);
 	private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
 	
@@ -553,106 +691,18 @@ public class RTE16S3 {
 		return i * grid[0].length + j;
 	}
 	*/
-	
-	private static WeightedGraph G;
-	private static long[] distTo;
-	private static boolean[] marked;
-	static ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>();
-	private static int[] depth, parent, chain, size, head;
-	private static int chainNum;
-	
+		
 	public static void main(String[] args) throws IOException {
 		int N = in.nextInt();
-		G = o.new WeightedGraph(N);
-		distTo = new long[N];
-		depth = new int[N];
-		parent = new int[N];
-		chain = new int[N];
-		size = new int[N];
-		head = new int[N];
-		for (int i = 0; i < N; i++) {
-			adj.add(new ArrayList<Integer>());
-			head[i] = -1;
-		}
+		WeightedGraph G = o.new WeightedGraph(N);
 		for (int i = 0; i < N - 1; i++) {
-			int a = in.nextInt();
-			int b = in.nextInt();
-			int w = in.nextInt();
-			G.addEdge(o.new WeightedEdge(a, b, w));
-			adj.get(a).add(b);
-			adj.get(b).add(a);
+			G.addEdge(o.new WeightedEdge(in.nextInt(), in.nextInt(), in.nextInt()));
 		}
-		bfs(0);
-		dfs(0, 0, -1);
-		hld(0, -1);
+		UndirectedAcyclicAllPairsSP sp = o.new UndirectedAcyclicAllPairsSP(G);
 		int Q = in.nextInt();
 		for (int i = 0; i < Q; i++) {
-			int u = in.nextInt();
-			int v = in.nextInt();
-			long dist = distTo[u] + distTo[v] - 2 * distTo[lca(u, v)];
-			out.println(dist);
+			out.println((long) sp.dist(in.nextInt(), in.nextInt()));
 		}
 		out.close();
 	}
-	
-	public static int lca(int i, int j) {
-		while (chain[i] != chain[j]) {
-			if (depth[head[chain[i]]] < depth[head[chain[j]]]) j = parent[head[chain[j]]];
-			else i = parent[head[chain[i]]];
-		}
-		if (depth[i] < depth[j]) return i;
-		return j;
-	}
-
-	private static void hld(int i, int prev) {
-		if (head[chainNum] == -1) {
-			head[chainNum] = i;
-		}
-		chain[i] = chainNum;
-		int maxIndex = -1;
-		for (int j : adj.get(i))
-			if (j != prev && (maxIndex == -1 || size[maxIndex] < size[j])) maxIndex = j;
-		if (maxIndex != -1) hld(maxIndex, i);
-		for (int j : adj.get(i))
-			if (j != prev && j != maxIndex) {
-				chainNum++;
-				hld(j, i);
-			}
-
-	}
-
-	private static void dfs(int i, int d, int prev) {
-		depth[i] = d;
-		parent[i] = prev;
-		size[i] = 1;
-		for (int j : adj.get(i)) {
-			if (j != prev) {
-				dfs(j, d + 1, i);
-				size[i] += size[j];
-			}
-		}
-	}
-	
-	private static void bfs(int s) {
-        Queue<Integer> q = o.new Queue<Integer>();
-        for (int v = 0; v < G.V(); v++) {
-            distTo[v] = Integer.MAX_VALUE;
-        }
-        marked = new boolean[G.V()];
-        distTo[s] = 0;
-        marked[s] = true;
-        q.enqueue(s);
-
-        while (!q.isEmpty()) {
-            int v = q.dequeue();
-            for (WeightedEdge e: G.adj(v)) {
-            	int w = e.other(v);
-                if (!marked[w]) {
-                    distTo[w] = distTo[v] + e.weight();
-                    marked[w] = true;
-                    q.enqueue(w);
-                }
-            }
-        }
-    }
 }
