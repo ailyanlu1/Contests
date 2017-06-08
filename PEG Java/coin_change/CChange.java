@@ -10,8 +10,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class CCHANGE {
-	private static CCHANGE o = new CCHANGE();
+public class CChange {
+	private static CChange o = new CChange();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
