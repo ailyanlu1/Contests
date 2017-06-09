@@ -390,7 +390,6 @@ public class CCO14P3 {
 		N = in.nextInt();
 		W = in.nextInt();
 		M = in.nextInt();
-		boolean[] root = new boolean[N + 1];
 		vis = new boolean[N + 1];
 		dp = new long[N + 1][W + 1][2];
 		G = o.new WeightedDigraph(N + 1);
@@ -398,11 +397,10 @@ public class CCO14P3 {
 			char op = in.nextChar();
 			int a = in.nextInt();
 			int b = in.nextInt();
-			root[b] = true;
 			G.addEdge(o.new DirectedWeightedEdge(a, b, op));
 		}
 		for (int i = 1; i <= N; i++) {
-			if (!root[i]) {
+			if (G.indegree(i) == 0) {
 				G.addEdge(o.new DirectedWeightedEdge(0, i, ' '));
 			}
 		}
