@@ -50,9 +50,10 @@ public class Factorial2 {
 		} // nextLine method
 	} // Reader class
 	
+	private static Reader in = o.new Reader(System.in);
+	private static PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+	
 	public static void main(String[] args) throws IOException {
-		Reader in = o.new Reader(System.in);
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
 		int N = in.nextInt();
 		for (int i = 0; i < N; i++) {
 			String str = in.nextLine();
