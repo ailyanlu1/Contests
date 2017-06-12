@@ -132,7 +132,7 @@ public class CCC16S3 {
 	    }
 	    
 	    public void removeAllEdges(int v) {
-	    	for (int w:adj[v]) {
+	    	for (int w: adj[v]) {
 	    		adj[w].remove(v);
 	    	}
 	    	adj[v] = new HashSet<Integer>();
