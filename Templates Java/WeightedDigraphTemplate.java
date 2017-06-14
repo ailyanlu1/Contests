@@ -960,6 +960,12 @@ public class WeightedDigraphTemplate {
 	private static int toPoint(int i, int j) {
 		return i * grid[0].length + j;
 	}
+	private static int getI(int point) {
+		return point / grid[0].length;
+	}
+	private static int getJ(int point) {
+		return point % grid[0].length;
+	}
 	*/
 	
 	public static void main(String[] args) throws IOException {
