@@ -1,4 +1,4 @@
-package john_cena;
+package april_fools_cccjqrp2_john_cena;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,8 +11,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class JohnCena {
-	private static JohnCena o = new JohnCena();
+public class CCCJQRP2 {
+	private static CCCJQRP2 o = new CCCJQRP2();
 	public class Reader {
 		private BufferedReader in;
 		private StringTokenizer st;
