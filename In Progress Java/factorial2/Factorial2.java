@@ -10,8 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class Factorial2 {
-	
+public class Factorial2 { // 5/100 IR
 	private static Factorial2 o = new Factorial2();
 	
 	public class Reader {

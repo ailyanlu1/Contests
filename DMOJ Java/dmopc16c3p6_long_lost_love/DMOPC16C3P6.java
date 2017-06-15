@@ -11,7 +11,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
-public class DMOPC16C3P6 {
+public class DMOPC16C3P6 { // 60/100 TLE
 	private static DMOPC16C3P6 o = new DMOPC16C3P6();
 	public class Reader {
 		private BufferedReader in;

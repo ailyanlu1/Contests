@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-public class MNYC17P5 {
+public class MNYC17P5 { // 60/100 TLE
 	private static MNYC17P5 o = new MNYC17P5();
 	public class Reader {
 		private BufferedReader in;
