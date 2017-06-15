@@ -113,6 +113,9 @@ int main() {
 		ri(X[i]);
 		ri(Y[i]);
 	}
-	printf("%d", findSwapPairs(N, S, M, X, Y, P, Q));
+	printf("%d\n", findSwapPairs(N, S, M, X, Y, P, Q));
+	for (int i = 0; i < M; i++) {
+		printf("%d %d\n", P[i], Q[i]);
+	}
 	return 0;
 }
