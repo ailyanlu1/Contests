@@ -42,9 +42,9 @@ typedef unordered_map<int, ll> umill;
 llu A, B, C;
 
 int main() {
-	rllu(A);
-	rllu(B);
-	rllu(C);
-	printf("%llu\n", (A + B + C) % 42069900169420ull);
-	return 0;
+    rllu(A);
+    rllu(B);
+    rllu(C);
+    printf("%llu\n", (A + B + C) % 42069900169420ull);
+    return 0;
 }

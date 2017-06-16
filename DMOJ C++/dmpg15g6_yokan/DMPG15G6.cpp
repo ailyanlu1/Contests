@@ -40,54 +40,54 @@ vector<int> freq[MAXN + 1];
 bool satisfied;
 
 int lowerBound(int i, int key) {
-	int lo = 0;
-	int hi = freq[i].size();
-	while (lo < hi) {
-		int mid = lo + (hi - lo) / 2;
-		if (key <= freq[i][mid]) hi = mid;
-		else lo = mid + 1;
-	}
-	return lo;
+    int lo = 0;
+    int hi = freq[i].size();
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (key <= freq[i][mid]) hi = mid;
+        else lo = mid + 1;
+    }
+    return lo;
 }
 
 int upperBound(int i, int key) {
-	int lo = 0;
-	int hi = freq[i].size();
-	while (lo < hi) {
-		int mid = lo + (hi - lo) / 2;
-		if (key >= freq[i][mid]) lo = mid + 1;
-		else hi = mid;
-	}
-	return lo;
+    int lo = 0;
+    int hi = freq[i].size();
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (key >= freq[i][mid]) lo = mid + 1;
+        else hi = mid;
+    }
+    return lo;
 }
 
 int main() {
-	srand((unsigned) time(0));
-	scanf("%d%d", &N, &M);
-	For1(i, N) {
-		ri(flavour[i]);
-		freq[flavour[i]].pb(i);
-	}
-	ri(Q);
-	unordered_set<int> hs;
-	For0(q, Q) {
-		satisfied = false;
-		scanf("%d%d", &l, &r);
-		len = r - l + 1;
-		target = (double) len / 3;
-		hs.clear();
-		For0(i, REP) {
-			ind = flavour[randi(l, r)];
-			cnt = upperBound(ind, r) - lowerBound(ind, l);
-			if (cnt >= 2 * target || hs.size() > 1) {
-				satisfied = true;
-				break;
-			} else if (cnt >= target) {
-				hs.insert(ind);
-			}
-		}
-		if (satisfied) prs("YES\n");
-		else prs("NO\n");
-	}
-	return 0;
+    srand((unsigned) time(0));
+    scanf("%d%d", &N, &M);
+    For1(i, N) {
+        ri(flavour[i]);
+        freq[flavour[i]].pb(i);
+    }
+    ri(Q);
+    unordered_set<int> hs;
+    For0(q, Q) {
+        satisfied = false;
+        scanf("%d%d", &l, &r);
+        len = r - l + 1;
+        target = (double) len / 3;
+        hs.clear();
+        For0(i, REP) {
+            ind = flavour[randi(l, r)];
+            cnt = upperBound(ind, r) - lowerBound(ind, l);
+            if (cnt >= 2 * target || hs.size() > 1) {
+                satisfied = true;
+                break;
+            } else if (cnt >= target) {
+                hs.insert(ind);
+            }
+        }
+        if (satisfied) prs("YES\n");
+        else prs("NO\n");
+    }
+    return 0;
 }

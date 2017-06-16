@@ -45,31 +45,31 @@ int N, a[MAXN], b[MAXN], perm[3];
 ll dp[MAXN + 1];
 
 int main() {
-	ri(N);
-	for (int i = 0; i < N; i++) {
-		ri(a[i]);
-		ri(b[i]);
-	}
-	sort(a, a + N);
-	sort(b, b + N);
-	dp[N] = 0;
-	for (int i = N - 1; i >= 0; i--) {
-		dp[i] = LL_INF;
-		for (int k = 1; k <= 3 && i + k <= N; k++) {
-			for (int j = 0; j < k; j++) {
-				perm[j] = j;
-			}
-			do {
-				ll cost = 0;
-				for (int j = 0; j < k; j++) {
-					ll add = abs(a[i + j] - b[i + perm[j]]);
-					if (add) cost += add;
-					else cost = LL_INF;
-				}
-				dp[i] = min(dp[i], cost + dp[i + k]);
-			} while (next_permutation(perm, perm + k));
-		}
-	}
-	printf("%lld", dp[0]);
-	return 0;
+    ri(N);
+    for (int i = 0; i < N; i++) {
+        ri(a[i]);
+        ri(b[i]);
+    }
+    sort(a, a + N);
+    sort(b, b + N);
+    dp[N] = 0;
+    for (int i = N - 1; i >= 0; i--) {
+        dp[i] = LL_INF;
+        for (int k = 1; k <= 3 && i + k <= N; k++) {
+            for (int j = 0; j < k; j++) {
+                perm[j] = j;
+            }
+            do {
+                ll cost = 0;
+                for (int j = 0; j < k; j++) {
+                    ll add = abs(a[i + j] - b[i + perm[j]]);
+                    if (add) cost += add;
+                    else cost = LL_INF;
+                }
+                dp[i] = min(dp[i], cost + dp[i + k]);
+            } while (next_permutation(perm, perm + k));
+        }
+    }
+    printf("%lld", dp[0]);
+    return 0;
 }

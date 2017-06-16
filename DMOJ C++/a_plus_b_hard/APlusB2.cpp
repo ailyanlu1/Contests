@@ -545,41 +545,41 @@ bool aNeg, bNeg;
 UnsignedBigInt A, B;
 
 int main() {
-	cin.sync_with_stdio(0);
-	cin.tie(0);
-	cin >> N;
-	for (int i = 0; i < N; i++) {
-		aNeg = false;
-		bNeg = false;
-		cin >> a >> b;
-		if (a[0] == '-') {
-			aNeg = true;
-			a = a.substr(1, a.length() - 1);
-		}
-		if (b[0] == '-') {
-			bNeg = true;
-			b = b.substr(1, b.length() - 1);
-		}
-		A = UnsignedBigInt(a);
-		B = UnsignedBigInt(b);
-		if (!aNeg && !bNeg) {
-			ans = (A + B).makeStr();
-		} else if (aNeg && bNeg) {
-			ans = "-" + (A + B).makeStr();
-		} else if (!aNeg && bNeg) {
-			if (A >= B) {
-				ans = (A - B).makeStr();
-			} else {
-				ans = "-" + (B - A).makeStr();
-			}
-		} else {
-			if (B >= A) {
-				ans = (B - A).makeStr();
-			} else {
-				ans = "-" + (A - B).makeStr();
-			}
-		}
-		cout << ans << "\n";
-	}
-	return 0;
+    cin.sync_with_stdio(0);
+    cin.tie(0);
+    cin >> N;
+    for (int i = 0; i < N; i++) {
+        aNeg = false;
+        bNeg = false;
+        cin >> a >> b;
+        if (a[0] == '-') {
+            aNeg = true;
+            a = a.substr(1, a.length() - 1);
+        }
+        if (b[0] == '-') {
+            bNeg = true;
+            b = b.substr(1, b.length() - 1);
+        }
+        A = UnsignedBigInt(a);
+        B = UnsignedBigInt(b);
+        if (!aNeg && !bNeg) {
+            ans = (A + B).makeStr();
+        } else if (aNeg && bNeg) {
+            ans = "-" + (A + B).makeStr();
+        } else if (!aNeg && bNeg) {
+            if (A >= B) {
+                ans = (A - B).makeStr();
+            } else {
+                ans = "-" + (B - A).makeStr();
+            }
+        } else {
+            if (B >= A) {
+                ans = (B - A).makeStr();
+            } else {
+                ans = "-" + (A - B).makeStr();
+            }
+        }
+        cout << ans << "\n";
+    }
+    return 0;
 }

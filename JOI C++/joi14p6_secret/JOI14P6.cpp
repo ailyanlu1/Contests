@@ -54,33 +54,33 @@ int range[MAXN + 1][MAXN + 1];
 int Secret(int X, int Y);
 
 void solve(int l, int r) {
-	if (l + 1 >= r) return;
-	int mid = l + (r - l) / 2;
-	Reve(i, mid - 1, l) {
-		if (range[i][mid] == -1) range[i][mid] = Secret(range[i][i + 1], range[i + 1][mid]);
-	}
-	Fore(i, mid + 1, r) {
-		if (range[mid][i] == -1) range[mid][i] = Secret(range[mid][i - 1], range[i - 1][i]);
-	}
-	solve(l, mid);
-	solve(mid, r);
+    if (l + 1 >= r) return;
+    int mid = l + (r - l) / 2;
+    Reve(i, mid - 1, l) {
+        if (range[i][mid] == -1) range[i][mid] = Secret(range[i][i + 1], range[i + 1][mid]);
+    }
+    Fore(i, mid + 1, r) {
+        if (range[mid][i] == -1) range[mid][i] = Secret(range[mid][i - 1], range[i - 1][i]);
+    }
+    solve(l, mid);
+    solve(mid, r);
 }
 
 void Init(int N, int A[]) {
-	Fill(range, -1);
-	For0(i, N) {
-		range[i][i + 1] = A[i];
-	}
-	solve(0, N);
+    Fill(range, -1);
+    For0(i, N) {
+        range[i][i + 1] = A[i];
+    }
+    solve(0, N);
 }
 
 int Query(int L, int R) {
-	Fore(i, L + 1, R) {
-		if (range[L][i] != -1 && range[i][R + 1] != -1) {
-			return Secret(range[L][i], range[i][R + 1]);
-		}
-	}
-	return range[L][R + 1];
+    Fore(i, L + 1, R) {
+        if (range[L][i] != -1 && range[i][R + 1] != -1) {
+            return Secret(range[L][i], range[i][R + 1]);
+        }
+    }
+    return range[L][R + 1];
 }
 
 ///// GRADER /////

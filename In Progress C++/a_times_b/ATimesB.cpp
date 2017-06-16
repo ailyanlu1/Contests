@@ -456,12 +456,12 @@ struct BigInt {
 string a, b;
 
 int main() {
-	cin.sync_with_stdio(0);
-	cin.tie(0);
-	cin >> a >> b;
-	BigInt A = BigInt(a);
-	BigInt B = BigInt(b);
-	BigInt C = A.mul_simple(B);
-	cout << C << "\n";
-	return 0;
+    cin.sync_with_stdio(0);
+    cin.tie(0);
+    cin >> a >> b;
+    BigInt A = BigInt(a);
+    BigInt B = BigInt(b);
+    BigInt C = A.mul_simple(B);
+    cout << C << "\n";
+    return 0;
 }

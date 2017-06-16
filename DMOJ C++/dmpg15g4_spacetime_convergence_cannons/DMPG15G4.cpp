@@ -65,14 +65,14 @@ pii C[MAXN];
 
 struct FenwickTree {
 private:
-	int* array;
-	int size;
+    int* array;
+    int size;
 
 public:
-	FenwickTree(int size) {
-		this->size = size;
-		array = new int[size + 1];
-	}
+    FenwickTree(int size) {
+        this->size = size;
+        array = new int[size + 1];
+    }
 
     /**
      * Range Sum query from 1 to ind
@@ -83,13 +83,13 @@ public:
      * @param  ind index
      * @return sum
      */
-	int rsq(int ind) {
-		int sum = 0;
-		for (int x = ind; x > 0; x -= (x & -x)) {
-			sum += array[x];
-		}
-		return sum;
-	}
+    int rsq(int ind) {
+        int sum = 0;
+        for (int x = ind; x > 0; x -= (x & -x)) {
+            sum += array[x];
+        }
+        return sum;
+    }
 
     /**
      * Range Sum Query from a to b.
@@ -102,9 +102,9 @@ public:
      * @param  b right index
      * @return sum
      */
-	int rsq(int a, int b) {
-		return rsq(b) - rsq(a - 1);
-	}
+    int rsq(int a, int b) {
+        return rsq(b) - rsq(a - 1);
+    }
 
     /**
      * Update the array at ind and all the affected regions above ind.
@@ -115,40 +115,40 @@ public:
      * @param  ind   index
      * @param  value value
      */
-	void update(int ind, int value) {
-		for (int x = ind; x <= size; x += (x & -x)) {
-			array[x] += value;
-		}
-	}
+    void update(int ind, int value) {
+        for (int x = ind; x <= size; x += (x & -x)) {
+            array[x] += value;
+        }
+    }
 
-	int getSize() {
-		return size;
-	}
+    int getSize() {
+        return size;
+    }
 } ft(2 * MAXN);
 
 int main() {
-	ri(N);
-	ri(X);
-	For0(i, N) {
-		int x, y;
-		ri(x);
-		ri(y);
-		double theta1 = atan2(y, x);
-		double theta2 = atan2(y, X - x);
-		cannons[i] = mp(theta1, theta2);
-		theta[l(i)] = theta1;
-		theta[r(i)] = theta2;
-	}
-	sort(theta, theta + 2 * N);
-	For0(i, N) {
-		C[i] = mp(2 * N - (lower_bound(theta, theta + 2 * N, cannons[i].x) - theta), 2 * N - (lower_bound(theta, theta + 2 * N, cannons[i].y) - theta));
-	}
-	sort(C, C + N);
-	For0(i, N) {
-		ll q = ft.rsq(C[i].y);
-		ans += q * q;
-		ft.update(C[i].y, 1);
-	}
-	prll(ans);
-	return 0;
+    ri(N);
+    ri(X);
+    For0(i, N) {
+        int x, y;
+        ri(x);
+        ri(y);
+        double theta1 = atan2(y, x);
+        double theta2 = atan2(y, X - x);
+        cannons[i] = mp(theta1, theta2);
+        theta[l(i)] = theta1;
+        theta[r(i)] = theta2;
+    }
+    sort(theta, theta + 2 * N);
+    For0(i, N) {
+        C[i] = mp(2 * N - (lower_bound(theta, theta + 2 * N, cannons[i].x) - theta), 2 * N - (lower_bound(theta, theta + 2 * N, cannons[i].y) - theta));
+    }
+    sort(C, C + N);
+    For0(i, N) {
+        ll q = ft.rsq(C[i].y);
+        ans += q * q;
+        ft.update(C[i].y, 1);
+    }
+    prll(ans);
+    return 0;
 }

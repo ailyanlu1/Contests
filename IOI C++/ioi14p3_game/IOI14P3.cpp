@@ -16,9 +16,9 @@ int N;
 
 struct WeightedUF {
 private:
-	int* parent;
-	int* size;
-	int count;
+    int* parent;
+    int* size;
+    int count;
 
 public:
     /**
@@ -85,7 +85,7 @@ public:
      * @return the size of the component containing p
      */
     int getSize(int p) {
-    	return size[find(p)];
+        return size[find(p)];
     }
 
     /**
@@ -105,16 +105,16 @@ public:
             parent[rootP] = rootQ;
             size[rootQ] += size[rootP];
             for (int i = 0; i < N; i++) {
-            	if (i == rootQ) continue;
-				cc[rootQ][i] += cc[rootP][i];
-			}
+                if (i == rootQ) continue;
+                cc[rootQ][i] += cc[rootP][i];
+            }
         }
         else {
             parent[rootQ] = rootP;
             size[rootP] += size[rootQ];
             for (int i = 0; i < N; i++) {
-            	if (i == rootP) continue;
-            	cc[rootP][i] += cc[rootQ][i];
+                if (i == rootP) continue;
+                cc[rootP][i] += cc[rootQ][i];
             }
         }
         count--;
@@ -148,47 +148,47 @@ public:
 WeightedUF* uf;
 
 void initialize(int n) {
-	N = n;
-	uf = new WeightedUF(n);
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			if (i != j) cc[i][j] = 1;
-		}
-	}
+    N = n;
+    uf = new WeightedUF(n);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i != j) cc[i][j] = 1;
+        }
+    }
 }
 
 int hasEdge(int u, int v) {
-	int rootU = uf->find(u);
-	int rootV = uf->find(v);
-	if (rootU == rootV) {
-		cc[rootU][rootV]--;
-		cc[rootV][rootU]--;
-		return 1;
-	}
-	int countU = 0;
-	int countV = 0;
-	for (int i = 0; i < N; i++) {
-		countU += cc[rootU][i];
-		countV += cc[rootV][i];
-	}
-	cc[rootU][rootV]--;
-	cc[rootV][rootU]--;
-	if (countU == 1 || countV == 1 || (uf->getSize(rootU) == 1 && uf->getSize(rootV) == 1)) {
-		uf->join(u, v);
-		return 1;
-	}
-	return 0;
+    int rootU = uf->find(u);
+    int rootV = uf->find(v);
+    if (rootU == rootV) {
+        cc[rootU][rootV]--;
+        cc[rootV][rootU]--;
+        return 1;
+    }
+    int countU = 0;
+    int countV = 0;
+    for (int i = 0; i < N; i++) {
+        countU += cc[rootU][i];
+        countV += cc[rootV][i];
+    }
+    cc[rootU][rootV]--;
+    cc[rootV][rootU]--;
+    if (countU == 1 || countV == 1 || (uf->getSize(rootU) == 1 && uf->getSize(rootV) == 1)) {
+        uf->join(u, v);
+        return 1;
+    }
+    return 0;
 }
 
 int main() {
-	int n;
-	scanf("%d", &n);
-	initialize(n);
-	int r = n * (n - 1) / 2;
-	for (int i = 0; i < r; i++) {
-		int u, v;
-		scanf("%d%d", &u, &v);
-		printf("%d\n", hasEdge(u, v));
-	}
-	return 0;
+    int n;
+    scanf("%d", &n);
+    initialize(n);
+    int r = n * (n - 1) / 2;
+    for (int i = 0; i < r; i++) {
+        int u, v;
+        scanf("%d%d", &u, &v);
+        printf("%d\n", hasEdge(u, v));
+    }
+    return 0;
 }

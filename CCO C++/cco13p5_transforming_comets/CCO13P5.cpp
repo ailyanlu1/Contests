@@ -69,62 +69,62 @@ pff a[1000005], b[500005];
 pii c[500005];
 
 void faliure() {
-	T[0] = -1;
-	for (int i = 0, j = -1; i < B; i++, j++, T[i] = j) {
-		while (j >= 0 && b[i] != b[j]) {
-			j = T[j];
-		}
-	}
+    T[0] = -1;
+    for (int i = 0, j = -1; i < B; i++, j++, T[i] = j) {
+        while (j >= 0 && b[i] != b[j]) {
+            j = T[j];
+        }
+    }
 }
 
 int KMP() {
-	for (int i = 0, j = 0; i < A; i++, j++) {
-		while (j >= 0 && a[i] != b[j]) {
-			j = T[j];
-		}
-		if (j == B - 1) {
-			return i - j + 1;
-		}
-	}
-	return 0;
+    for (int i = 0, j = 0; i < A; i++, j++) {
+        while (j >= 0 && a[i] != b[j]) {
+            j = T[j];
+        }
+        if (j == B - 1) {
+            return i - j + 1;
+        }
+    }
+    return 0;
 }
 
 float rat(pii x, pii y, pii z) {
-	pii i = mp(x.x - y.x, x.y - y.y);
-	pii j = mp(z.x - y.x, z.y - y.y);
-	float ret = sqrt(i.x * i.x + i.y * i.y) / sqrt(j.x * j.x + j.y * j.y);
-	return ret;
+    pii i = mp(x.x - y.x, x.y - y.y);
+    pii j = mp(z.x - y.x, z.y - y.y);
+    float ret = sqrt(i.x * i.x + i.y * i.y) / sqrt(j.x * j.x + j.y * j.y);
+    return ret;
 }
 
 float angle(pii x, pii y, pii z) {
-	pii i = mp(x.x - y.x, x.y - y.y);
-	pii j = mp(z.x - y.x, z.y - y.y);
-	float ret = atan2(i.x * j.y - i.y * j.x, i.x * j.x + i.y * j.y);
-	return ret;
+    pii i = mp(x.x - y.x, x.y - y.y);
+    pii j = mp(z.x - y.x, z.y - y.y);
+    float ret = atan2(i.x * j.y - i.y * j.x, i.x * j.x + i.y * j.y);
+    return ret;
 }
 
 void prepare(pff* v, int L) {
-	for (int i = 0; i < N; i++) {
-		ri(c[i].x);
-		ri(c[i].y);
-	}
-	for (int i = 0; i <= L; i++) {
-		v[i].x = angle(c[i % N], c[(i + 1) % N], c[(i + 2) % N]);
-		v[i].y = rat(c[i % N], c[(i + 1) % N], c[(i + 2) % N]);
-	}
+    for (int i = 0; i < N; i++) {
+        ri(c[i].x);
+        ri(c[i].y);
+    }
+    for (int i = 0; i <= L; i++) {
+        v[i].x = angle(c[i % N], c[(i + 1) % N], c[(i + 2) % N]);
+        v[i].y = rat(c[i % N], c[(i + 1) % N], c[(i + 2) % N]);
+    }
 }
 
 void run() {
-	ri(N);
-	prepare(b, B = N);
-	prepare(a, A = 2 * N);
-	faliure();
-	prlni(KMP());
+    ri(N);
+    prepare(b, B = N);
+    prepare(a, A = 2 * N);
+    faliure();
+    prlni(KMP());
 }
 
 int main() {
-	ri(t);
-	for (int i = 0; i < t; i++) {
-		run();
-	}
+    ri(t);
+    for (int i = 0; i < t; i++) {
+        run();
+    }
 }

@@ -59,78 +59,78 @@ typedef unordered_map<int, ll> umill;
 int N;
 
 struct Node {
-	int up, down;
+    int up, down;
 } seg[MAXN * 3];
 
 void propogate(int parent, int child) {
-	seg[child].down = max(min(seg[child].down, seg[parent].down), seg[parent].up);
-	seg[child].up = min(max(seg[child].up, seg[parent].up), seg[parent].down);
+    seg[child].down = max(min(seg[child].down, seg[parent].down), seg[parent].up);
+    seg[child].up = min(max(seg[child].up, seg[parent].up), seg[parent].down);
 }
 
 void update(int cur, int cL, int cR, int l, int r, int op, int h) {
-	if (cL > r || cR < l) return;
-	if (cL >= l && cR <= r)  {
-		if (op == 1) {
-			seg[cur].down = max(seg[cur].down, h);
-			seg[cur].up = max(seg[cur].up, h);
-		} else {
-			seg[cur].down = min(seg[cur].down, h);
-			seg[cur].up = min(seg[cur].up, h);
-		}
-		return;
-	}
-	propogate(cur, l(cur));
-	propogate(cur, r(cur));
-	seg[cur].down = INT_INF;
-	seg[cur].up = 0;
-	int m = m(cL, cR);
-	update(l(cur), cL, m, l, r, op, h);
-	update(r(cur), m + 1, cR, l, r, op, h);
+    if (cL > r || cR < l) return;
+    if (cL >= l && cR <= r)  {
+        if (op == 1) {
+            seg[cur].down = max(seg[cur].down, h);
+            seg[cur].up = max(seg[cur].up, h);
+        } else {
+            seg[cur].down = min(seg[cur].down, h);
+            seg[cur].up = min(seg[cur].up, h);
+        }
+        return;
+    }
+    propogate(cur, l(cur));
+    propogate(cur, r(cur));
+    seg[cur].down = INT_INF;
+    seg[cur].up = 0;
+    int m = m(cL, cR);
+    update(l(cur), cL, m, l, r, op, h);
+    update(r(cur), m + 1, cR, l, r, op, h);
 }
 
 void update(int l, int r, int op, int h) {
-	update(1, 1, N, l, r, op, h);
+    update(1, 1, N, l, r, op, h);
 }
 
 int query(int cur, int cL, int cR, int l, int r) {
-	if (cL > r || cR < l) return INT_INF;
-	if (cL >= l && cR <= r) return min(seg[cur].down, seg[cur].up);
-	propogate(cur, l(cur));
-	propogate(cur, r(cur));
-	int m = m(cL, cR);
-	return min(query(l(cur), cL, m, l, r), query(r(cur), m + 1, cR, l, r));
+    if (cL > r || cR < l) return INT_INF;
+    if (cL >= l && cR <= r) return min(seg[cur].down, seg[cur].up);
+    propogate(cur, l(cur));
+    propogate(cur, r(cur));
+    int m = m(cL, cR);
+    return min(query(l(cur), cL, m, l, r), query(r(cur), m + 1, cR, l, r));
 }
 
 int query(int l, int r) {
-	return query(1, 1, N, l, r);
+    return query(1, 1, N, l, r);
 }
 
 void buildWall(int n, int k, int op[], int left[], int right[], int height[], int finalHeight[]) {
-	N = n;
-	For0(i, k) {
-		update(left[i] + 1, right[i] + 1, op[i], height[i]);
-	}
+    N = n;
+    For0(i, k) {
+        update(left[i] + 1, right[i] + 1, op[i], height[i]);
+    }
 
-	For1(i, n) {
-		finalHeight[i - 1] = query(i, i);
-	}
+    For1(i, n) {
+        finalHeight[i - 1] = query(i, i);
+    }
 }
 
 int main() {
-	int n, k;
-	ri(n);
-	ri(k);
-	int op[k], left[k], right[k], height[k];
-	For0(i, k) {
-		ri(op[i]);
-		ri(left[i]);
-		ri(right[i]);
-		ri(height[i]);
-	}
-	int finalHeight[n];
-	buildWall(n, k, op, left, right, height, finalHeight);
-	For0(i, n) {
-		prsi(finalHeight[i], "\n")
-	}
-	return 0;
+    int n, k;
+    ri(n);
+    ri(k);
+    int op[k], left[k], right[k], height[k];
+    For0(i, k) {
+        ri(op[i]);
+        ri(left[i]);
+        ri(right[i]);
+        ri(height[i]);
+    }
+    int finalHeight[n];
+    buildWall(n, k, op, left, right, height, finalHeight);
+    For0(i, n) {
+        prsi(finalHeight[i], "\n")
+    }
+    return 0;
 }

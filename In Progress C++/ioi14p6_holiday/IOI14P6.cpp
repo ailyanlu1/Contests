@@ -58,45 +58,45 @@ typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 
 ll solve(int start, int d, int t, int attraction[]) {
-	priority_queue< int, vector<int>, greater<int> > pq;
-	int i = start;
-	ll ret = 0;
-	ll curAns = 0;
-	while ((start <= d && i <= d) || (start > d && i >= d)) {
-		t--;
-		curAns += attraction[i];
-		pq.push(attraction[i]);
-		if (t >= 0) ret = max(ret, curAns);
-		while (t < 2 && !pq.empty()) {
-			t++;
-			curAns -= pq.top();
-			pq.pop();
-		}
-		t--;
-		if (start <= d) i++;
-		else i--;
-	}
-	return ret;
+    priority_queue< int, vector<int>, greater<int> > pq;
+    int i = start;
+    ll ret = 0;
+    ll curAns = 0;
+    while ((start <= d && i <= d) || (start > d && i >= d)) {
+        t--;
+        curAns += attraction[i];
+        pq.push(attraction[i]);
+        if (t >= 0) ret = max(ret, curAns);
+        while (t < 2 && !pq.empty()) {
+            t++;
+            curAns -= pq.top();
+            pq.pop();
+        }
+        t--;
+        if (start <= d) i++;
+        else i--;
+    }
+    return ret;
 }
 
 ll findMaxAttraction(int n, int start, int d, int attraction[]) {
-	ll ans = 0;
-	For0(i, n) {
-		ans = max(ans, solve(i, 0, d - abs(i - start), attraction));
-		ans = max(ans, solve(i, n - 1, d - abs(i - start), attraction));
-	}
-	return ans;
+    ll ans = 0;
+    For0(i, n) {
+        ans = max(ans, solve(i, 0, d - abs(i - start), attraction));
+        ans = max(ans, solve(i, n - 1, d - abs(i - start), attraction));
+    }
+    return ans;
 }
 
 int main() {
-	int n, start, d;
-	ri(n);
-	ri(start);
-	ri(d);
-	int attraction[n];
-	For0(i, n) {
-		ri(attraction[i]);
-	}
-	prll(findMaxAttraction(n, start, d, attraction));
-	return 0;
+    int n, start, d;
+    ri(n);
+    ri(start);
+    ri(d);
+    int attraction[n];
+    For0(i, n) {
+        ri(attraction[i]);
+    }
+    prll(findMaxAttraction(n, start, d, attraction));
+    return 0;
 }

@@ -63,14 +63,14 @@ typedef unordered_map<int, ll> umill;
 
 struct FenwickTree {
 private:
-	ll* array;
-	int size;
+    ll* array;
+    int size;
 
 public:
-	FenwickTree(int size) {
-		this->size = size;
-		array = new ll[size + 1];
-	}
+    FenwickTree(int size) {
+        this->size = size;
+        array = new ll[size + 1];
+    }
 
     /**
      * Range Sum query from 1 to ind
@@ -81,13 +81,13 @@ public:
      * @param  ind index
      * @return sum
      */
-	ll rsq(int ind) {
-		ll sum = 0LL;
-		for (int x = ind; x > 0; x -= (x & -x)) {
-			sum += array[x];
-		}
-		return sum;
-	}
+    ll rsq(int ind) {
+        ll sum = 0LL;
+        for (int x = ind; x > 0; x -= (x & -x)) {
+            sum += array[x];
+        }
+        return sum;
+    }
 
     /**
      * Range Sum Query from a to b.
@@ -100,9 +100,9 @@ public:
      * @param  b right index
      * @return sum
      */
-	ll rsq(int a, int b) {
-		return rsq(b) - rsq(a - 1);
-	}
+    ll rsq(int a, int b) {
+        return rsq(b) - rsq(a - 1);
+    }
 
     /**
      * Update the array at ind and all the affected regions above ind.
@@ -113,15 +113,15 @@ public:
      * @param  ind   index
      * @param  value value
      */
-	void update(int ind, ll value) {
-		for (int x = ind; x <= size; x += (x & -x)) {
-			array[x] += value;
-		}
-	}
+    void update(int ind, ll value) {
+        for (int x = ind; x <= size; x += (x & -x)) {
+            array[x] += value;
+        }
+    }
 
-	int getSize() {
-		return size;
-	}
+    int getSize() {
+        return size;
+    }
 };
 
 int N, K;
@@ -129,52 +129,52 @@ FenwickTree leftFT(SIZE), rightFT(SIZE), leftSumFT(SIZE), rightSumFT(SIZE);
 int arr[MAXN];
 
 int main() {
-	ri(N);
-	ri(K);
-	For0(i, N) {
-		ri(arr[i]);
-		arr[i] += MAXH;
-	}
-	ll minTime = LLONG_MAX;
-	int adj = 0;
-	For0(i, N) {
-		adj++;
-		if (i % 2 == 0) {
-			leftFT.update(arr[i - i / 2] - i / 2 - 1, 1);
-			rightFT.update(arr[i - i / 2] + i / 2, -1);
-			leftSumFT.update(arr[i - i / 2] - i / 2 - 1, arr[i - i / 2] - i / 2 - 1);
-			rightSumFT.update(arr[i - i / 2] + i / 2, -(arr[i - i / 2] + i / 2));
-		}
-		rightFT.update(arr[i] + adj - 1, 1);
-		rightSumFT.update(arr[i] + adj - 1, arr[i] + adj - 1);
-		if (i < K - 1 || i % 2 == 1) continue;
-		int lo = 1;
-		int hi = SIZE;
-		int median = INT_INF;
-		ll left, right;
-		while (lo <= hi) {
-			int mid = m(lo, hi);
-			left = leftFT.rsq(mid) + rightFT.rsq(mid + adj);
-			right = i - left + 1;
-			if (left == right) {
-				median = mid;
-				break;
-			} else if (left < right) {
-				lo = mid + 1;
-			} else {
-				hi = mid - 1;
-			}
-		}
-		if (median == INT_INF) median = lo;
-		left = leftFT.rsq(median) + rightFT.rsq(median + adj);
-		right = i - left + 1;
-		ll smallRight = rightFT.rsq(median + adj);
-		ll largeRight = rightFT.rsq(SIZE) - smallRight;
-		ll smallSum = leftSumFT.rsq(median) + rightSumFT.rsq(median + adj) - adj * smallRight;
-		ll largeSum = leftSumFT.rsq(SIZE) + rightSumFT.rsq(SIZE) - adj * (smallRight + largeRight) - smallSum;
-		minTime = min(minTime, (left - right) * median - smallSum + largeSum);
-	}
-	if (minTime == LLONG_MAX) prll(-1LL);
-	else prll(minTime);
-	return 0;
+    ri(N);
+    ri(K);
+    For0(i, N) {
+        ri(arr[i]);
+        arr[i] += MAXH;
+    }
+    ll minTime = LLONG_MAX;
+    int adj = 0;
+    For0(i, N) {
+        adj++;
+        if (i % 2 == 0) {
+            leftFT.update(arr[i - i / 2] - i / 2 - 1, 1);
+            rightFT.update(arr[i - i / 2] + i / 2, -1);
+            leftSumFT.update(arr[i - i / 2] - i / 2 - 1, arr[i - i / 2] - i / 2 - 1);
+            rightSumFT.update(arr[i - i / 2] + i / 2, -(arr[i - i / 2] + i / 2));
+        }
+        rightFT.update(arr[i] + adj - 1, 1);
+        rightSumFT.update(arr[i] + adj - 1, arr[i] + adj - 1);
+        if (i < K - 1 || i % 2 == 1) continue;
+        int lo = 1;
+        int hi = SIZE;
+        int median = INT_INF;
+        ll left, right;
+        while (lo <= hi) {
+            int mid = m(lo, hi);
+            left = leftFT.rsq(mid) + rightFT.rsq(mid + adj);
+            right = i - left + 1;
+            if (left == right) {
+                median = mid;
+                break;
+            } else if (left < right) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
+        }
+        if (median == INT_INF) median = lo;
+        left = leftFT.rsq(median) + rightFT.rsq(median + adj);
+        right = i - left + 1;
+        ll smallRight = rightFT.rsq(median + adj);
+        ll largeRight = rightFT.rsq(SIZE) - smallRight;
+        ll smallSum = leftSumFT.rsq(median) + rightSumFT.rsq(median + adj) - adj * smallRight;
+        ll largeSum = leftSumFT.rsq(SIZE) + rightSumFT.rsq(SIZE) - adj * (smallRight + largeRight) - smallSum;
+        minTime = min(minTime, (left - right) * median - smallSum + largeSum);
+    }
+    if (minTime == LLONG_MAX) prll(-1LL);
+    else prll(minTime);
+    return 0;
 }

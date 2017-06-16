@@ -62,41 +62,41 @@ ll psa[MAXN + 1];
 pii ind[MAXN];
 
 int find_subset(int l, int u, int w[], int n, int result[]) {
-	For0(i, n) {
-		ind[i] = mp(w[i], i);
-	}
-	sort(ind, ind + n);
-	For1(i, n) {
-		psa[i] = psa[i - 1] + ind[i - 1].x;
-	}
-	int j = 0;
-	For1(i, n) {
-		while (j < n && psa[j] - psa[i - 1] < l) {
-			j++;
-		}
-		if (psa[j] - psa[i - 1] >= l && psa[j] - psa[i - 1] <= u) {
-			Fore(k, i, j) {
-				result[k - i] = ind[k - 1].y;
-			}
-			return j - i + 1;
-		}
-	}
-	return 0;
+    For0(i, n) {
+        ind[i] = mp(w[i], i);
+    }
+    sort(ind, ind + n);
+    For1(i, n) {
+        psa[i] = psa[i - 1] + ind[i - 1].x;
+    }
+    int j = 0;
+    For1(i, n) {
+        while (j < n && psa[j] - psa[i - 1] < l) {
+            j++;
+        }
+        if (psa[j] - psa[i - 1] >= l && psa[j] - psa[i - 1] <= u) {
+            Fore(k, i, j) {
+                result[k - i] = ind[k - 1].y;
+            }
+            return j - i + 1;
+        }
+    }
+    return 0;
 }
 
 int main() {
-	int n, l, u;
-	ri(n);
-	ri(l);
-	ri(u);
-	int w[n], result[n];
-	For0(i, n) {
-		ri(w[i]);
-	}
-	int x = find_subset(l, u, w, n, result);
-	prsi(x, "\n");
-	For0(i, x) {
-		prsi(result[i], "\n");
-	}
-	return 0;
+    int n, l, u;
+    ri(n);
+    ri(l);
+    ri(u);
+    int w[n], result[n];
+    For0(i, n) {
+        ri(w[i]);
+    }
+    int x = find_subset(l, u, w, n, result);
+    prsi(x, "\n");
+    For0(i, x) {
+        prsi(result[i], "\n");
+    }
+    return 0;
 }

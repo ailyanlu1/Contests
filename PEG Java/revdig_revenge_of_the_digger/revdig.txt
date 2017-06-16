@@ -9,9 +9,9 @@ The lake that Digger counts as Lake 1 is fed by the core itself, which is where 
 All rivers and lakes are originally empty, but when an eruption occurs, lava starts to gush out of the core and along the rivers so that the rate of lava flowing into the volcanic lake is maximized. Digger plans to hop into the volcanic lake (using the inflatable heat-proof raft he keeps in his pocket) and wait for an eruption to occur, but he wants to know in advance the rate of lava that will be flowing into the lake.
 
 Input
-Line 1:	M and N — respectively, the number of lakes and the number of rivers.
-Lines 2..M+1:	F (0 ≤ F ≤ 10000) — the i-th line describes the (i-1)-th lake, where F is the flow rate (if F = 0, this lake is volcanic).
-Lines N+2:	A and B (1 ≤ A, B ≤ M) — the i-th line describes the (i-M-1)-th river, which flows from lake A to lake B.
+Line 1:    M and N — respectively, the number of lakes and the number of rivers.
+Lines 2..M+1:    F (0 ≤ F ≤ 10000) — the i-th line describes the (i-1)-th lake, where F is the flow rate (if F = 0, this lake is volcanic).
+Lines N+2:    A and B (1 ≤ A, B ≤ M) — the i-th line describes the (i-M-1)-th river, which flows from lake A to lake B.
 
 Output
 Output the maximum rate at which lava can flow into the volcanic lake (in gallons per second).

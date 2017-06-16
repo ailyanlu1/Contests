@@ -10,56 +10,56 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class DMPG17S1 {
-	private static DMPG17S1 o = new DMPG17S1();
-	public class Reader {
-		private BufferedReader in;
-		private StringTokenizer st;
-		
-		public Reader(InputStream inputStream) {
-			in = new BufferedReader(new InputStreamReader(inputStream));
-		} // Reader InputStream constructor
-		
-		public Reader(String fileName) throws FileNotFoundException {
-			in = new BufferedReader(new FileReader(fileName));
-		} // Reader String constructor
+    private static DMPG17S1 o = new DMPG17S1();
+    public class Reader {
+        private BufferedReader in;
+        private StringTokenizer st;
+        
+        public Reader(InputStream inputStream) {
+            in = new BufferedReader(new InputStreamReader(inputStream));
+        } // Reader InputStream constructor
+        
+        public Reader(String fileName) throws FileNotFoundException {
+            in = new BufferedReader(new FileReader(fileName));
+        } // Reader String constructor
 
-		public String next() throws IOException {
-			while (st == null || !st.hasMoreTokens()) {
-				st = new StringTokenizer(in.readLine().trim());
-			} // while
-			return st.nextToken();
-		} // next method
-		
-		public long nextLong() throws IOException {
-			return Long.parseLong(next());
-		} // nextLong method
-		
-		public int nextInt() throws IOException {
-			return Integer.parseInt(next());
-		} // nextInt method
-		
-		public double nextDouble() throws IOException {
-			return Double.parseDouble(next());
-		} // nextDouble method
-		
-		public String nextLine() throws IOException {
-			return in.readLine().trim();
-		} // nextLine method
-	} // Reader class
-	
-	private static Reader in = o.new Reader(System.in);
-	
-	public static void main(String[] args) throws IOException {
-		int N = in.nextInt();
-		int[] arr = new int[N];
-		for (int i = 0; i < N; i++) {
-			arr[i] = in.nextInt();
-		}
-		Arrays.sort(arr);
-		int min = Integer.MAX_VALUE;
-		for (int i = 1; i < N; i++) {
-			min = Math.min(Math.abs(arr[i] - arr[i - 1]), min);
-		}
-		System.out.println(min);
-	}
+        public String next() throws IOException {
+            while (st == null || !st.hasMoreTokens()) {
+                st = new StringTokenizer(in.readLine().trim());
+            } // while
+            return st.nextToken();
+        } // next method
+        
+        public long nextLong() throws IOException {
+            return Long.parseLong(next());
+        } // nextLong method
+        
+        public int nextInt() throws IOException {
+            return Integer.parseInt(next());
+        } // nextInt method
+        
+        public double nextDouble() throws IOException {
+            return Double.parseDouble(next());
+        } // nextDouble method
+        
+        public String nextLine() throws IOException {
+            return in.readLine().trim();
+        } // nextLine method
+    } // Reader class
+    
+    private static Reader in = o.new Reader(System.in);
+    
+    public static void main(String[] args) throws IOException {
+        int N = in.nextInt();
+        int[] arr = new int[N];
+        for (int i = 0; i < N; i++) {
+            arr[i] = in.nextInt();
+        }
+        Arrays.sort(arr);
+        int min = Integer.MAX_VALUE;
+        for (int i = 1; i < N; i++) {
+            min = Math.min(Math.abs(arr[i] - arr[i - 1]), min);
+        }
+        System.out.println(min);
+    }
 }

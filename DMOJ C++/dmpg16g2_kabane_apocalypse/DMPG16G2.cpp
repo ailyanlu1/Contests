@@ -61,72 +61,72 @@ int grid[MAXN][MAXN];
 int height[MAXN][MAXN];
 
 struct State {
-	int i, h;
-	State (int index, int height) {
-		this->i = index;
-		this->h = height;
-	}
+    int i, h;
+    State (int index, int height) {
+        this->i = index;
+        this->h = height;
+    }
 };
 
 ll getSubmatrix(int val) {
-	For0(i, N) {
-		For0(j, N) {
-			if ((val & grid[i][j]) == 0) {
-				height[i][j] = 1;
-				if (i > 0) height[i][j] += height[i - 1][j];
-			} else {
-				height[i][j] = 0;
-			}
-		}
-	}
-	ll ret = 0;
-	stack<State> s;
-	For0(i, N) {
-		For0(j, N) {
-			State st = State(j, height[i][j]);
-			while (!s.empty() && s.top().h >= st.h) {
-				State top = s.top();
-				s.pop();
-				ll diffW = j - top.i;
-				ll diffH = top.h;
-				if (s.empty() || s.top().h < st.h) diffH -= height[i][j];
-				else diffH -= s.top().h;
-				st.i = top.i;
-				ret += diffW * (diffW + 1) / 2 * diffH;
-			}
-			s.push(st);
-		}
-		while (!s.empty()) {
-			State top = s.top();
-			s.pop();
-			ll diffW = N - top.i;
-			ll diffH = top.h;
-			if (!s.empty()) diffH -= s.top().h;
-			ret += diffW * (diffW + 1) / 2 * diffH;
-		}
-	}
-	return ret;
+    For0(i, N) {
+        For0(j, N) {
+            if ((val & grid[i][j]) == 0) {
+                height[i][j] = 1;
+                if (i > 0) height[i][j] += height[i - 1][j];
+            } else {
+                height[i][j] = 0;
+            }
+        }
+    }
+    ll ret = 0;
+    stack<State> s;
+    For0(i, N) {
+        For0(j, N) {
+            State st = State(j, height[i][j]);
+            while (!s.empty() && s.top().h >= st.h) {
+                State top = s.top();
+                s.pop();
+                ll diffW = j - top.i;
+                ll diffH = top.h;
+                if (s.empty() || s.top().h < st.h) diffH -= height[i][j];
+                else diffH -= s.top().h;
+                st.i = top.i;
+                ret += diffW * (diffW + 1) / 2 * diffH;
+            }
+            s.push(st);
+        }
+        while (!s.empty()) {
+            State top = s.top();
+            s.pop();
+            ll diffW = N - top.i;
+            ll diffH = top.h;
+            if (!s.empty()) diffH -= s.top().h;
+            ret += diffW * (diffW + 1) / 2 * diffH;
+        }
+    }
+    return ret;
 }
 
 int main() {
-	ri(N);
-	For0(i, N) {
-		For0(j, N) {
-			char c = '\n';
-			while (c == '\n') rc(c);
-			if (c == '.') grid[i][j] = 0;
-			else grid[i][j] = 1 << (c - 'A');
-		}
-	}
-	ll ans = 0;
-	For0(i, (1 << 5)) {
-		int k = 0;
-		For0(j, 5) {
-			if ((i & (1 << j)) > 0) k++;
-		}
-		if (k % 2 == 0) ans += getSubmatrix(i);
-		else ans -= getSubmatrix(i);
-	}
-	prll(ans);
-	return 0;
+    ri(N);
+    For0(i, N) {
+        For0(j, N) {
+            char c = '\n';
+            while (c == '\n') rc(c);
+            if (c == '.') grid[i][j] = 0;
+            else grid[i][j] = 1 << (c - 'A');
+        }
+    }
+    ll ans = 0;
+    For0(i, (1 << 5)) {
+        int k = 0;
+        For0(j, 5) {
+            if ((i & (1 << j)) > 0) k++;
+        }
+        if (k % 2 == 0) ans += getSubmatrix(i);
+        else ans -= getSubmatrix(i);
+    }
+    prll(ans);
+    return 0;
 }

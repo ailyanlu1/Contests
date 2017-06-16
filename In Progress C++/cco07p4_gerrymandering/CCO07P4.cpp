@@ -64,43 +64,43 @@ int votes[MAXN + 1][MAXP + 1];
 int dp[MAXN + 1][(MAXN + 1) / 32 + 1];
 
 int calc(int cur, int m) {
-	if (cur > N) {
-		if (m != 0) return -INT_INF;
-		else return 0;
-	}
-	if (N - cur + 1 <= m) return - INT_INF;
-	if (dp[cur][m] != -1) return dp[cur][m];
-	int ret = 0;
-	for (int i = 0; i <= m && cur + i <= N; i++) {
-		int won = 1;
-		int val = votes[cur + i][1] - votes[cur - 1][1];
-		For(j, 2, P + 1) {
-			if (votes[cur + i][j] - votes[cur - 1][j] >= val) {
-				won = 0;
-				break;
-			}
-		}
-		ret = max(ret, won + calc(cur + i + 1, m - i));
-	}
-	return dp[cur][m] = ret;
+    if (cur > N) {
+        if (m != 0) return -INT_INF;
+        else return 0;
+    }
+    if (N - cur + 1 <= m) return - INT_INF;
+    if (dp[cur][m] != -1) return dp[cur][m];
+    int ret = 0;
+    for (int i = 0; i <= m && cur + i <= N; i++) {
+        int won = 1;
+        int val = votes[cur + i][1] - votes[cur - 1][1];
+        For(j, 2, P + 1) {
+            if (votes[cur + i][j] - votes[cur - 1][j] >= val) {
+                won = 0;
+                break;
+            }
+        }
+        ret = max(ret, won + calc(cur + i + 1, m - i));
+    }
+    return dp[cur][m] = ret;
 }
 
 int main() {
-	ri(N);
-	ri(P);
-	For1(i, N) {
-		For1(j, P) {
-			ri(votes[i][j]);
-			votes[i][j] += votes[i - 1][j];
-		}
-	}
-	Fill(dp, -1);
-	For0(i, N) {
-		if (calc(1, i) >= (N - i) / 2 + 1) {
-			prsi(i, "\n");
-			return 0;
-		}
-	}
-	prs("-1\n");
-	return 0;
+    ri(N);
+    ri(P);
+    For1(i, N) {
+        For1(j, P) {
+            ri(votes[i][j]);
+            votes[i][j] += votes[i - 1][j];
+        }
+    }
+    Fill(dp, -1);
+    For0(i, N) {
+        if (calc(1, i) >= (N - i) / 2 + 1) {
+            prsi(i, "\n");
+            return 0;
+        }
+    }
+    prs("-1\n");
+    return 0;
 }

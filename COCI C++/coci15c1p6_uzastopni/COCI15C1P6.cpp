@@ -48,49 +48,49 @@ vector<int> q[MAXV + 1];
 bitset<MAXV + 1> dp[MAXN][MAXV + 1];
 
 void dfs(int v) {
-	for (int w: edges[v]) {
-		dfs(w);
-	}
-	for (int i = 0; i <= MAXV; i++) {
-		q[i].clear();
-	}
-	for (int w: edges[v]) {
-		for (pii p: jokes[w]) {
-			q[p.f].pb(p.s);
-		}
-	}
-	for (int lo = MAXV; lo >= 1; lo--) {
-		if (lo == V[v]) {
-			dp[v][lo] |= (dp[v][lo + 1]);
-			dp[v][lo].set(lo);
-		} else {
-			for (int hi: q[lo]) {
-				if (lo > V[v] || hi < V[v]) {
-					dp[v][lo] |= (dp[v][hi + 1]);
-					dp[v][lo].set(hi);
-				}
-			}
-		}
-		for (int hi = MAXV; hi >= lo; hi--) {
-			if (dp[v][lo].test(hi) && V[v] >= lo && V[v] <= hi) {
-				jokes[v].pb({lo, hi});
-			}
-		}
-	}
+    for (int w: edges[v]) {
+        dfs(w);
+    }
+    for (int i = 0; i <= MAXV; i++) {
+        q[i].clear();
+    }
+    for (int w: edges[v]) {
+        for (pii p: jokes[w]) {
+            q[p.f].pb(p.s);
+        }
+    }
+    for (int lo = MAXV; lo >= 1; lo--) {
+        if (lo == V[v]) {
+            dp[v][lo] |= (dp[v][lo + 1]);
+            dp[v][lo].set(lo);
+        } else {
+            for (int hi: q[lo]) {
+                if (lo > V[v] || hi < V[v]) {
+                    dp[v][lo] |= (dp[v][hi + 1]);
+                    dp[v][lo].set(hi);
+                }
+            }
+        }
+        for (int hi = MAXV; hi >= lo; hi--) {
+            if (dp[v][lo].test(hi) && V[v] >= lo && V[v] <= hi) {
+                jokes[v].pb({lo, hi});
+            }
+        }
+    }
 }
 
 int main() {
-	ri(N);
-	for (int i = 0; i < N; i++) {
-		ri(V[i]);
-	}
-	for (int i = 0; i < N - 1; i++) {
-		int a, b;
-		ri(a);
-		ri(b);
-		edges[a - 1].push_back(b - 1);
-	}
-	dfs(0);
-	printf("%d", jokes[0].size());
-	return 0;
+    ri(N);
+    for (int i = 0; i < N; i++) {
+        ri(V[i]);
+    }
+    for (int i = 0; i < N - 1; i++) {
+        int a, b;
+        ri(a);
+        ri(b);
+        edges[a - 1].push_back(b - 1);
+    }
+    dfs(0);
+    printf("%d", jokes[0].size());
+    return 0;
 }

@@ -59,46 +59,46 @@ typedef unordered_map<int, ll> umill;
 #define MOD (ll) (1e9 + 7)
 
 ll pow(ll base, ll x) {
-	if (x == 0)
-		return 1;
-	if (x == 1)
-		return base;
-	if (x % 2 == 0)
-		return pow(base * base % MOD, x / 2);
-	return base * pow(base * base % MOD, x / 2) % MOD;
+    if (x == 0)
+        return 1;
+    if (x == 1)
+        return base;
+    if (x % 2 == 0)
+        return pow(base * base % MOD, x / 2);
+    return base * pow(base * base % MOD, x / 2) % MOD;
 }
 
 int N;
 ll mat[MAXN][MAXN], det = 1;
 
 int main() {
-	ri(N);
-	For0(i, N) {
-		For0(j, N) {
-			rll(mat[i][j]);
-			if (mat[i][j] < 0) mat[i][j] += MOD;
-		}
-	}
-	For0(i, N) {
-		int max = i;
-		For(j, i + 1, N) {
-			if (mat[j][i] > mat[max][i]) max = j;
-		}
-		if (i != max) {
-			det = -det;
-			swap(mat[i], mat[max]);
-		}
-		For(j, i + 1, N) {
-			ll d = mat[j][i] * pow(mat[i][i], MOD - 2) % MOD;
-			For(k, i, N) {
-				mat[j][k] = (mat[j][k] - d * mat[i][k] % MOD + MOD) % MOD;
-			}
-		}
-	}
-	det = (det + MOD) % MOD;
-	For0(i, N) {
-		det = det * mat[i][i] % MOD;
-	}
-	prll(det);
-	return 0;
+    ri(N);
+    For0(i, N) {
+        For0(j, N) {
+            rll(mat[i][j]);
+            if (mat[i][j] < 0) mat[i][j] += MOD;
+        }
+    }
+    For0(i, N) {
+        int max = i;
+        For(j, i + 1, N) {
+            if (mat[j][i] > mat[max][i]) max = j;
+        }
+        if (i != max) {
+            det = -det;
+            swap(mat[i], mat[max]);
+        }
+        For(j, i + 1, N) {
+            ll d = mat[j][i] * pow(mat[i][i], MOD - 2) % MOD;
+            For(k, i, N) {
+                mat[j][k] = (mat[j][k] - d * mat[i][k] % MOD + MOD) % MOD;
+            }
+        }
+    }
+    det = (det + MOD) % MOD;
+    For0(i, N) {
+        det = det * mat[i][i] % MOD;
+    }
+    prll(det);
+    return 0;
 }
