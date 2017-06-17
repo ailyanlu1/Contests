@@ -11,8 +11,8 @@
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define pb push_back
 #define mp make_pair
-#define left(x) x << 1
-#define right(x) x << 1 | 1
+#define l(x) x << 1
+#define r(x) x << 1 | 1
 #define mid(x, y) x + (y - x) / 2
 #define f first
 #define s second
