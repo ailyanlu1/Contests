@@ -42,6 +42,7 @@ typedef unordered_map<int, ll> umill;
 int main() {
     // TODO INSERT CODE HERE
     // freopen("in.txt", "r", stdin);
+    // freopen("out.txt", "w", stdout);
     // cin.sync_with_stdio(0);
     // cin.tie(0);
     return 0;
