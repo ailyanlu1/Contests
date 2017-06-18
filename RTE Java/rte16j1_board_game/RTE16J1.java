@@ -111,7 +111,7 @@ public class RTE16J1 {
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
     public static void main(String[] args) throws IOException {
-        String str = in.nextLine().replaceAll(" ", "");
+        String str = in.nextLine();
         int max = 0;
         int count = 0;
         int curMax = 0;
@@ -119,11 +119,12 @@ public class RTE16J1 {
             if (str.charAt(i) == 'L') {
                 count++;
                 curMax++;
-            } else {
+            } else if (str.charAt(i) != ' '){
+                max = Math.max(max, curMax);
                 curMax = 0;
             }
-            max = Math.max(max, curMax);
         }
+        max = Math.max(max, curMax);
         out.println(count + " " + max);
         out.close();
     }
