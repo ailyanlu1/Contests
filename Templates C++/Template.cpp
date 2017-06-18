@@ -36,8 +36,10 @@ typedef pair<ll, ll> pll;
 typedef pair<llu, llu> pllu;
 typedef map<int, int> mii;
 typedef map<int, ll> mill;
+typedef map<ll, int> mlli;
 typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
+typedef unordered_map<ll, int> umlli;
 
 int main() {
     // TODO INSERT CODE HERE
