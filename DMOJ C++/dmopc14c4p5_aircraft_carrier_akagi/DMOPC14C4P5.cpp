@@ -5,8 +5,6 @@
  *      Author: Wesley Leung
  */
 
-
-// 64/100 RTE
 #include <bits/stdc++.h>
 
 #define INT_INF 0x3f3f3f
@@ -58,8 +56,8 @@ typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 
 #define MAXN 200000
-#define MAXH 300000
-#define SIZE MAXH * 2
+#define MAXH 200000
+#define SIZE MAXH * 3
 
 struct FenwickTree {
 private:
