@@ -57,7 +57,7 @@ typedef unordered_map<int, ll> umill;
 
 #define MAXN 200000
 #define MAXH 200000
-#define SIZE MAXH * 3
+#define SIZE MAXH * 2 + MAXN
 
 struct FenwickTree {
 private:
