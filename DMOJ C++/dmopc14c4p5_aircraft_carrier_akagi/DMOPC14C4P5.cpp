@@ -7,57 +7,43 @@
 
 #include <bits/stdc++.h>
 
-#define INT_INF 0x3f3f3f
+#define INT_INF 0x3f3f3f3f
+#define LL_INF 0x3f3f3f3f3f3f3f3f
 #define pb push_back
 #define mp make_pair
 #define l(x) x << 1
 #define r(x) x << 1 | 1
-#define m(x, y) x + (y - x) / 2
-#define x first
-#define y second
+#define mid(x, y) x + (y - x) / 2
+#define f first
+#define s second
 #define ri(x) scanf("%d", &x)
 #define rll(x) scanf("%lld", &x)
-#define rllu(x) scanf('%llu', &x)
+#define rllu(x) scanf("%llu", &x)
+#define rf(x) scanf("%f", &x)
 #define rd(x) scanf("%lf", &x)
 #define rc(x) scanf("%c", &x)
-#define pri(x) printf("%d", x)
-#define prll(x) printf("%lld", x)
-#define prllu(x) printf("%llu", x)
-#define prd(x) printf("%f", x)
-#define prs(x) printf(x)
-#define prsi(x, s) printf("%d" s, x)
-#define prsll(x, s) printf("%lld" s, x)
-#define prsllu(x, s) printf("%llu" s, x)
-#define prsd(x, s) printf("%f" s, x)
-#define For(i, a, n) for (int i = a; i < n; i++)
-#define Fore(i, a, n) for (int i = a; i <= n; i++)
-#define For0(i, n) For(i, 0, n)
-#define For1(i, n) Fore(i, 1, n)
-#define Forc(i, c) for (int i = c.begin(); i != c.end(); i++)
-#define Rev(i, n, a) for (int i = n; i > a; i--)
-#define Reve(i, n, a) for (int i = n; i >= a; i--)
-#define Rev0(i, n) Reve(i, n - 1, 0)
-#define Rev1(i, n) Reve(i, n, 1)
-#define Revc(i, c) for (int i = c.end(); i-- != c.begin();)
 #define Fill(a, x) memset(a, x, sizeof(a))
-#define All(a) a.begin(), a.end()
+#define randi(a, b) rand() % (b - a + 1) + a
 
 using namespace std;
 
 typedef long long ll;
 typedef unsigned long long llu;
 typedef pair<int, int> pii;
+typedef pair<float, float> pff;
 typedef pair<double, double> pdd;
 typedef pair<ll, ll> pll;
 typedef pair<llu, llu> pllu;
 typedef map<int, int> mii;
 typedef map<int, ll> mill;
+typedef map<ll, int> mlli;
 typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
+typedef unordered_map<ll, int> umlli;
 
 #define MAXN 200000
-#define MAXH 200000
-#define SIZE MAXH * 2 + MAXN
+#define CONST_ADJ 100000
+#define SIZE CONST_ADJ + MAXN * 2
 
 struct FenwickTree {
 private:
@@ -129,13 +115,13 @@ int arr[MAXN];
 int main() {
     ri(N);
     ri(K);
-    For0(i, N) {
+    for (int i = 0; i < N; i++) {
         ri(arr[i]);
-        arr[i] += MAXH;
+        arr[i] += CONST_ADJ;
     }
     ll minTime = LLONG_MAX;
     int adj = 0;
-    For0(i, N) {
+    for (int i = 0; i < N; i++) {
         adj++;
         if (i % 2 == 0) {
             leftFT.update(arr[i - i / 2] - i / 2 - 1, 1);
@@ -151,7 +137,7 @@ int main() {
         int median = INT_INF;
         ll left, right;
         while (lo <= hi) {
-            int mid = m(lo, hi);
+            int mid = mid(lo, hi);
             left = leftFT.rsq(mid) + rightFT.rsq(mid + adj);
             right = i - left + 1;
             if (left == right) {
@@ -172,7 +158,7 @@ int main() {
         ll largeSum = leftSumFT.rsq(SIZE) + rightSumFT.rsq(SIZE) - adj * (smallRight + largeRight) - smallSum;
         minTime = min(minTime, (left - right) * median - smallSum + largeSum);
     }
-    if (minTime == LLONG_MAX) prll(-1LL);
-    else prll(minTime);
+    if (minTime == LLONG_MAX) printf("-1");
+    else printf("%lld", minTime);
     return 0;
 }

@@ -318,7 +318,7 @@ public class MNYC17P5 {
             adj.get(u).add(new Edge(u, v, c));
             adj.get(v).add(new Edge(v, u, c));
         }
-        /* SUBTASK 1 and 2 */
+        /* SUBTASKS 1 and 2 */
         if (N <= 100) {
             vis = new boolean[N];
             MAXQ = 10;
@@ -344,13 +344,14 @@ public class MNYC17P5 {
             return;
         }
         Path nextPath = shortestPath(A, B);
-        /* SUBTASK 1 and 3 */
+        /* SUBTASK 3 */
         if (Q == 1) {
             if (nextPath == null) out.println(-1);
             else out.println(nextPath.cost + " " + nextPath.min);
             out.close();
             return;
         }
+        /* SUBTASK 4 */
         bestPaths.add(nextPath);
         if (!paths.containsKey(nextPath.cost)) paths.put(nextPath.cost, nextPath.min);
         paths.put(nextPath.cost, Math.min(nextPath.min, paths.get(nextPath.cost)));
