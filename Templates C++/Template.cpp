@@ -7,6 +7,7 @@
 
 #include <bits/stdc++.h>
 
+#define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define pb push_back
