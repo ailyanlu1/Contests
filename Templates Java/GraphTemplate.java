@@ -421,9 +421,6 @@ public class GraphTemplate {
         public void disjoin(int p, int q) {
             int rootP = find(p);
             int rootQ = find(q);
-            if (rootP == rootQ) return;
-
-            // make root of smaller rank point to root of larger rank
             if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
             else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
             else {
@@ -441,6 +438,7 @@ public class GraphTemplate {
             }
         }
     }
+
     
     public class Graph {
         private final String NEWLINE = System.getProperty("line.separator");
