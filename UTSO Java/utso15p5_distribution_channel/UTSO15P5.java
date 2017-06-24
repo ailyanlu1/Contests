@@ -1260,8 +1260,8 @@ public class UTSO15P5 {
             for (int i = 0; i < G.V(); i++) {
                 head[i] = -1;
             }
-            dfs(G, 1, 0, -1);
-            hld(G, 1, -1, -1);
+            dfs(G, 0, 0, -1);
+            hld(G, 0, -1, -1);
             st = new SegmentTree(baseNum - 1, val);
         }
         
@@ -1437,9 +1437,9 @@ public class UTSO15P5 {
         int N = in.nextInt();
         int M = in.nextInt();
         int best = Integer.MAX_VALUE;
-        WeightedGraph G = o.new WeightedGraph(N + 1);
+        WeightedGraph G = o.new WeightedGraph(N);
         for (int i = 0; i < M; i++) {
-            G.addEdge(o.new WeightedEdge(in.nextInt(), in.nextInt(), in.nextInt()));
+            G.addEdge(o.new WeightedEdge(in.nextInt() - 1, in.nextInt() - 1, in.nextInt()));
         }
         KruskalMST mst = o.new KruskalMST(G);
         if (mst.unsed().isEmpty()) {
@@ -1447,8 +1447,8 @@ public class UTSO15P5 {
             out.close();
             return;
         }
-        for (int i = 1; i <= N; i++) {
-            if (!mst.uf.connected(1, i)) {
+        for (int i = 0; i < N; i++) {
+            if (!mst.uf.connected(0, i)) {
                 out.println(-1);
                 out.close();
                 return;
