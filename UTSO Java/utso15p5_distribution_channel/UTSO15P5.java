@@ -1262,7 +1262,7 @@ public class UTSO15P5 {
             }
             dfs(G, 0, 0, -1);
             hld(G, 0, -1, -1);
-            st = new SegmentTree(baseNum - 1, val);
+            st = new SegmentTree(baseNum - 1, val, true);
         }
         
         private void dfs(WeightedGraph G, int v, int d, int prev) {
@@ -1358,11 +1358,11 @@ public class UTSO15P5 {
             }
         }
         
-        public SegmentTree(int size, int[] arr) {
-            array = arr; // new int[size + 1];
-            /*for (int i = 1; i <= size; i++) {
-                array[i] = arr[i - 1];
-            }*/
+        public SegmentTree(int size, int[] arr, boolean oneIndexed) {
+            array = new int[size + 1];
+            for (int i = 1; i <= size ; i++) {
+                array[i] = arr[i - (oneIndexed ? 0 : 1)];
+            }
             tree = new Node[4 * size];
             build(1, 1, size);
             N = size;
