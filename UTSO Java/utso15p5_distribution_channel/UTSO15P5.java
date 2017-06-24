@@ -1,3 +1,4 @@
+package utso15p5_distribution_channel;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,8 +15,8 @@ import java.util.NoSuchElementException;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
-public class WeightedGraphTemplate {
-    private static WeightedGraphTemplate o = new WeightedGraphTemplate();
+public class UTSO15P5 {
+    private static UTSO15P5 o = new UTSO15P5();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;
@@ -1186,6 +1187,232 @@ public class WeightedGraphTemplate {
         }
     }
     
+    public class KruskalMST {
+        private static final double FLOATING_POINT_EPSILON = 1E-12;
+
+        private double weight;     
+        private WeightedGraph mst;
+        public UF uf;
+        private Queue<WeightedEdge> unused = new Queue<WeightedEdge>();  // edges in MST
+
+        /**
+         * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
+         * @param G the edge-weighted graph
+         */
+        public KruskalMST(WeightedGraph G) {
+            // more efficient to build heap by passing array of edges
+            MinPQ<WeightedEdge> pq = new MinPQ<WeightedEdge>();
+            for (WeightedEdge e : G.edges()) {
+                pq.insert(e);
+            }
+            mst = new WeightedGraph(G.V());
+            // run greedy algorithm
+            uf = new UF(G.V());
+            while (!pq.isEmpty()) {
+                WeightedEdge e = pq.delMin();
+                int v = e.either();
+                int w = e.other(v);
+                if (!uf.connected(v, w)) { // v-w does not create a cycle
+                    uf.union(v, w);  // merge v and w components
+                    mst.addEdge(e);  // add edge e to mst
+                    weight += e.weight();
+                } else {
+                    unused.enqueue(e);
+                }
+            }
+        }
+
+        /**
+         * Returns the edges in a minimum spanning tree (or forest).
+         * @return the edges in a minimum spanning tree (or forest) as
+         *    an iterable of edges
+         */
+        public WeightedGraph mst() {
+            return mst;
+        }
+        
+        public Queue<WeightedEdge> unsed() {
+            return unused;
+        }
+
+        /**
+         * Returns the sum of the edge weights in a minimum spanning tree (or forest).
+         * @return the sum of the edge weights in a minimum spanning tree (or forest)
+         */
+        public double weight() {
+            return weight;
+        }
+    }
+    
+    public class WeightedLCA {
+        private int[] depth, parent, chain, size, head, base, val;
+        private int chainNum, baseNum;
+        private SegmentTree st;
+        
+        public WeightedLCA(WeightedGraph G) {
+            depth = new int[G.V()];
+            parent = new int[G.V()];
+            chain = new int[G.V()];
+            size = new int[G.V()];
+            head = new int[G.V()];
+            base = new int[G.V()];
+            val = new int[G.V()];
+            for (int i = 0; i < G.V(); i++) {
+                head[i] = -1;
+            }
+            dfs(G, 1, 0, -1);
+            hld(G, 1, -1, -1);
+            st = new SegmentTree(baseNum - 1, val);
+        }
+        
+        private void dfs(WeightedGraph G, int v, int d, int prev) {
+            depth[v] = d;
+            parent[v] = prev;
+            size[v] = 1;
+            for (WeightedEdge e: G.adj(v)) {
+                int w = e.other(v);
+                if (w != prev) {
+                    dfs(G, w, d + 1, v);
+                    size[v] += size[w];
+                }
+            }
+        }
+        
+        private void hld(WeightedGraph G, int v, int prev, int weight) {
+            if (head[chainNum] == -1) head[chainNum] = v;
+            chain[v] = chainNum;
+            base[v] = baseNum;
+            val[baseNum++] = weight;
+            int maxIndex = -1;
+            int maxWeight = -1;
+            for (WeightedEdge e: G.adj(v)) {
+                int w = e.other(v);
+                if (w != prev && (maxIndex == -1 || size[maxIndex] < size[w])) {
+                    maxIndex = w;
+                    maxWeight = (int) e.weight();
+                }
+            }
+            if (maxIndex != -1) hld(G, maxIndex, v, maxWeight);
+            for (WeightedEdge e: G.adj(v)) {
+                int w = e.other(v);
+                if (w != prev && w != maxIndex) {
+                    chainNum++;
+                    hld(G, w, v, (int) e.weight());
+                }
+            }
+        }
+        
+        /**
+         * Returns the lowest common ancestor of vertex {@code v} and {@code w}.
+         * 
+         * @param v the first vertex
+         * @param w the first vertex
+         * @return the lowest common ancestor of vertex {@code v} and {@code w}
+         */
+        public int lca(int v, int w) {
+            validateVertex(v);
+            validateVertex(w);
+            while (chain[v] != chain[w]) {
+                if (depth[head[chain[v]]] < depth[head[chain[w]]]) w = parent[head[chain[w]]];
+                else v = parent[head[chain[v]]];
+            }
+            if (depth[v] < depth[w]) return v;
+            return w;
+        }
+        
+        private int queryUp(int v, int w) {
+            int ans = -1;
+            while (chain[v] != chain[w]) {
+                ans = Math.max(ans, st.rMaxQ(base[head[chain[v]]], base[v]));
+                v = parent[head[chain[v]]];
+            }      
+            if (v == w) return ans;
+            return Math.max(ans, st.rMaxQ(base[w] + 1, base[v]));
+        }
+        
+        public int queryPath(int v, int w) {
+            int lca = lca(v, w);
+            return Math.max(queryUp(v, lca), queryUp(w, lca));
+        }
+        
+        private void validateVertex(int v) {
+            int V = size.length;
+            if (v < 0 || v >= V)
+                throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
+        }
+    }
+    
+    public class SegmentTree {
+        private Node[] tree;
+        private int[] array;
+        private int N;
+        
+        private class Node {
+            public int val;
+            public Node(int val) {
+                this.val = val;
+            }
+            
+            public Node(Node left, Node right) {
+                this.val = Math.max(left.val, right.val);
+            }
+        }
+        
+        public SegmentTree(int size, int[] arr) {
+            array = arr; // new int[size + 1];
+            /*for (int i = 1; i <= size; i++) {
+                array[i] = arr[i - 1];
+            }*/
+            tree = new Node[4 * size];
+            build(1, 1, size);
+            N = size;
+        }
+
+        public SegmentTree(int size) {
+            array = new int[size + 1];
+            tree = new Node[4 * size];
+            build(1, 1, size);
+            N = size;
+        }
+        
+
+        private void build(int cur, int cL, int cR) {
+            if (cL == cR) {
+                tree[cur] = new Node(array[cL]);
+                return;
+            }
+            int m = cL + (cR - cL) / 2;
+            build(cur * 2, cL , m);
+            build(cur * 2 + 1, m + 1, cR);
+            tree[cur] = new Node(tree[cur * 2], tree[cur * 2 + 1]);
+        }
+
+        private void update(int cur, int cL, int cR, int ind, int val) {
+            if (cL > ind || cR < ind) return;
+            int m = cL + (cR - cL) / 2;
+            update(cur * 2, cL, m, ind, val);
+            update(cur * 2 + 1, m + 1, cR, ind, val);
+            tree[cur].val = Math.max(tree[cur * 2].val, tree[cur * 2 + 1].val);
+        }
+        
+        public void update(int ind, int val) {
+            update(1, 1, N, ind, val);
+        }
+
+        private int rMaxQ(int cur, int cL, int cR, int l, int r) {
+            if (cL > r || cR < l) return Integer.MIN_VALUE;
+            if (cL >= l && cR <= r) return tree[cur].val;
+            int m = cL + (cR - cL) / 2;
+            int left = rMaxQ(cur * 2, cL, m, l, r);
+            int right = rMaxQ(cur * 2 + 1, m + 1, cR, l, r);
+            return Math.max(left, right);
+        }
+
+        public int rMaxQ(int l, int r) {
+            return rMaxQ(1, 1, N, l, r);
+        }
+    }
+    
     private static Reader in = o.new Reader(System.in);
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
@@ -1207,7 +1434,34 @@ public class WeightedGraphTemplate {
     */
     
     public static void main(String[] args) throws IOException {
-        // TODO INSERT CODE HERE
+        int N = in.nextInt();
+        int M = in.nextInt();
+        int best = Integer.MAX_VALUE;
+        WeightedGraph G = o.new WeightedGraph(N + 1);
+        for (int i = 0; i < M; i++) {
+            G.addEdge(o.new WeightedEdge(in.nextInt(), in.nextInt(), in.nextInt()));
+        }
+        KruskalMST mst = o.new KruskalMST(G);
+        if (mst.unsed().isEmpty()) {
+            out.println(-1);
+            out.close();
+            return;
+        }
+        for (int i = 1; i <= N; i++) {
+            if (!mst.uf.connected(1, i)) {
+                out.println(-1);
+                out.close();
+                return;
+            }
+        }
+        WeightedLCA lca = o.new WeightedLCA(mst.mst());
+        for (WeightedEdge e: mst.unused) {
+            int query = lca.queryPath(e.either(), e.other(e.either()));
+            if ((int) e.weight() == query) continue;
+            best = Math.min(best, (int) mst.weight() + (int) e.weight() - query);
+        }
+        if (best == Integer.MAX_VALUE) out.println(-1);
+        else out.println(best);
         out.close();
     }
 }
