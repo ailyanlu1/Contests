@@ -43,7 +43,7 @@ typedef unordered_map<ll, int> umlli;
 
 struct LazySegmentTree {
     struct Node {
-        int l, r, maxVal, lazy;
+        int maxVal, lazy;
     };
 
 private:
@@ -53,45 +53,45 @@ private:
 
     void propogate(int cur) {
         if (tree[cur].lazy != 0) {
-            tree[l(cur)].maxVal += tree[cur].lazy;
-            tree[l(cur)].lazy += tree[cur].lazy;
-            tree[r(cur)].maxVal += tree[cur].lazy;
-            tree[r(cur)].lazy += tree[cur].lazy;
+            tree[cur * 2].maxVal += tree[cur].lazy;
+            tree[cur * 2].lazy += tree[cur].lazy;
+            tree[cur * 2 + 1].maxVal += tree[cur].lazy;
+            tree[cur * 2 + 1].lazy += tree[cur].lazy;
             tree[cur].lazy = 0;
         }
     }
 
-    void build(int cur, int l, int r) {
-        tree[cur].l = l;
-        tree[cur].r = r;
-        if (l == r) {
-            // tree[cur].maxVal = array[l];
+    void build(int cur, int cL, int cR) {
+        if (cL == cR) {
+            tree[cur].maxVal = /*array[cL]*/0;
             return;
         }
-        int m = mid(l, r);
-        build(l(cur), l , m);
-        build(r(cur), m + 1, r);
+        int m = cL + (cR - cL) / 2;
+        build(cur * 2, cL , m);
+        build(cur * 2 + 1, m + 1, cR);
     }
 
-    void update(int cur, int l, int r, int val) {
-        if (tree[cur].l != tree[cur].r) propogate(cur);
-        if (tree[cur].l > r || tree[cur].r < l) return;
-        if (tree[cur].l >= l && tree[cur].r <= r) {
+    void update(int cur, int cL, int cR, int l, int r, int val) {
+        if (cL != cR) propogate(cur);
+        if (cL > r || cR < l) return;
+        if (cL >= l && cR <= r) {
             tree[cur].maxVal += val;
             tree[cur].lazy += val;
             return;
         }
-        update(l(cur), l, r, val);
-        update(r(cur), l, r, val);
-        tree[cur].maxVal = max(tree[l(cur)].maxVal, tree[r(cur)].maxVal);
+        int m = cL + (cR - cL) / 2;
+        update(cur * 2, cL, m, l, r, val);
+        update(cur * 2 + 1, m + 1, cR, l, r, val);
+        tree[cur].maxVal = max(tree[cur * 2].maxVal, tree[cur * 2 + 1].maxVal);
     }
 
-    int rMaxQ(int cur, int l, int r) {
-        if (tree[cur].l != tree[cur].r) propogate(cur);
-        if (tree[cur].l > r || tree[cur].r < l) return 0;
-        if (tree[cur].l >= l && tree[cur].r <= r) return tree[cur].maxVal;;
-        int left = rMaxQ(l(cur), l, r);
-        int right = rMaxQ(r(cur), l, r);
+    int rMaxQ(int cur, int cL, int cR, int l, int r) {
+        if (cL != cR) propogate(cur);
+        if (cL > r || cR < l) return 0;
+        if (cL >= l && cR <= r) return tree[cur].maxVal;
+        int m = cL + (cR - cL) / 2;
+        int left = rMaxQ(cur * 2, cL, m, l, r);
+        int right = rMaxQ(cur * 2 + 1, m + 1, cR, l, r);
         return max(left, right);
     }
 
@@ -115,11 +115,11 @@ public:
     }
 
     void update(int l, int r, int val) {
-        update(1, l, r, val);
+        update(1, 1, N, l, r, val);
     }
 
     int rMaxQ(int l, int r) {
-        return rMaxQ(1, l, r);
+        return rMaxQ(1, 1, N, l, r);
     }
 };
 
