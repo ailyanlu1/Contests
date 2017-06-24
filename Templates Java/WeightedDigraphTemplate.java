@@ -724,7 +724,7 @@ public class WeightedDigraphTemplate {
         }
     }
     
-    public class DirectedWeightedEdge { 
+    public class DirectedWeightedEdge implements Comparable<DirectedWeightedEdge> { 
         private final int v;
         private final int w;
         private final double weight;
@@ -775,6 +775,21 @@ public class WeightedDigraphTemplate {
          */
         public String toString() {
             return v + "->" + w + " " + String.format("%5.2f", weight);
+        }
+        
+        /**
+         * Compares two edges by weight.
+         * Note that {@code compareTo()} is not consistent with {@code equals()},
+         * which uses the reference equality implementation inherited from {@code Object}.
+         *
+         * @param  that the other edge
+         * @return a negative integer, zero, or positive integer depending on whether
+         *         the weight of this is less than, equal to, or greater than the
+         *         argument edge
+         */
+        @Override
+        public int compareTo(DirectedWeightedEdge that) {
+            return Double.compare(this.weight, that.weight);
         }
         
         @Override
