@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 #include "secret.h"
 
-#define INT_INF 0x3f3f3f
+#define INT_INF 0x3f3f3f3f
 #define pb push_back
 #define mp make_pair
 #define l(x) x << 1
