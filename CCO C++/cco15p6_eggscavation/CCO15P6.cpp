@@ -142,7 +142,7 @@ int main() {
         for (int j = 1; j < (1 << S); j++) {
             int size = 0, minR = 1, maxR = N, minC = 1, maxC = N;
             for (int k = 0; k < S; k++) {
-                if ((j & 1 << k) == 0) continue;
+                if (!(j & 1 << k)) continue;
                 size++;
                 int up = max(0, R[k] - K + 1);
                 int down = R[k];
