@@ -74,7 +74,7 @@ struct DynamicLazySegmentTree {
 private:
     Node *root;
     int N;
-    int *array;
+    // int *array;
 
     Node *build(int cL, int cR) {
         if (cL == cR) return new Node(/*array[cL]*/0);
@@ -98,7 +98,7 @@ private:
 
     int rMaxQ(Node *cur, int cL, int cR, int l, int r) {
         cur->propogate();
-        if (cL > r || cR < l) return 0;
+        if (cL > r || cR < l) return INT_MIN;
         if (cL >= l && cR <= r) return cur->maxVal;
         int m = (cL + cR) >> 1;
         int left = rMaxQ(cur->left, cL, m, l, r);
@@ -107,18 +107,18 @@ private:
     }
 
 public:
-    DynamicLazySegmentTree(int size, int *arr) {
+    /*DynamicLazySegmentTree(int size, int *arr) {
         array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
             array[i] = arr[i - 1];
         }
         root = build(1, size);
         N = size;
-    }
+    }*/
 
     DynamicLazySegmentTree(int size) {
-        array = new int[size + 1];
-        /*for (int i = 1; i <= size; i++) {
+        /*array = new int[size + 1];
+        for (int i = 1; i <= size; i++) {
             array[i] = 0;
         }*/
         root = build(1, size);

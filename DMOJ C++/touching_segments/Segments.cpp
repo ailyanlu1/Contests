@@ -49,7 +49,7 @@ struct LazySegmentTree {
 private:
     vector<Node> tree;
     int N;
-    int *array;
+    // int *array;
 
     void propogate(int cur) {
         if (tree[cur].lazy != 0) {
@@ -87,7 +87,7 @@ private:
 
     int rMaxQ(int cur, int cL, int cR, int l, int r) {
         if (cL != cR) propogate(cur);
-        if (cL > r || cR < l) return 0;
+        if (cL > r || cR < l) return INT_MIN;
         if (cL >= l && cR <= r) return tree[cur].maxVal;
         int m = cL + (cR - cL) / 2;
         int left = rMaxQ(cur * 2, cL, m, l, r);
@@ -96,18 +96,18 @@ private:
     }
 
 public:
-    LazySegmentTree(int size, int *arr): tree(4 * size) {
+    /*LazySegmentTree(int size, int *arr): tree(4 * size) {
         array = new int[size + 1];
         for (int i = 1; i <= size; i++) {
             array[i] = arr[i - 1];
         }
         build(1, 1, size);
         N = size;
-    }
+    }*/
 
     LazySegmentTree(int size): tree(4 * size) {
-        array = new int[size + 1];
-        /*for (int i = 1; i <= size; i++) {
+        /*array = new int[size + 1];
+        for (int i = 1; i <= size; i++) {
             array[i] = 0;
         }*/
         build(1, 1, size);
