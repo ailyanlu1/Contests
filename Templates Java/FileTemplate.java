@@ -114,15 +114,20 @@ public class FileTemplate {
     private static final String INPUT_FILE_NAME = "input.txt";
     private static final String OUTPUT_FILE_NAME = "output.txt";
     
+    private static boolean stdIn = false;
+    private static boolean stdOut = false;
+    
     public static void main(String[] args) throws IOException {
         String packageName = "";
-        try {
-            packageName = o.getClass().getPackage().toString().split(" ")[1] + "/";
-        } catch (NullPointerException e) {}
-        in = o.new Reader(packageName + INPUT_FILE_NAME);
-        out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + OUTPUT_FILE_NAME)));
-        // in = o.new Reader(System.in);
-        // out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+        if (!stdIn || !stdOut) {
+            try {
+                packageName = o.getClass().getPackage().toString().split(" ")[1] + "/";
+            } catch (NullPointerException e) {}
+        }
+        if (stdIn) in = o.new Reader(System.in);
+        else in = o.new Reader(packageName + INPUT_FILE_NAME);
+        if (stdOut) out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+        else out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + OUTPUT_FILE_NAME)));
         
         // TODO INSERT CODE HERE
         out.close();
