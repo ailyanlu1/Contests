@@ -2,18 +2,17 @@
  * CCO15P4.cpp
  *
  *  Created on: Apr 20, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 #include <bits/stdc++.h>
-#define pb push_back
+
 using namespace std;
 
 int N, M;
 char s[2000], grid[2000][2000];
 
-void check(int i, int j)
-{
+void check(int i, int j) {
     if (grid[i][j] == 'N') {
         for (int k = i - 1; k >= 0; k--) {
             if (grid[k][j] != '.') {
@@ -43,9 +42,8 @@ void check(int i, int j)
     printf("(%d,%d)\n", i, j);
 }
 
-int main()
-{
-    scanf("%d %d", &N, &M);
+int main() {
+    scanf("%d%d", &N, &M);
     for (int i = 0; i < N; i++) {
         scanf("%s", &grid[i]);
     }
