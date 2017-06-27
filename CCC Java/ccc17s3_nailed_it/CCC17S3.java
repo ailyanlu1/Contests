@@ -120,9 +120,7 @@ public class CCC17S3 {
         for (int i = 1; i <= MAXL; i++) {
             if (freq[i] == 0) continue;
             for (int j = 1; j < i; j++) {
-                if (freq[i] != 0 && freq[j] != 0) {
-                    sum[i + j] += Math.min(freq[i], freq[j]);
-                }
+                sum[i + j] += Math.min(freq[i], freq[j]);
             }
             sum[i * 2] += freq[i] / 2;
         }
