@@ -36,8 +36,8 @@ int main() {
     dp[0] = -1;
     for (int i = 1; i <= N; i++) {
         dp[i] = -1;
-        scanf("%d", &c[i]);
+        scanf("%lld", &c[i]);
     }
-    printf("%I64d\n", solve(1));
+    printf("%lld\n", solve(1));
     return 0;
 }

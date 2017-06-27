@@ -17,7 +17,7 @@ long long K;
 long long dp[MAXN + 1][MAXN + 1][2][2][2][2];
 
 int main() {
-    scanf("%d%d%I64d", &N, &M, &K);
+    scanf("%d%d%lld", &N, &M, &K);
     memset(dp, -1, sizeof dp);
     for (long long i = 1; i <= N; i++) {
         for (long long j = 1; j <= M; j++) {
@@ -46,6 +46,6 @@ int main() {
             }
         }
     }
-    printf("%I64d", dp[N][M][1][1][1][1]);
+    printf("%lld", dp[N][M][1][1][1][1]);
     return 0;
 }
