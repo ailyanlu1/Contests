@@ -2,7 +2,7 @@
  * Odd.cpp
  *
  *  Created on: Apr 19, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 #include <bits/stdc++.h>

@@ -3,7 +3,7 @@
  * ATimesB.cpp
  *
  *  Created on: May 10, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 // 97/200 TLE

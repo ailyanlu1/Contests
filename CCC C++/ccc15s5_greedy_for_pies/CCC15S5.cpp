@@ -2,7 +2,7 @@
  * CCC15S5.cpp
  *
  *  Created on: May 14, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 #include <bits/stdc++.h>

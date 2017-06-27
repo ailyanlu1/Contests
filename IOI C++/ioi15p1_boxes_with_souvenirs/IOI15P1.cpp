@@ -2,7 +2,7 @@
  * IOI15P1.cpp
  *
  *  Created on: May 12, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 #include <bits/stdc++.h>

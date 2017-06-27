@@ -3,7 +3,7 @@
  * IOI01P1.cpp
  *
  *  Created on: May 13, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 #include <bits/stdc++.h>

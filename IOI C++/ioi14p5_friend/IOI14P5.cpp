@@ -2,7 +2,7 @@
  * IOI14P5.cpp
  *
  *  Created on: May 7, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 

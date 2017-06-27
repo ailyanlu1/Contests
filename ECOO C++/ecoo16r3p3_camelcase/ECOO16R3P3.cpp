@@ -2,7 +2,7 @@
  * ECOO16R3P3.cpp
  *
  *  Created on: May 4, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 #include <bits/stdc++.h>

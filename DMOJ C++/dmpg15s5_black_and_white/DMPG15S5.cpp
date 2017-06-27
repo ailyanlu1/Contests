@@ -2,7 +2,7 @@
  * DMPG15S5.cpp
  *
  *  Created on: May 11, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 

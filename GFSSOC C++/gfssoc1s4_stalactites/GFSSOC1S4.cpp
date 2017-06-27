@@ -2,7 +2,7 @@
  * GFSSOC1S4.cpp
  *
  *  Created on: May 10, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 

@@ -2,7 +2,7 @@
 * BF2Hard.cpp
  *
  *  Created on: Apr 16, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 #include <bits/stdc++.h>

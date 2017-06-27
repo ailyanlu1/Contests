@@ -2,7 +2,7 @@
  * DMOPC15C6P6.cpp
  *
  *  Created on: May 4, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 #include <bits/stdc++.h>

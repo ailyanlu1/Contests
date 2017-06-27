@@ -2,7 +2,7 @@
  * cco10p3.cpp
  *
  *  Created on: Apr 25, 2017
- *      Author: wleung
+ *      Author: Wesley Leung
  */
 
 #include <bits/stdc++.h>
