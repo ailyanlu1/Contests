@@ -1,5 +1,5 @@
 /*
- * ioi14p3ALT.cpp
+ * IOI14P3_ALT.cpp
  *
  *  Created on: May 27, 2017
  *      Author: Wesley Leung

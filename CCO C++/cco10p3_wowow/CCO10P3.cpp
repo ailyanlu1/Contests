@@ -1,5 +1,5 @@
 /*
- * cco10p3.cpp
+ * CCO10P3.cpp
  *
  *  Created on: Apr 25, 2017
  *      Author: Wesley Leung
@@ -9,7 +9,7 @@
 
 using namespace std;
 
-const int SIZE = 1000002;
+#define SIZE 1000002
 
 int N;
 int num = 0;

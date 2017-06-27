@@ -9,8 +9,10 @@
 
 using namespace std;
 
+#define MAXN 2000
+
 int N, M;
-char s[2000], grid[2000][2000];
+char s[MAXN], grid[MAXN][MAXN];
 
 void check(int i, int j) {
     if (grid[i][j] == 'N') {
