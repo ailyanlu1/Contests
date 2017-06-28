@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class FHC15C3P3_Network_Flow {
-    private static FHC15C3P3_Network_Flow o = new FHC15C3P3_Network_Flow();
+public class FHC15C3P3_Max_Flow {
+    private static FHC15C3P3_Max_Flow o = new FHC15C3P3_Max_Flow();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;

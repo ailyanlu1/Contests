@@ -856,7 +856,7 @@ public class MaxMatchTemplate {
          *
          * @return the number of edges in any maximum matching
          */
-        public int size() {
+        public int cardinality() {
             return cardinality;
         }
 

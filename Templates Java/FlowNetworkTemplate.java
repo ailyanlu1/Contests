@@ -581,7 +581,7 @@ public class FlowNetworkTemplate {
     }
 
     public class EdmondsKarpMaxFlow {
-        private static final double FLOATING_POINT_EPSILON = 1E-11;
+        private static final double FLOATING_POINT_EPSILON = 1E-10;
 
         private final int V;          // number of vertices
         private boolean[] marked;     // marked[v] = true iff s->v path in residual graph

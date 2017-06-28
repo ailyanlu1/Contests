@@ -732,6 +732,7 @@ public class FHC15C3P3_Max_Match {
                                     mate[y] = x;
                                 }
                                 cardinality++;
+                                out.printf(":%d\n", cardinality);
                             }
                         }
                     }
@@ -858,7 +859,7 @@ public class FHC15C3P3_Max_Match {
          *
          * @return the number of edges in any maximum matching
          */
-        public int size() {
+        public int cardinality() {
             return cardinality;
         }
 
@@ -902,8 +903,8 @@ public class FHC15C3P3_Max_Match {
     private static final String INPUT_FILE_NAME = "gentrification.txt";
     private static final String OUTPUT_FILE_NAME = "gentrification.out";
     
-    private static boolean stdIn = false;
-    private static boolean stdOut = false;
+    private static boolean stdIn = true;
+    private static boolean stdOut = true;
     
     public static void main(String[] args) throws IOException {
         String packageName = "";
@@ -949,6 +950,6 @@ public class FHC15C3P3_Max_Match {
             }
         }
         HopcroftKarpMaxMatch maxMatch = o.new HopcroftKarpMaxMatch(G);
-        out.println("Case #" + testCaseNum + ": " + (N - maxMatch.cardinality));
+        out.println("Case #" + testCaseNum + ": " + (N - maxMatch.cardinality()));
     }
 }
