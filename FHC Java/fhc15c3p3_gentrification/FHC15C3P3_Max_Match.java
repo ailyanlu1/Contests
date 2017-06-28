@@ -732,7 +732,6 @@ public class FHC15C3P3_Max_Match {
                                     mate[y] = x;
                                 }
                                 cardinality++;
-                                out.printf(":%d\n", cardinality);
                             }
                         }
                     }
@@ -903,8 +902,8 @@ public class FHC15C3P3_Max_Match {
     private static final String INPUT_FILE_NAME = "gentrification.txt";
     private static final String OUTPUT_FILE_NAME = "gentrification.out";
     
-    private static boolean stdIn = true;
-    private static boolean stdOut = true;
+    private static boolean stdIn = false;
+    private static boolean stdOut = false;
     
     public static void main(String[] args) throws IOException {
         String packageName = "";
