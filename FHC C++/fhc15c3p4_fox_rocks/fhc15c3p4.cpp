@@ -205,6 +205,8 @@ void run(int testCaseNum) {
 }
 
 int main() {
+    freopen("fox_rocks.txt", "r", stdin);
+    freopen("fox_rocks.out", "w", stdout);
     int T;
     ri(T);
     for (int i = 1; i <= T; i++) {

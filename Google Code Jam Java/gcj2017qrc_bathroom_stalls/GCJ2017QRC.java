@@ -60,11 +60,21 @@ public class GCJ2017QRC {
     private static final String input = "C-large-practice.in";
     private static final String output = "C-large-practice.out";
     
+    private static boolean stdIn = false;
+    private static boolean stdOut = false;
+    
     public static void main(String[] args) throws IOException {
-        in = o.new Reader(o.getClass().getPackage().toString().split(" ")[1] + "/" + input);
-        out = new PrintWriter(new BufferedWriter(new FileWriter(o.getClass().getPackage().toString().split(" ")[1] + "/" + output)));
-        // in = o.new Reader(System.in);
-        // out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+        String packageName = "";
+        if (!stdIn || !stdOut) {
+            try {
+                packageName = o.getClass().getPackage().toString().split(" ")[1] + "/";
+            } catch (NullPointerException e) {}
+        }
+        if (stdIn) in = o.new Reader(System.in);
+        else in = o.new Reader(packageName + input);
+        if (stdOut) out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+        else out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + output)));
+        
         int T = in.nextInt();
         for (int i = 1; i <= T; i++) {
             run(i);

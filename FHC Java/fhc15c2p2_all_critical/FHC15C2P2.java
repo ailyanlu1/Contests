@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -121,18 +122,37 @@ public class FHC15C2P2 {
         }
     }
     
+    // TODO CHANGE FILE NAMES
+    private static final String INPUT_FILE_NAME = "all_critical.txt";
+    private static final String OUTPUT_FILE_NAME = "all_critical.out";
+    
+    private static boolean stdIn = false;
+    private static boolean stdOut = false;
+    
     public static void main(String[] args) throws IOException {
+        String packageName = "";
+        if (!stdIn || !stdOut) {
+            try {
+                packageName = o.getClass().getPackage().toString().split(" ")[1] + "/";
+            } catch (NullPointerException e) {}
+        }
+        if (stdIn) in = o.new Reader(System.in);
+        else in = o.new Reader(packageName + INPUT_FILE_NAME);
+        if (stdOut) out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+        else out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + OUTPUT_FILE_NAME)));
+        
         pre();
         int T = in.nextInt();
         for (int i = 1; i <= T; i++) {
             run(i);
+            out.flush();
         }
         out.close();
     }
     
     public static void run(int testCaseNum) throws IOException {
         double p = in.nextDouble();
-        double[][] prob = new double[2000][B + 1];
+        double[][] prob = new double[4000][B + 1];
         for (int i = 0; i < prob.length; i++) {
             for (int j = 0; j <= B; j++) {
                 if (i == 0) {
