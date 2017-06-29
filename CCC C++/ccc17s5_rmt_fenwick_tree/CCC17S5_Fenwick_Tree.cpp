@@ -1,5 +1,5 @@
 /*
- * CCC17S5.cpp
+ * CCC17S5_Fenwick_Tree.cpp
  *
  *  Created on: Jun 28, 2017
  *      Author: Wesley Leung
@@ -36,48 +36,6 @@ void update(int x, int value) {
     }
 }
 
-int queryLine(int x, int l, int r) {
-    int ans = 0;
-    int lo = 0;
-    int hi = lines[x].size() - 1;
-    int mid;
-    while (lo <= hi) {
-        mid = (lo + hi) / 2;
-        if (lines[x][mid] <= r) lo = mid + 1;
-        else hi = mid - 1;
-    }
-    ans += psa[x][lo + cur[x]];
-
-    lo = 0;
-    hi = lines[x].size() - 1;
-    while (lo <= hi) {
-        mid = (lo + hi) / 2;
-        if (lines[x][mid] < l) lo = mid + 1;
-        else hi = mid - 1;
-    }
-
-    ans -= psa[x][lo + cur[x]];
-    return ans;
-}
-
-int queryLarge(int l, int r) {
-    int ans = 0;
-    for (int i = 0; i < large.size(); i++) {
-        ans += queryLine(large[i], l, r);
-    }
-    return ans;
-}
-
-void updateSmall(int x) {
-    for (int i = 0; i < lines[x].size(); i++) {
-        update(lines[x][i], -A[lines[x][(i + cur[x]) % lines[x].size()]]);
-    }
-    cur[x] = (cur[x] + lines[x].size() - 1) % lines[x].size();
-    for (int i = 0; i < lines[x].size(); i++) {
-        update(lines[x][i], A[lines[x][(i + cur[x]) % lines[x].size()]]);
-    }
-}
-
 int main() {
     scanf("%d%d%d", &N, &M, &Q);
     for (int i = 1; i <= N; i++) {
@@ -103,16 +61,46 @@ int main() {
             }
         }
     }
-    int type, l, r, x;
-    for (int i = 0; i < Q; i++) {
+    int type, l, r, x, ans;
+    for (int q = 0; q < Q; q++) {
         scanf("%d", &type);
         if (type == 1) {
             scanf("%d%d", &l, &r);
-            printf("%d\n", rsq(r) - rsq(l - 1) + queryLarge(l, r));
+            ans = rsq(r) - rsq(l - 1); // small query
+            for (int i = 0; i < large.size(); i++) { // large query
+                int lo = 0;
+                int hi = lines[large[i]].size() - 1;
+                int mid;
+                while (lo <= hi) {
+                    mid = (lo + hi) / 2;
+                    if (lines[large[i]][mid] <= r) lo = mid + 1;
+                    else hi = mid - 1;
+                }
+                ans += psa[large[i]][lo + cur[large[i]]];
+
+                lo = 0;
+                hi = lines[large[i]].size() - 1;
+                while (lo <= hi) {
+                    mid = (lo + hi) / 2;
+                    if (lines[large[i]][mid] < l) lo = mid + 1;
+                    else hi = mid - 1;
+                }
+                ans -= psa[large[i]][lo + cur[large[i]]];
+            }
+            printf("%d\n", ans);
         } else {
             scanf("%d", &x);
-            if (small[x]) updateSmall(x);
-            else cur[x] = (cur[x] + lines[x].size() - 1) % lines[x].size();;
+            if (small[x]) { // small update
+                for (int i = 0; i < lines[x].size(); i++) {
+                    update(lines[x][i], -A[lines[x][(i + cur[x]) % lines[x].size()]]);
+                }
+                cur[x] = (cur[x] + lines[x].size() - 1) % lines[x].size();
+                for (int i = 0; i < lines[x].size(); i++) {
+                    update(lines[x][i], A[lines[x][(i + cur[x]) % lines[x].size()]]);
+                }
+            } else { // large update
+                cur[x] = (cur[x] + lines[x].size() - 1) % lines[x].size();
+            }
         }
     }
     return 0;
