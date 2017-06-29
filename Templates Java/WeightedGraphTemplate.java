@@ -965,6 +965,9 @@ public class WeightedGraphTemplate {
          * @throws IllegalArgumentException if {@code weight} is {@code NaN}
          */
         public WeightedEdge(int v, int w, double weight) {
+            if (v < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
+            if (w < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
+            if (Double.isNaN(weight)) throw new IllegalArgumentException("Weight is NaN");
             this.v = v;
             this.w = w;
             this.weight = weight;
@@ -1028,7 +1031,7 @@ public class WeightedGraphTemplate {
         
         @Override
         public int hashCode() {
-            int result = 31 * v + w;
+            int result = 31 * Math.min(v, w) + Math.max(v, w);
             result = 31 * result + (int) (new Double(weight).hashCode() ^ (new Double(weight).hashCode() >>> 32));
             return result;
         }
@@ -1038,7 +1041,7 @@ public class WeightedGraphTemplate {
             if (o == this) return true;
             if (!(o instanceof WeightedEdge)) return false;
             WeightedEdge e = (WeightedEdge) o;
-            return e.v == v && e.w == w && e.weight() == weight;
+            return ((v == e.v && w == e.w) || (v == e.w && w == e.v)) && e.weight() == weight;
         }
     }
     
