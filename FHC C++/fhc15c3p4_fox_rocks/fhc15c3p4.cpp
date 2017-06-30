@@ -111,7 +111,7 @@ void recalc(int p) {
         for (int i = 4; i < 8; i++) {
             x.m[i][i] = 1;
         }
-        x = step(x, 20);
+        x = step(x, 8);
 
         if (h == 4) {
             for (int i = 0; i < 4; i++) {
