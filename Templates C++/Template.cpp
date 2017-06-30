@@ -16,6 +16,7 @@
 #define rf(x) scanf("%f", &x)
 #define rd(x) scanf("%lf", &x)
 #define rc(x) scanf("%c", &x)
+#define rs(x) scanf("%s", x)
 #define Fill(a, x) memset(a, x, sizeof(a))
 #define randi(a, b) rand() % (b - a + 1) + a
 
