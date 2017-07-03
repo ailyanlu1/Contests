@@ -46,8 +46,7 @@ typedef unordered_map<ll, int> umlli;
 #define MAXN 200000
 #define MAXP 100000
 
-int N, lastInd[MAXP + 1];
-unordered_map<double, int> ind[MAXP + 1];
+int N, lastInd[MAXP + 1], ind[MAXN];
 pair<double, int> sorted[MAXN];
 pair<int, double> updates[MAXN];
 double r, maxV[MAXP + 1], pwr[MAXP + 1];
@@ -134,12 +133,12 @@ int main() {
         double v;
         ri(p);
         rd(v);
-        sorted[i] = {v, p};
+        sorted[i] = {v, i};
         updates[i] = {p, v};
     }
     sort(sorted, sorted + N);
     for (int i = 0; i < N; i++) {
-        ind[sorted[i].s][sorted[i].f] = i + 1;
+        ind[sorted[i].s] = i + 1;
     }
     for (int i = 0; i <= MAXP; i++) {
         lastInd[i] = -1;
@@ -150,8 +149,8 @@ int main() {
         if (updates[i].s > maxV[updates[i].f]) {
             maxV[updates[i].f] = updates[i].s;
             if (lastInd[updates[i].f] != -1) st->update(lastInd[updates[i].f], 0, -1);
-            st->update(ind[updates[i].f][updates[i].s], updates[i].s, 1);
-            lastInd[updates[i].f] = ind[updates[i].f][updates[i].s];
+            st->update(ind[i], updates[i].s, 1);
+            lastInd[updates[i].f] = ind[i];
         }
         printf("%.7f\n", st->query());
     }
