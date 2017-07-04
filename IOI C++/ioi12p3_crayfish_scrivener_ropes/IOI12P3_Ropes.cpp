@@ -56,11 +56,13 @@ void Init() {
 
 void TypeLetter(char L) {
     text[rev] = *(new rope<char>(text[rev - 1])) + L;
+    // text[rev] = text[rev - 1] + L;
     rev++;
 }
 
 void UndoCommands(int U) {
     text[rev] = *(new rope<char>(text[rev - U - 1]));
+    // text[rev] = text[rev - U - 1];
     rev++;
 }
 
