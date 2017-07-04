@@ -1,4 +1,12 @@
+/*
+ * IOI12P3_Ropes.cpp
+ *
+ *  Created on: Jul 3, 2017
+ *      Author: Wesley Leung
+ */
+
 #include <bits/stdc++.h>
+#include <ext/rope>
 
 #define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
@@ -21,6 +29,7 @@
 #define randi(a, b) rand() % (b - a + 1) + a
 
 using namespace std;
+using namespace __gnu_cxx;
 
 typedef long long ll;
 typedef unsigned long long llu;
@@ -36,11 +45,51 @@ typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 typedef unordered_map<ll, int> umlli;
 
+#define MAXN 1000000
+
+int rev;
+rope<char> text[MAXN];
+
+void Init() {
+    rev = 0;
+}
+
+void TypeLetter(char L) {
+    text[rev] = *(new rope<char>(text[rev - 1])) + L;
+    rev++;
+}
+
+void UndoCommands(int U) {
+    text[rev] = *(new rope<char>(text[rev - U - 1]));
+    rev++;
+}
+
+char GetLetter(int P) {
+    return text[rev - 1][P];
+}
+
 int main() {
-    // TODO INSERT CODE HERE
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // cin.sync_with_stdio(0);
-    // cin.tie(0);
+    Init();
+    int N;
+    ri(N);
+    for (int i = 0; i < N; i++) {
+        char c;
+        rc(c);
+        if (c == 'T') {
+            char L;
+            rc(L);
+            TypeLetter(L);
+        } else if (c == 'U') {
+            int U;
+            ri(U);
+            UndoCommands(U);
+        } else if (c == 'P') {
+            int P;
+            ri(P);
+            printf("%c\n", GetLetter(P));
+        } else {
+            i--;
+        }
+    }
     return 0;
 }
