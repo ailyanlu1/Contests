@@ -67,13 +67,11 @@ private static DS1 o = new DS1();
          * @return sum
          */
         public long rsq(int ind) {
+            // assert ind > 0;
             long sum = 0;
-            while (ind > 0) {
-                sum += array[ind];
-                //Extracting the portion up to the first significant one of the binary representation of 'ind' and decrementing ind by that number
-                ind -= ind & (-ind);
+            for (int x = ind; x > 0; x -= (x & -x)) {
+                sum += array[x];
             }
-
             return sum;
         }
 
@@ -89,6 +87,7 @@ private static DS1 o = new DS1();
          * @return sum
          */
         public long rsq(int a, int b) {
+            // assert b >= a && a > 0 && b > 0;
             return rsq(b) - rsq(a - 1);
         }
 
@@ -102,11 +101,9 @@ private static DS1 o = new DS1();
          * @param  value value
          */
         public void update(int ind, long value) {
-            assert ind > 0;
-            while (ind < array.length) {
-                array[ind] += value;
-                //Extracting the portion up to the first significant one of the binary representation of 'ind' and incrementing ind by that number
-                ind += ind & (-ind);
+            // assert ind > 0;
+            for (int x = ind; x < array.length; x += (x & -x)) {
+                array[x] += value;
             }
         }
 
@@ -120,8 +117,8 @@ private static DS1 o = new DS1();
         PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
         int n = in.nextInt();
         int m = in.nextInt();
-        FenwickTree tree = o.new FenwickTree(n+1);
-        FenwickTree rank = o.new FenwickTree(100001);
+        FenwickTree tree = o.new FenwickTree(n);
+        FenwickTree rank = o.new FenwickTree(100000);
         for (int i = 1; i <= n; i++) {
             int v = in.nextInt();
             tree.update(i, v);
