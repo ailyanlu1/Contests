@@ -13,9 +13,7 @@ using namespace std;
 
 typedef pair<unsigned long long, unsigned long long> pll;
 
-pll p;
-
-static pll fib (unsigned long long n) {
+pll fib (unsigned long long n) {
     if (n == 0) return make_pair(0ULL, 1ULL);
     pll res = fib(n / 2);
     unsigned long long a = res.first * (res.second * 2ULL - res.first + MOD) % MOD;
