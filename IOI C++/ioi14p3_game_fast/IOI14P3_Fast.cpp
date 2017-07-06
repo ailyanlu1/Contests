@@ -13,9 +13,7 @@ using namespace std;
 
 int cnt[MAXN];
 
-void initialize(int n) {
-
-}
+void initialize(int n) {}
 
 int hasEdge(int u, int v) {
     return ++cnt[(u > v ? u : v)] == (u > v ? u : v);
