@@ -445,21 +445,21 @@ public class CCO16P6 {
     public static void main(String[] args) throws IOException {
         int N = in.nextInt();
         long K = in.nextLong();
-        int f = 0;
+        int inc = 0;
         AVLTree tree = o.new AVLTree();
         for (int i = 0; i < N; i++) {
             int V = in.nextInt() - 1;
-            long c = tree.select(V) + (long) V * (f + 1);
-            if (c <= K) {
-                f++;
+            long pay = tree.select(V) + (long) V * (inc + 1);
+            if (pay <= K) {
+                inc++;
                 while (tree.weight() > V) {
                     tree.deleteMax(tree.weight() - V);
                 }
-                tree.put(-f, i - V);
-                tree.put(K - c - f, 1);
-                out.println(K - c);
+                tree.put(-inc, i - V);
+                tree.put(K - pay - inc, 1);
+                out.println(K - pay);
             } else {
-                tree.put(-f - 1, 1);
+                tree.put(-inc - 1, 1);
                 out.println(-1);
             }
         }
