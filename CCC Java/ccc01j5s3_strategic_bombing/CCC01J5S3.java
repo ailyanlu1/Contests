@@ -1,4 +1,4 @@
-package ccc01s3_strategic_bombing;
+package ccc01j5s3_strategic_bombing;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,8 +12,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class CCC01S3 {
-    private static CCC01S3 o = new CCC01S3();
+public class CCC01J5S3 {
+    private static CCC01J5S3 o = new CCC01J5S3();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;

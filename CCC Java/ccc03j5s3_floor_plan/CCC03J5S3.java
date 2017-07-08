@@ -1,4 +1,4 @@
-package ccc03s3_floor_plan;
+package ccc03j5s3_floor_plan;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -14,8 +14,8 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Stack;
 
-public class CCC03S3 {
-    private static CCC03S3 o = new CCC03S3();
+public class CCC03J5S3 {
+    private static CCC03J5S3 o = new CCC03J5S3();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;

@@ -1,9 +1,9 @@
-package ccc16j5_tandem_bicycle;
+package ccc16j5s2_tandem_bicycle;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class CCC16J5 {
+public class CCC16J5S2 {
     public static void main(String[] args) {
         Scanner keyboard = new Scanner(System.in);
         int question = keyboard.nextInt();

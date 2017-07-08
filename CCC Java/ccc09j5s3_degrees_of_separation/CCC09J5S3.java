@@ -1,4 +1,4 @@
-package ccc09j5_degrees_of_separation;
+package ccc09j5s3_degrees_of_separation;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -14,8 +14,8 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Stack;
 
-public class CCC09J5 {
-    private static CCC09J5 o = new CCC09J5();
+public class CCC09J5S3 {
+    private static CCC09J5S3 o = new CCC09J5S3();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;

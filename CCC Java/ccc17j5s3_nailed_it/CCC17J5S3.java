@@ -1,4 +1,4 @@
-package ccc17s3_nailed_it;
+package ccc17j5s3_nailed_it;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,8 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class CCC17S3 {
-    private static CCC17S3 o = new CCC17S3();
+public class CCC17J5S3 {
+    private static CCC17J5S3 o = new CCC17J5S3();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;
