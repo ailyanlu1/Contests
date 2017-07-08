@@ -1,6 +1,7 @@
 import sys
+input = sys.stdin.readline
 
-curDay, days = map(int, sys.stdin.readline().split())
+curDay, days = map(int, input().split())
 curDay -= 1
 cur = 1
 

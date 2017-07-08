@@ -43,6 +43,12 @@ typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 typedef unordered_map<ll, int> umlli;
 
+class no_such_element_exception: public runtime_error {
+public:
+    no_such_element_exception(): runtime_error("No such element exists"){}
+    no_such_element_exception(string message): runtime_error(message){}
+};
+
 template <typename Value>
 struct AVLTreeSet {
     /**
@@ -446,11 +452,11 @@ public:
      *         {@code val} and a boolean of whether a value was found or not
      * @throws runtime_error if the symbol table is empty
      */
-    pair<Value, bool> floor(Value val) {
+    Value floor(Value val) {
         if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
         Node *x = floor(root, val);
-        if (x == nullptr) return {val, false};
-        else return {x->val, true};
+        if (x == nullptr) throw no_such_element_exception("call to floor() resulted in no such value");
+        else return x->val;
     }
 
     /**
@@ -462,11 +468,11 @@ public:
      *         {@code val} and a boolean of whether a value was found or not
      * @throws runtime_error if the symbol table is empty
      */
-    pair<Value, bool> ceiling(Value val) {
+    Value ceiling(Value val) {
         if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
         Node *x = ceiling(root, val);
-        if (x == nullptr) return {val, false};
-        else return {x->val, true};
+        if (x == nullptr) throw no_such_element_exception("call to ceiling() resulted in no such value");
+        else return x->val;
     }
 
     /**
@@ -546,11 +552,18 @@ private:
     int query(Node *cur, int cL, int cR, int l, int r, int val) {
         if (cur == nullptr || cL > r || cR < l || cur->times.size() == 0) return INT_MIN;
         if (cL >= l && cR <= r) {
-            auto below = cur->times.floor(val);
-            auto above = cur->times.ceiling(val);
-            if (!above.s) return below.f;
-            if (!below.s) return above.f;
-            return (abs(above.f - val) <= abs(below.f - val)) ? above.f : below.f;
+            int below, above;
+            try {
+                below = cur->times.floor(val);
+            } catch (no_such_element_exception &e) {
+                return cur->times.ceiling(val);
+            }
+            try {
+                above = cur->times.ceiling(val);
+            } catch (no_such_element_exception &e) {
+                return below;
+            }
+            return (abs(above - val) <= abs(below - val)) ? above : below;
         }
         int m = cL + (cR - cL) / 2;
         int left = query(cur->left, cL, m, l, r, val);
