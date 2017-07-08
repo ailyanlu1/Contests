@@ -6,7 +6,7 @@ cur = 1
 
 print('Sun Mon Tue Wed Thr Fri Sat')
 
-for i in range(0, curDay):
+for i in range(curDay):
     print('    ', end='')
 
 while cur <= days:
