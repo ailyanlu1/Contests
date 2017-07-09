@@ -155,12 +155,10 @@ int N, M, u, v, w;
 WeightedGraph *G;
 
 double *distTo;
-WeightedEdge **edgeTo;
 priority_queue<pair<double, int>, vector<pair<double, int>> , greater<pair<double, int>>> pq;
 
 void dijkstraSP(int s) {
     distTo = new double[G->getV()];
-    edgeTo = new WeightedEdge *[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
         distTo[v] = numeric_limits<double>::infinity();
     }
@@ -173,7 +171,6 @@ void dijkstraSP(int s) {
             int w = e->other(v);
             if (distTo[w] > distTo[v] + e->getWeight()) {
                 distTo[w] = distTo[v] + e->getWeight();
-                edgeTo[w] = e;
                 pq.push({distTo[w], w});
             }
         }

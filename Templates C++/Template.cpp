@@ -3,6 +3,7 @@
 #define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
+#define D_INF numeric_limits<double>::infinity()
 #define pb push_back
 #define mp make_pair
 #define l(x) x << 1
