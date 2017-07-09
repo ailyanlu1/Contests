@@ -40,12 +40,10 @@ class Digraph:
 class BreadthFirstSearch:
     __marked = []
     __distTo = []
-    __edgeTo = []
 
     def __init__(self, G, s):
         self.__marked = [False] * G.getV()
         self.__distTo = [float('inf')] * G.getV()
-        self.__edgeTo = [-1] * G.getV()
         self.__bfs(G, s)
 
     def __bfs(self, G, s):
@@ -57,16 +55,12 @@ class BreadthFirstSearch:
             v = q.popleft()
             for w in G.adj(v):
                 if not self.__marked[w]:
-                    self.__edgeTo[w] = v
                     self.__distTo[w] = self.__distTo[v] + T
                     self.__marked[w] = True
                     q.append(w)
 
     def getDistTo(self, v):
         return self.__distTo[v]
-
-    def getEdgeTo(self, v):
-        return self.__edgeTo[v]
 
 
 N, M, T = map(int, input().split())
