@@ -43,6 +43,12 @@ typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 typedef unordered_map<ll, int> umlli;
 
+class no_such_element_exception: public runtime_error {
+public:
+    no_such_element_exception(): runtime_error("No such element exists"){}
+    no_such_element_exception(string message): runtime_error(message){}
+};
+
 template <typename Value>
 struct AVLTreeSet {
     /**
@@ -438,35 +444,33 @@ public:
     }
 
     /**
-     * Returns the largest value in the symbol table less than or equal to
-     * {@code val}.
+     * Returns the largest value in the symbol table less than or equal to {@code val}.
      *
      * @param val the value
-     * @return a pair containing the largest value in the symbol table less than or equal to
-     *         {@code val} and a boolean of whether a value was found or not
+     * @return the largest value in the symbol table less than or equal to {@code val}
      * @throws runtime_error if the symbol table is empty
+     * @throws no_such_element_exception if there is no value in the symbol table less than or equal to {@code val}
      */
-    pair<Value, bool> floor(Value val) {
+    Value floor(Value val) {
         if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
         Node *x = floor(root, val);
-        if (x == nullptr) return {val, false};
-        else return {x->val, true};
+        if (x == nullptr) throw no_such_element_exception("call to floor() resulted in no such value");
+        else return x->val;
     }
 
     /**
-     * Returns the smallest value in the symbol table greater than or equal to
-     * {@code val}.
+     * Returns the smallest value in the symbol table greater than or equal to {@code val}.
      *
      * @param val the value
-     * @return a pair containing the smallest value in the symbol table greater than or equal to
-     *         {@code val} and a boolean of whether a value was found or not
+     * @return a pair containing the smallest value in the symbol table greater than or equal to {@code val}
      * @throws runtime_error if the symbol table is empty
+     * @throws no_such_element_exception if there is no value in the symbol table greater than or equal to {@code val}
      */
-    pair<Value, bool> ceiling(Value val) {
+    Value ceiling(Value val) {
         if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
         Node *x = ceiling(root, val);
-        if (x == nullptr) return {val, false};
-        else return {x->val, true};
+        if (x == nullptr) throw no_such_element_exception("call to ceiling() resulted in no such value");
+        else return x->val;
     }
 
     /**
