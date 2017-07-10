@@ -6,14 +6,11 @@ linkRegex = re.compile('<A HREF=\"([^\"]*)\">')
 
 
 class Digraph:
-    __V = 0
-    __E = 0
-    __adjList = {}
-    __indegreeArr = {}
-
     def __init__(self, V):
         self.__V = V
         self.__E = 0
+        self.__adjList = {}
+        self.__indegreeArr = {}
 
     def getV(self):
         return self.__V
@@ -37,8 +34,6 @@ class Digraph:
 
 
 class DepthFirstSearch:
-    __marked = set()
-
     def __init__(self, G, s):
         self.__marked = set()
         self.__dfs(G, s)

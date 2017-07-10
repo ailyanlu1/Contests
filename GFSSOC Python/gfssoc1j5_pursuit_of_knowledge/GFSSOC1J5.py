@@ -4,14 +4,10 @@ input = sys.stdin.readline
 
 
 class Digraph:
-    __V = 0
-    __E = 0
-    __adjList = []
-    __indegreeArr = []
-
     def __init__(self, V):
         self.__V = V
         self.__E = 0
+        self.__adjList = []
         for v in range(V):
             self.__adjList.append([])
         self.__indegreeArr = [0] * V
@@ -38,9 +34,6 @@ class Digraph:
 
 
 class BreadthFirstSearch:
-    __marked = []
-    __distTo = []
-
     def __init__(self, G, s):
         self.__marked = [False] * G.getV()
         self.__distTo = [float('inf')] * G.getV()
