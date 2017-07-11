@@ -51,10 +51,23 @@ typedef unordered_map<ll, int> umlli;
 // int _DIST[_N][_N] = {{0, 3, 5, 7}, {3, 0, 2, 4}, {5, 2, 0, 6}, {7, 4, 6, 0}};
 // int _FIRST = 2;
 
+// ANSWER
+// 2 1
+// 5 2
+// 3 1
+// 1 1
+
 // SAMPLE 2
 const int _N = 5;
 int _DIST[_N][_N] = {{0, 2, 7, 6, 3}, {2, 0, 5, 4, 1}, {7, 5, 0, 1, 6}, {6, 4, 1, 0, 5}, {3, 1, 6, 5, 0}};
 int _FIRST = 2;
+
+// ANSWER
+// 2 1
+// 4 2
+// 1 2
+// 0 1
+// 3 1
 
 int _COUNT = 0;
 int _MAXCOUNT = 3 * (_N - 1);
