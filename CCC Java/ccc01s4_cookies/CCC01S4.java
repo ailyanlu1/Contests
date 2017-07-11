@@ -402,14 +402,13 @@ public class CCC01S4 {
         }
         double diameter = 0;
         for (int x = 0; x < N; x++) {
-            for (int y = 0; y < N; y++) {
-                for (int z = 0; z < N; z++) {
-                    if (points[x] == points[y] || points[y] == points[z] || points[z] == points[x]) continue;
+            for (int y = x + 1; y < N; y++) {
+                for (int z = y + 1; z < N; z++) {
                     double a = points[x].distanceTo(points[y]);
                     double b = points[y].distanceTo(points[z]);
                     double c = points[z].distanceTo(points[x]);
                     double s = (a + b + c) / 2;
-                    if ((a * a + b * b - c * c < 0) || (b * b + c * c - a * a < 0) || (c * c + a * a - b * b < 0))
+                    if ((a * a + b * b < c * c) || (b * b + c * c < a * a) || (c * c + a * a < b * b))
                         diameter = Math.max(diameter, Math.max(Math.max(a, b), c));
                     else {
                         double area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
