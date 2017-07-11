@@ -14,8 +14,8 @@ width = round(diffSqrt)
 grid = [[0 for j in range(width)] for i in range(height)]
 
 curNum = start
-curI = (height + 1) // 2 - 1
-curJ = (width + 1) // 2 - 1
+curI = (height - 1) // 2
+curJ = (width - 1) // 2
 
 d = 0
 length = 1
