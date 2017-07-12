@@ -163,7 +163,6 @@ public:
     }
 
     int query() {
-        propogate(1);
         return tree[1].lenMinMax;
     }
 
