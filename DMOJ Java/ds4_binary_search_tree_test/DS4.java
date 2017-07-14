@@ -606,16 +606,16 @@ public class DS4 {
          */
         public Value select(int k) {
             if (k < 0 || k >= size()) throw new IllegalArgumentException("k is not in range 0-" + (size() - 1));
-            return select(root, k + 1).val;
+            return select(root, k).val;
         }
         
         // auxiliary method for select
         private Node select(Node x, int k) {
             if (x == null) return null;
-            int t = size(x.left) + 1;
-            if (t == k) return x;
-            else if (t > k) return select(x.left, k);
-            else return select(x.right, k - t);
+            int t = size(x.left);
+            if (t > k) return select(x.left, k);
+            else if (t < k) return select(x.right, k - t - 1);
+            return x;
         }
 
         /**
@@ -629,7 +629,7 @@ public class DS4 {
          */
         public int rank(Value val) {
             if (val == null) throw new IllegalArgumentException("argument to rank() is null");
-            return (rank(root, val)) - 1;
+            return rank(root, val);
         }
 
         /**
@@ -643,7 +643,7 @@ public class DS4 {
             if (x == null) return -1;
             if (val.compareTo(x.val) == 0) {
                 int temp = rank(x.left, val);
-                if (temp == -1) return size(x.left) + 1;
+                if (temp == -1) return size(x.left);
                 else return temp;
             } else if (val.compareTo(x.val) < 0) {
                 return rank(x.left, val);
@@ -788,7 +788,8 @@ public class DS4 {
                 lastAns = tree.select(x - 1);
                 out.println(lastAns);
             } else /*if (op.equals("L"))*/{
-                lastAns = tree.rank(x) + 1;
+                lastAns = tree.rank(x);
+                lastAns = lastAns == -1 ? -1 : lastAns + 1;
                 out.println(lastAns);
             }
         }

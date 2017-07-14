@@ -295,10 +295,10 @@ private:
     // auxiliary function for select
     Node *select(Node *&x, int k) {
         if (x == nullptr) return nullptr;
-        int t = size(x->left) + 1;
-        if (t == k) return x;
-        else if (t > k) return select(x->left, k);
-        else return select(x->right, k - t);
+        int t = size(x->left);
+        if (t > k) return select(x->left, k);
+        else if (t < k) return select(x->right, k - t - 1);
+        return x;
     }
 
     /**
@@ -312,7 +312,7 @@ private:
         if (x == nullptr) return -1;
         if (val == x->val) {
             int temp = rank(x->left, val);
-            if (temp == -1) return size(x->left) + 1;
+            if (temp == -1) return size(x->left);
             else return temp;
         } else if (val < x->val) {
             return rank(x->left, val);
@@ -483,7 +483,7 @@ public:
      */
     Value select(int k) {
         if (k < 0 || k >= size()) throw invalid_argument("k is not in range 0 to size");
-        return select(root, k + 1)->val;
+        return select(root, k)->val;
     }
 
     /**
@@ -495,7 +495,7 @@ public:
      *         {@code val}
      */
     int rank(Value val) {
-        return (rank(root, val)) - 1;
+        return rank(root, val);
     }
 
     /**
@@ -550,7 +550,8 @@ int main() {
             lastAns = tree.select(x - 1);
             printf("%d\n", lastAns);
         } else if (op == 'L') {
-            lastAns = tree.rank(x) + 1;
+            lastAns = tree.rank(x);
+            lastAns = lastAns == -1 ? -1 : lastAns + 1;
             printf("%d\n", lastAns);
         } else {
             i--;
