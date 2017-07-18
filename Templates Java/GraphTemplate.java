@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
@@ -107,86 +108,6 @@ public class GraphTemplate {
             return in.readLine();
         }
     } // Reader class
-    
-    public class Bag<Item> implements Iterable<Item> {
-        private Node<Item> first;    // beginning of bag
-        private int n;               // number of elements in bag
-
-        // helper linked list class
-        private class Node<Item> {
-            private Item item;
-            private Node<Item> next;
-        }
-
-        /**
-         * Initializes an empty bag.
-         */
-        public Bag() {
-            first = null;
-            n = 0;
-        }
-
-        /**
-         * Returns true if this bag is empty.
-         *
-         * @return {@code true} if this bag is empty;
-         *         {@code false} otherwise
-         */
-        public boolean isEmpty() {
-            return first == null;
-        }
-
-        /**
-         * Returns the number of items in this bag.
-         *
-         * @return the number of items in this bag
-         */
-        public int size() {
-            return n;
-        }
-
-        /**
-         * Adds the item to this bag.
-         *
-         * @param  item the item to add to this bag
-         */
-        public void add(Item item) {
-            Node<Item> oldfirst = first;
-            first = new Node<Item>();
-            first.item = item;
-            first.next = oldfirst;
-            n++;
-        }
-
-
-        /**
-         * Returns an iterator that iterates over the items in this bag in arbitrary order.
-         *
-         * @return an iterator that iterates over the items in this bag in arbitrary order
-         */
-        public Iterator<Item> iterator()  {
-            return new ListIterator<Item>(first);  
-        }
-
-        // an iterator, doesn't implement remove() since it's optional
-        private class ListIterator<Item> implements Iterator<Item> {
-            private Node<Item> current;
-
-            public ListIterator(Node<Item> first) {
-                current = first;
-            }
-
-            public boolean hasNext()  { return current != null;                     }
-            public void remove()      { throw new UnsupportedOperationException();  }
-
-            public Item next() {
-                if (!hasNext()) throw new NoSuchElementException();
-                Item item = current.item;
-                current = current.next; 
-                return item;
-            }
-        }
-    }
     
     public class Stack<Item> implements Iterable<Item> {
         private Node<Item> first;     // top of stack
@@ -563,13 +484,12 @@ public class GraphTemplate {
         }
     }
 
-    
     public class Graph {
         private final String NEWLINE = System.getProperty("line.separator");
 
         private final int V;
         private int E;
-        private Bag<Integer>[] adj;
+        private ArrayList<Integer>[] adj;
         
         /**
          * Initializes an empty graph with {@code V} vertices and 0 edges.
@@ -582,9 +502,9 @@ public class GraphTemplate {
             if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
             this.V = V;
             this.E = 0;
-            adj = (Bag<Integer>[]) new Bag[V];
+            adj = (ArrayList<Integer>[]) new ArrayList[V];
             for (int v = 0; v < V; v++) {
-                adj[v] = new Bag<Integer>();
+                adj[v] = new ArrayList<Integer>();
             }
         }
 
@@ -626,6 +546,12 @@ public class GraphTemplate {
             return E;
         }
 
+        // throw an IllegalArgumentException unless {@code 0 <= v < V}
+        private void validateVertex(int v) {
+            if (v < 0 || v >= V)
+                throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
+        }
+
         /**
          * Adds the undirected edge v-w to this graph.
          *
@@ -634,6 +560,8 @@ public class GraphTemplate {
          * @throws IllegalArgumentException unless both {@code 0 <= v < V} and {@code 0 <= w < V}
          */
         public void addEdge(int v, int w) {
+            validateVertex(v);
+            validateVertex(w);
             E++;
             adj[v].add(w);
             adj[w].add(v);
@@ -647,7 +575,8 @@ public class GraphTemplate {
          * @return the vertices adjacent to vertex {@code v}, as an iterable
          * @throws IllegalArgumentException unless {@code 0 <= v < V}
          */
-        public Iterable<Integer> adj(int v) {
+        public ArrayList<Integer> adj(int v) {
+            validateVertex(v);
             return adj[v];
         }
 
@@ -659,6 +588,7 @@ public class GraphTemplate {
          * @throws IllegalArgumentException unless {@code 0 <= v < V}
          */
         public int degree(int v) {
+            validateVertex(v);
             return adj[v].size();
         }
 

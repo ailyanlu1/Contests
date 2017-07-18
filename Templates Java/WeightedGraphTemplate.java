@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -108,86 +109,6 @@ public class WeightedGraphTemplate {
             return in.readLine();
         }
     } // Reader class
-    
-    public class Bag<Item> implements Iterable<Item> {
-        private Node<Item> first;    // beginning of bag
-        private int n;               // number of elements in bag
-
-        // helper linked list class
-        private class Node<Item> {
-            private Item item;
-            private Node<Item> next;
-        }
-
-        /**
-         * Initializes an empty bag.
-         */
-        public Bag() {
-            first = null;
-            n = 0;
-        }
-
-        /**
-         * Returns true if this bag is empty.
-         *
-         * @return {@code true} if this bag is empty;
-         *         {@code false} otherwise
-         */
-        public boolean isEmpty() {
-            return first == null;
-        }
-
-        /**
-         * Returns the number of items in this bag.
-         *
-         * @return the number of items in this bag
-         */
-        public int size() {
-            return n;
-        }
-
-        /**
-         * Adds the item to this bag.
-         *
-         * @param  item the item to add to this bag
-         */
-        public void add(Item item) {
-            Node<Item> oldfirst = first;
-            first = new Node<Item>();
-            first.item = item;
-            first.next = oldfirst;
-            n++;
-        }
-
-
-        /**
-         * Returns an iterator that iterates over the items in this bag in arbitrary order.
-         *
-         * @return an iterator that iterates over the items in this bag in arbitrary order
-         */
-        public Iterator<Item> iterator()  {
-            return new ListIterator<Item>(first);  
-        }
-
-        // an iterator, doesn't implement remove() since it's optional
-        private class ListIterator<Item> implements Iterator<Item> {
-            private Node<Item> current;
-
-            public ListIterator(Node<Item> first) {
-                current = first;
-            }
-
-            public boolean hasNext()  { return current != null;                     }
-            public void remove()      { throw new UnsupportedOperationException();  }
-
-            public Item next() {
-                if (!hasNext()) throw new NoSuchElementException();
-                Item item = current.item;
-                current = current.next; 
-                return item;
-            }
-        }
-    }
     
     public class Stack<Item> implements Iterable<Item> {
         private Node<Item> first;     // top of stack
@@ -1173,7 +1094,7 @@ public class WeightedGraphTemplate {
 
         private final int V;
         private int E;
-        private Bag<WeightedEdge>[] adj;
+        private ArrayList<WeightedEdge>[] adj;
         
         /**
          * Initializes an empty edge-weighted graph with {@code V} vertices and 0 edges.
@@ -1185,9 +1106,9 @@ public class WeightedGraphTemplate {
             if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
             this.V = V;
             this.E = 0;
-            adj = (Bag<WeightedEdge>[]) new Bag[V];
+            adj = (ArrayList<WeightedEdge>[]) new ArrayList[V];
             for (int v = 0; v < V; v++) {
-                adj[v] = new Bag<WeightedEdge>();
+                adj[v] = new ArrayList<WeightedEdge>();
             }
         }
 
@@ -1230,6 +1151,12 @@ public class WeightedGraphTemplate {
             return E;
         }
 
+        // throw an IllegalArgumentException unless {@code 0 <= v < V}
+        private void validateVertex(int v) {
+            if (v < 0 || v >= V)
+                throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
+        }
+
         /**
          * Adds the undirected weighted edge {@code e} to this edge-weighted graph.
          *
@@ -1239,6 +1166,8 @@ public class WeightedGraphTemplate {
         public void addEdge(WeightedEdge e) {
             int v = e.either();
             int w = e.other(v);
+            validateVertex(v);
+            validateVertex(w);
             adj[v].add(e);
             adj[w].add(e);
             E++;
@@ -1251,7 +1180,8 @@ public class WeightedGraphTemplate {
          * @return the weighted edges incident on vertex {@code v} as an Iterable
          * @throws IllegalArgumentException unless {@code 0 <= v < V}
          */
-        public Iterable<WeightedEdge> adj(int v) {
+        public ArrayList<WeightedEdge> adj(int v) {
+            validateVertex(v);
             return adj[v];
         }
 
@@ -1263,6 +1193,7 @@ public class WeightedGraphTemplate {
          * @throws IllegalArgumentException unless {@code 0 <= v < V}
          */
         public int degree(int v) {
+            validateVertex(v);
             return adj[v].size();
         }
 
@@ -1273,8 +1204,8 @@ public class WeightedGraphTemplate {
          *
          * @return all edges in this edge-weighted graph, as an iterable
          */
-        public Iterable<WeightedEdge> edges() {
-            Bag<WeightedEdge> list = new Bag<WeightedEdge>();
+        public ArrayList<WeightedEdge> edges() {
+            ArrayList<WeightedEdge> list = new ArrayList<WeightedEdge>();
             for (int v = 0; v < V; v++) {
                 int selfLoops = 0;
                 for (WeightedEdge e : adj(v)) {

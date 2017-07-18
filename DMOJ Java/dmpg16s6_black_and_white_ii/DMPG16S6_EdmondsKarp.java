@@ -1,6 +1,6 @@
+package dmpg16s6_black_and_white_ii;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,106 +8,127 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class FlowNetworkTemplate {
-    private static FlowNetworkTemplate o = new FlowNetworkTemplate();
+public class DMPG16S6_EdmondsKarp {
+    private static DMPG16S6_EdmondsKarp o = new DMPG16S6_EdmondsKarp();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;
-
+        
         public Reader(InputStream inputStream) {
             in = new BufferedReader(new InputStreamReader(inputStream));
-        }
-
+        } // Reader InputStream constructor
+        
         public Reader(String fileName) throws FileNotFoundException {
             in = new BufferedReader(new FileReader(fileName));
-        }
+        } // Reader String constructor
 
         public String next() throws IOException {
             while (st == null || !st.hasMoreTokens()) {
                 st = new StringTokenizer(in.readLine().trim());
-            }
+            } // while
             return st.nextToken();
-        }
-
-        public String next(String delim) throws IOException {
-            while (st == null || !st.hasMoreTokens()) {
-                st = new StringTokenizer(in.readLine().trim());
-            }
-            return st.nextToken(delim);
-        }
-
-        /*
-        public BigInteger nextBigInteger() throws IOException {
-            return new BigInteger(next());
-        }
-        */
-
-        public byte nextByte() throws IOException {
-            return Byte.parseByte(next());
-        }
-
-        public byte nextByte(String delim) throws IOException {
-            return Byte.parseByte(next(delim));
-        }
-
-        public char nextChar() throws IOException {
-            return next().charAt(0);
-        }
-
-        public char nextChar(String delim) throws IOException {
-            return next(delim).charAt(0);
-        }
-
-        public double nextDouble() throws IOException {
-            return Double.parseDouble(next());
-        }
-
-        public double nextDouble(String delim) throws IOException {
-            return Double.parseDouble(next(delim));
-        }
-
-        public float nextFloat() throws IOException {
-            return Float.parseFloat(next());
-        }
-
-        public float nextFloat(String delim) throws IOException {
-            return Float.parseFloat(next(delim));
-        }
-
-        public int nextInt() throws IOException {
-            return Integer.parseInt(next());
-        }
-
-        public int nextInt(String delim) throws IOException {
-            return Integer.parseInt(next(delim));
-        }
-
+        } // next method
+        
         public long nextLong() throws IOException {
             return Long.parseLong(next());
-        }
-
-        public long nextLong(String delim) throws IOException {
-            return Long.parseLong(next(delim));
-        }
-
-        public short nextShort() throws IOException {
-            return Short.parseShort(next());
-        }
-
-        public short nextShort(String delim) throws IOException {
-            return Short.parseShort(next(delim));
-        }
-
+        } // nextLong method
+        
+        public int nextInt() throws IOException {
+            return Integer.parseInt(next());
+        } // nextInt method
+        
+        public double nextDouble() throws IOException {
+            return Double.parseDouble(next());
+        } // nextDouble method
+        
         public String nextLine() throws IOException {
-            st = null;
-            return in.readLine();
-        }
+            return in.readLine().trim();
+        } // nextLine method
     } // Reader class
+    
+    public class Bag<Item> implements Iterable<Item> {
+        private Node<Item> first;    // beginning of bag
+        private int n;               // number of elements in bag
+
+        // helper linked list class
+        private class Node<Item> {
+            private Item item;
+            private Node<Item> next;
+        }
+
+        /**
+         * Initializes an empty bag.
+         */
+        public Bag() {
+            first = null;
+            n = 0;
+        }
+
+        /**
+         * Returns true if this bag is empty.
+         *
+         * @return {@code true} if this bag is empty;
+         *         {@code false} otherwise
+         */
+        public boolean isEmpty() {
+            return first == null;
+        }
+
+        /**
+         * Returns the number of items in this bag.
+         *
+         * @return the number of items in this bag
+         */
+        public int size() {
+            return n;
+        }
+
+        /**
+         * Adds the item to this bag.
+         *
+         * @param  item the item to add to this bag
+         */
+        public void add(Item item) {
+            Node<Item> oldfirst = first;
+            first = new Node<Item>();
+            first.item = item;
+            first.next = oldfirst;
+            n++;
+        }
+
+
+        /**
+         * Returns an iterator that iterates over the items in this bag in arbitrary order.
+         *
+         * @return an iterator that iterates over the items in this bag in arbitrary order
+         */
+        public Iterator<Item> iterator()  {
+            return new ListIterator<Item>(first);  
+        }
+
+        // an iterator, doesn't implement remove() since it's optional
+        private class ListIterator<Item> implements Iterator<Item> {
+            private Node<Item> current;
+
+            public ListIterator(Node<Item> first) {
+                current = first;
+            }
+
+            public boolean hasNext()  { return current != null;                     }
+            public void remove()      { throw new UnsupportedOperationException();  }
+
+            public Item next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                Item item = current.item;
+                current = current.next; 
+                return item;
+            }
+        }
+    }
     
     public class Queue<Item> implements Iterable<Item> {
         private Node<Item> first;    // beginning of queue
@@ -397,13 +418,13 @@ public class FlowNetworkTemplate {
             return v + "->" + w + " " + flow + "/" + capacity;
         }
     }
-    
+
     public class FlowNetwork {
         private final String NEWLINE = System.getProperty("line.separator");
 
         private final int V;
         private int E;
-        private ArrayList<FlowEdge>[] adj;
+        private Bag<FlowEdge>[] adj;
         
         /**
          * Initializes an empty flow network with {@code V} vertices and 0 edges.
@@ -414,9 +435,9 @@ public class FlowNetworkTemplate {
             if (V < 0) throw new IllegalArgumentException("Number of vertices in a Graph must be nonnegative");
             this.V = V;
             this.E = 0;
-            adj = (ArrayList<FlowEdge>[]) new ArrayList[V];
+            adj = (Bag<FlowEdge>[]) new Bag[V];
             for (int v = 0; v < V; v++)
-                adj[v] = new ArrayList<FlowEdge>();
+                adj[v] = new Bag<FlowEdge>();
         }
 
         /**
@@ -464,14 +485,14 @@ public class FlowNetworkTemplate {
          * @return the edges incident on vertex {@code v} as an Iterable
          * @throws IllegalArgumentException unless {@code 0 <= v < V}
          */
-        public ArrayList<FlowEdge> adj(int v) {
+        public Iterable<FlowEdge> adj(int v) {
             validateVertex(v);
             return adj[v];
         }
 
         // return list of all edges - excludes self loops
-        public ArrayList<FlowEdge> edges() {
-            ArrayList<FlowEdge> list = new ArrayList<FlowEdge>();
+        public Iterable<FlowEdge> edges() {
+            Bag<FlowEdge> list = new Bag<FlowEdge>();
             for (int v = 0; v < V; v++)
                 for (FlowEdge e : adj(v)) {
                     if (e.to() != v)
@@ -502,7 +523,7 @@ public class FlowNetworkTemplate {
     }
 
     public class EdmondsKarpMaxFlow {
-        private static final double FLOATING_POINT_EPSILON = 1E-10;
+        private static final double FLOATING_POINT_EPSILON = 1E-11;
 
         private final int V;          // number of vertices
         private boolean[] marked;     // marked[v] = true iff s->v path in residual graph
@@ -526,7 +547,7 @@ public class FlowNetworkTemplate {
             validate(s);
             validate(t);
             if (s == t)               throw new IllegalArgumentException("Source equals sink");
-            // if (!isFeasible(G, s, t)) throw new IllegalArgumentException("Initial flow is infeasible");
+            if (!isFeasible(G, s, t)) throw new IllegalArgumentException("Initial flow is infeasible");
 
             // while there exists an augmenting path, use it
             value = excess(G, t);
@@ -693,12 +714,51 @@ public class FlowNetworkTemplate {
             return true;
         }
     }
-    
-    private static Reader in = o.new Reader(System.in);
-    private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+
+    private static int M;
+    private static int N;
     
     public static void main(String[] args) throws IOException {
-        // TODO INSERT CODE HERE
+        Reader in = o.new Reader(System.in);
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        M = in.nextInt();
+        N = in.nextInt();
+        int superSource = 0;
+        int superSink = N * M * 2 + 1;
+        char[][] grid = new char[N][M];
+        for (int i = 0; i < N; i++) {
+            grid[i] = in.nextLine().toCharArray();
+        }
+        FlowNetwork G = o.new FlowNetwork(N * M * 2 + 2);
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (grid[i][j] == '#') continue;
+                G.addEdge(o.new FlowEdge(getIn(i, j), getOut(i, j), 1));
+                // Stay
+                if (grid[(i + 1) % N][j] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 1) % N, j), Integer.MAX_VALUE));
+                // Down
+                if (grid[(i + 2) % N][j] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 2) % N, j), Integer.MAX_VALUE));
+                // Left
+                if (j > 0 && grid[(i + 1) % N][j - 1] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 1) % N, j - 1), Integer.MAX_VALUE));
+                // Right
+                if (j < M - 1 && grid[(i + 1) % N][j + 1] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 1) % N, j + 1), Integer.MAX_VALUE));
+                // Up
+            }
+        }
+        for (int i = 0; i < N; i++) {
+            G.addEdge(o.new FlowEdge(superSource, getIn(i, 0), Integer.MAX_VALUE));
+            G.addEdge(o.new FlowEdge(getOut(i, M-1), superSink, Integer.MAX_VALUE));
+        }
+        EdmondsKarpMaxFlow mf = o.new EdmondsKarpMaxFlow(G, superSource, superSink);
+        out.println((int) mf.value());
         out.close();
-    }    
+    }
+    
+    private static int getIn(int i, int j) {
+        return (i * M + j) * 2 + 1;
+    }
+    
+    private static int getOut(int i, int j) {
+        return (i * M + j) * 2 + 2;
+    }
 }

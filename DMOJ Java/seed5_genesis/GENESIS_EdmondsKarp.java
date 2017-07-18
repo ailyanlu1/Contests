@@ -1,4 +1,4 @@
-package dmpg16s6_black_and_white_ii;
+package seed5_genesis;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -12,8 +12,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class DMPG16S6 {
-    private static DMPG16S6 o = new DMPG16S6();
+public class GENESIS_EdmondsKarp {
+    private static GENESIS_EdmondsKarp o = new GENESIS_EdmondsKarp();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;
@@ -522,7 +522,7 @@ public class DMPG16S6 {
         }
     }
 
-    public class FordFulkersonMaxFlow {
+    public class EdmondsKarpMaxFlow {
         private static final double FLOATING_POINT_EPSILON = 1E-11;
 
         private final int V;          // number of vertices
@@ -542,7 +542,7 @@ public class DMPG16S6 {
          * @throws IllegalArgumentException if {@code s == t}
          * @throws IllegalArgumentException if initial flow is infeasible
          */
-        public FordFulkersonMaxFlow(FlowNetwork G, int s, int t) {
+        public EdmondsKarpMaxFlow(FlowNetwork G, int s, int t) {
             V = G.V();
             validate(s);
             validate(t);
@@ -721,45 +721,28 @@ public class DMPG16S6 {
     public static void main(String[] args) throws IOException {
         Reader in = o.new Reader(System.in);
         PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
-        M = in.nextInt();
         N = in.nextInt();
-        int superSource = 0;
-        int superSink = N * M * 2 + 1;
-        char[][] grid = new char[N][M];
-        for (int i = 0; i < N; i++) {
-            grid[i] = in.nextLine().toCharArray();
+        FlowNetwork G = o.new FlowNetwork(out(N));
+        for (int i = 1; i <= N - 1; i++) {
+            int E = in.nextInt();
+            G.addEdge(o.new FlowEdge(in(i), out(i), E));
         }
-        FlowNetwork G = o.new FlowNetwork(N * M * 2 + 2);
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (grid[i][j] == '#') continue;
-                G.addEdge(o.new FlowEdge(getIn(i, j), getOut(i, j), 1));
-                // Stay
-                if (grid[(i + 1) % N][j] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 1) % N, j), Integer.MAX_VALUE));
-                // Down
-                if (grid[(i + 2) % N][j] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 2) % N, j), Integer.MAX_VALUE));
-                // Left
-                if (j > 0 && grid[(i + 1) % N][j - 1] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 1) % N, j - 1), Integer.MAX_VALUE));
-                // Right
-                if (j < M - 1 && grid[(i + 1) % N][j + 1] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 1) % N, j + 1), Integer.MAX_VALUE));
-                // Up
-            }
+        M = in.nextInt();
+        for (int i = 0; i < M; i++) {
+            int v = in.nextInt();
+            int w = in.nextInt();
+            G.addEdge(o.new FlowEdge(out(v), in(w), Integer.MAX_VALUE));
         }
-        for (int i = 0; i < N; i++) {
-            G.addEdge(o.new FlowEdge(superSource, getIn(i, 0), Integer.MAX_VALUE));
-            G.addEdge(o.new FlowEdge(getOut(i, M-1), superSink, Integer.MAX_VALUE));
-        }
-        FordFulkersonMaxFlow ff = o.new FordFulkersonMaxFlow(G, superSource, superSink);
+        EdmondsKarpMaxFlow ff = o.new EdmondsKarpMaxFlow(G, in(1), in(N));
         out.println((int) ff.value());
         out.close();
     }
     
-    private static int getIn(int i, int j) {
-        return (i * M + j) * 2 + 1;
+    private static int in(int i) {
+        return (i - 1) * 2;
     }
     
-    private static int getOut(int i, int j) {
-        return (i * M + j) * 2 + 2;
+    private static int out(int i) {
+        return i * 2 - 1;
     }
-    
 }

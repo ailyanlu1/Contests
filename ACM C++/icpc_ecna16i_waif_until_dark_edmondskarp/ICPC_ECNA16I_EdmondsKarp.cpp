@@ -1,5 +1,5 @@
 /*
- * ICPC_ECNA16I.cpp
+ * ICPC_ECNA16I_EdmondsKarp.cpp
  *
  *  Created on: Jul 16, 2017
  *      Author: Wesley Leung
@@ -278,7 +278,6 @@ public:
 
 class EdmondsKarpMaxFlow {
 private:
-    double FLOATING_POINT_EPSILON = 1E-10;
     int V;          // number of vertices
     bool *marked;     // marked[v] = true if s->v path in residual graph
     FlowEdge **edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
@@ -289,10 +288,9 @@ private:
     // this implementation finds a shortest augmenting path (fewest number of edges),
     // which performs well both in theory and in practice
     bool hasAugmentingPath(FlowNetwork *G, int s, int t) {
-        edgeTo = new FlowEdge*[G->getV()];
-        marked = new bool[G->getV()];
         for (int i = 0; i < G->getV(); i++) {
             marked[i] = false;
+            edgeTo[i] = nullptr;
         }
         // breadth-first search
         queue<int> q;
@@ -348,6 +346,8 @@ public:
         V = G->getV();
         if (s == t)               throw invalid_argument("Source equals sink");
 
+        edgeTo = new FlowEdge*[G->getV()];
+        marked = new bool[G->getV()];
         // while there exists an augmenting path, use it
         value = excess(G, t);
         while (hasAugmentingPath(G, s, t)) {

@@ -1,6 +1,7 @@
 package seed5_genesis;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,127 +9,106 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class GENESIS {
-    private static GENESIS o = new GENESIS();
+public class GENESIS_Dinic {
+    private static GENESIS_Dinic o = new GENESIS_Dinic();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;
-        
+
         public Reader(InputStream inputStream) {
             in = new BufferedReader(new InputStreamReader(inputStream));
-        } // Reader InputStream constructor
-        
+        }
+
         public Reader(String fileName) throws FileNotFoundException {
             in = new BufferedReader(new FileReader(fileName));
-        } // Reader String constructor
+        }
 
         public String next() throws IOException {
             while (st == null || !st.hasMoreTokens()) {
                 st = new StringTokenizer(in.readLine().trim());
-            } // while
+            }
             return st.nextToken();
-        } // next method
-        
-        public long nextLong() throws IOException {
-            return Long.parseLong(next());
-        } // nextLong method
-        
-        public int nextInt() throws IOException {
-            return Integer.parseInt(next());
-        } // nextInt method
-        
+        }
+
+        public String next(String delim) throws IOException {
+            while (st == null || !st.hasMoreTokens()) {
+                st = new StringTokenizer(in.readLine().trim());
+            }
+            return st.nextToken(delim);
+        }
+
+        /*
+        public BigInteger nextBigInteger() throws IOException {
+            return new BigInteger(next());
+        }
+        */
+
+        public byte nextByte() throws IOException {
+            return Byte.parseByte(next());
+        }
+
+        public byte nextByte(String delim) throws IOException {
+            return Byte.parseByte(next(delim));
+        }
+
+        public char nextChar() throws IOException {
+            return next().charAt(0);
+        }
+
+        public char nextChar(String delim) throws IOException {
+            return next(delim).charAt(0);
+        }
+
         public double nextDouble() throws IOException {
             return Double.parseDouble(next());
-        } // nextDouble method
-        
+        }
+
+        public double nextDouble(String delim) throws IOException {
+            return Double.parseDouble(next(delim));
+        }
+
+        public float nextFloat() throws IOException {
+            return Float.parseFloat(next());
+        }
+
+        public float nextFloat(String delim) throws IOException {
+            return Float.parseFloat(next(delim));
+        }
+
+        public int nextInt() throws IOException {
+            return Integer.parseInt(next());
+        }
+
+        public int nextInt(String delim) throws IOException {
+            return Integer.parseInt(next(delim));
+        }
+
+        public long nextLong() throws IOException {
+            return Long.parseLong(next());
+        }
+
+        public long nextLong(String delim) throws IOException {
+            return Long.parseLong(next(delim));
+        }
+
+        public short nextShort() throws IOException {
+            return Short.parseShort(next());
+        }
+
+        public short nextShort(String delim) throws IOException {
+            return Short.parseShort(next(delim));
+        }
+
         public String nextLine() throws IOException {
-            return in.readLine().trim();
-        } // nextLine method
+            st = null;
+            return in.readLine();
+        }
     } // Reader class
-    
-    public class Bag<Item> implements Iterable<Item> {
-        private Node<Item> first;    // beginning of bag
-        private int n;               // number of elements in bag
-
-        // helper linked list class
-        private class Node<Item> {
-            private Item item;
-            private Node<Item> next;
-        }
-
-        /**
-         * Initializes an empty bag.
-         */
-        public Bag() {
-            first = null;
-            n = 0;
-        }
-
-        /**
-         * Returns true if this bag is empty.
-         *
-         * @return {@code true} if this bag is empty;
-         *         {@code false} otherwise
-         */
-        public boolean isEmpty() {
-            return first == null;
-        }
-
-        /**
-         * Returns the number of items in this bag.
-         *
-         * @return the number of items in this bag
-         */
-        public int size() {
-            return n;
-        }
-
-        /**
-         * Adds the item to this bag.
-         *
-         * @param  item the item to add to this bag
-         */
-        public void add(Item item) {
-            Node<Item> oldfirst = first;
-            first = new Node<Item>();
-            first.item = item;
-            first.next = oldfirst;
-            n++;
-        }
-
-
-        /**
-         * Returns an iterator that iterates over the items in this bag in arbitrary order.
-         *
-         * @return an iterator that iterates over the items in this bag in arbitrary order
-         */
-        public Iterator<Item> iterator()  {
-            return new ListIterator<Item>(first);  
-        }
-
-        // an iterator, doesn't implement remove() since it's optional
-        private class ListIterator<Item> implements Iterator<Item> {
-            private Node<Item> current;
-
-            public ListIterator(Node<Item> first) {
-                current = first;
-            }
-
-            public boolean hasNext()  { return current != null;                     }
-            public void remove()      { throw new UnsupportedOperationException();  }
-
-            public Item next() {
-                if (!hasNext()) throw new NoSuchElementException();
-                Item item = current.item;
-                current = current.next; 
-                return item;
-            }
-        }
-    }
     
     public class Queue<Item> implements Iterable<Item> {
         private Node<Item> first;    // beginning of queue
@@ -418,13 +398,13 @@ public class GENESIS {
             return v + "->" + w + " " + flow + "/" + capacity;
         }
     }
-
+    
     public class FlowNetwork {
         private final String NEWLINE = System.getProperty("line.separator");
 
         private final int V;
         private int E;
-        private Bag<FlowEdge>[] adj;
+        private ArrayList<FlowEdge>[] adj;
         
         /**
          * Initializes an empty flow network with {@code V} vertices and 0 edges.
@@ -435,9 +415,9 @@ public class GENESIS {
             if (V < 0) throw new IllegalArgumentException("Number of vertices in a Graph must be nonnegative");
             this.V = V;
             this.E = 0;
-            adj = (Bag<FlowEdge>[]) new Bag[V];
+            adj = (ArrayList<FlowEdge>[]) new ArrayList[V];
             for (int v = 0; v < V; v++)
-                adj[v] = new Bag<FlowEdge>();
+                adj[v] = new ArrayList<FlowEdge>();
         }
 
         /**
@@ -485,14 +465,14 @@ public class GENESIS {
          * @return the edges incident on vertex {@code v} as an Iterable
          * @throws IllegalArgumentException unless {@code 0 <= v < V}
          */
-        public Iterable<FlowEdge> adj(int v) {
+        public ArrayList<FlowEdge> adj(int v) {
             validateVertex(v);
             return adj[v];
         }
 
         // return list of all edges - excludes self loops
-        public Iterable<FlowEdge> edges() {
-            Bag<FlowEdge> list = new Bag<FlowEdge>();
+        public ArrayList<FlowEdge> edges() {
+            ArrayList<FlowEdge> list = new ArrayList<FlowEdge>();
             for (int v = 0; v < V; v++)
                 for (FlowEdge e : adj(v)) {
                     if (e.to() != v)
@@ -521,15 +501,13 @@ public class GENESIS {
             return s.toString();
         }
     }
-
-    public class FordFulkersonMaxFlow {
-        private static final double FLOATING_POINT_EPSILON = 1E-11;
-
-        private final int V;          // number of vertices
-        private boolean[] marked;     // marked[v] = true iff s->v path in residual graph
-        private FlowEdge[] edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
-        private double value;         // current value of max flow
-      
+    
+    public class DinicMaxFlow {
+        private final int V;
+        private double value;
+        private int[] level;
+        private int[] start;
+        
         /**
          * Compute a maximum flow and minimum cut in the network {@code G}
          * from vertex {@code s} to vertex {@code t}.
@@ -540,34 +518,25 @@ public class GENESIS {
          * @throws IllegalArgumentException unless {@code 0 <= s < V}
          * @throws IllegalArgumentException unless {@code 0 <= t < V}
          * @throws IllegalArgumentException if {@code s == t}
-         * @throws IllegalArgumentException if initial flow is infeasible
          */
-        public FordFulkersonMaxFlow(FlowNetwork G, int s, int t) {
+        public DinicMaxFlow(FlowNetwork G, int s, int t) {
             V = G.V();
             validate(s);
             validate(t);
-            if (s == t)               throw new IllegalArgumentException("Source equals sink");
-            if (!isFeasible(G, s, t)) throw new IllegalArgumentException("Initial flow is infeasible");
-
-            // while there exists an augmenting path, use it
-            value = excess(G, t);
+            if (s == t) throw new IllegalArgumentException("Source equals sink");
+            level = new int[V];
+            start = new int[V];
             while (hasAugmentingPath(G, s, t)) {
-
-                // compute bottleneck capacity
-                double bottle = Double.POSITIVE_INFINITY;
-                for (int v = t; v != s; v = edgeTo[v].other(v)) {
-                    bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));
+                for (int v = 0; v < V; v++) {
+                    start[v] = 0;
                 }
-
-                // augment flow
-                for (int v = t; v != s; v = edgeTo[v].other(v)) {
-                    edgeTo[v].addResidualFlowTo(v, bottle); 
+                double flow;
+                while ((flow = sendFlow(G, s, t, start, Double.POSITIVE_INFINITY)) > 0) {
+                    value += flow;
                 }
-
-                value += bottle;
             }
         }
-
+        
         /**
          * Returns the value of the maximum flow.
          *
@@ -587,140 +556,66 @@ public class GENESIS {
          */
         public boolean inCut(int v)  {
             validate(v);
-            return marked[v];
+            return level[v] != -1;
         }
-
-        // throw an IllegalArgumentException if v is outside prescibed range
+        
+        // throw an IllegalArgumentException if v is outside prescribed range
         private void validate(int v)  {
             if (v < 0 || v >= V)
                 throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
         }
-
-
+        
         // is there an augmenting path? 
-        // if so, upon termination edgeTo[] will contain a parent-link representation of such a path
-        // this implementation finds a shortest augmenting path (fewest number of edges),
-        // which performs well both in theory and in practice
+        // this implementation finds a shortest augmenting path (fewest number of edges)
         private boolean hasAugmentingPath(FlowNetwork G, int s, int t) {
-            edgeTo = new FlowEdge[G.V()];
-            marked = new boolean[G.V()];
-
-            // breadth-first search
+            for (int v = 0; v < V; v++) {
+                level[v] = -1;
+            }
+            level[s] = 0;
             Queue<Integer> queue = new Queue<Integer>();
             queue.enqueue(s);
-            marked[s] = true;
-            while (!queue.isEmpty() && !marked[t]) {
+            while (!queue.isEmpty()) {
                 int v = queue.dequeue();
-
                 for (FlowEdge e : G.adj(v)) {
                     int w = e.other(v);
-
-                    // if residual capacity from v to w
-                    if (e.residualCapacityTo(w) > 0) {
-                        if (!marked[w]) {
-                            edgeTo[w] = e;
-                            marked[w] = true;
-                            queue.enqueue(w);
-                        }
+                    if (level[w] < 0 && e.residualCapacityTo(w) > 0) {
+                        level[w] = level[v] + 1;
+                        queue.enqueue(w);
                     }
                 }
             }
-
-            // is there an augmenting path?
-            return marked[t];
+            return level[t] < 0 ? false : true;
         }
-
-
-
-        // return excess flow at vertex v
-        private double excess(FlowNetwork G, int v) {
-            double excess = 0.0;
-            for (FlowEdge e : G.adj(v)) {
-                if (v == e.from()) excess -= e.flow();
-                else               excess += e.flow();
-            }
-            return excess;
-        }
-
-        // return excess flow at vertex v
-        private boolean isFeasible(FlowNetwork G, int s, int t) {
-
-            // check that capacity constraints are satisfied
-            for (int v = 0; v < G.V(); v++) {
-                for (FlowEdge e : G.adj(v)) {
-                    if (e.flow() < -FLOATING_POINT_EPSILON || e.flow() > e.capacity() + FLOATING_POINT_EPSILON) {
-                        System.err.println("Edge does not satisfy capacity constraints: " + e);
-                        return false;
+        
+        // v : current vertex
+        // t : sink
+        // start : start[v] stores the number of edges that have been explored from v
+        // flow : current flow sent from parent
+        private double sendFlow(FlowNetwork G, int v, int t, int[] start, double flow) {
+            if (v == t) return flow;
+            for ( ; start[v] < G.adj(v).size(); start[v]++) {
+                FlowEdge e = G.adj(v).get(start[v]);
+                int w = e.other(v);
+                if (level[w] == level[v] + 1 && e.residualCapacityTo(w) > 0) {
+                    double curFlow = Math.min(flow, e.residualCapacityTo(w));
+                    double tempFlow = sendFlow(G, w, t, start, curFlow);
+                    if (tempFlow > 0) {
+                        e.addResidualFlowTo(w, tempFlow);
+                        return tempFlow;
                     }
                 }
             }
-
-            // check that net flow into a vertex equals zero, except at source and sink
-            if (Math.abs(value + excess(G, s)) > FLOATING_POINT_EPSILON) {
-                System.err.println("Excess at source = " + excess(G, s));
-                System.err.println("Max flow         = " + value);
-                return false;
-            }
-            if (Math.abs(value - excess(G, t)) > FLOATING_POINT_EPSILON) {
-                System.err.println("Excess at sink   = " + excess(G, t));
-                System.err.println("Max flow         = " + value);
-                return false;
-            }
-            for (int v = 0; v < G.V(); v++) {
-                if (v == s || v == t) continue;
-                else if (Math.abs(excess(G, v)) > FLOATING_POINT_EPSILON) {
-                    System.err.println("Net flow out of " + v + " doesn't equal zero");
-                    return false;
-                }
-            }
-            return true;
-        }
-
-
-
-        // check optimality conditions
-        private boolean check(FlowNetwork G, int s, int t) {
-
-            // check that flow is feasible
-            if (!isFeasible(G, s, t)) {
-                System.err.println("Flow is infeasible");
-                return false;
-            }
-
-            // check that s is on the source side of min cut and that t is not on source side
-            if (!inCut(s)) {
-                System.err.println("source " + s + " is not on source side of min cut");
-                return false;
-            }
-            if (inCut(t)) {
-                System.err.println("sink " + t + " is on source side of min cut");
-                return false;
-            }
-
-            // check that value of min cut = value of max flow
-            double mincutValue = 0.0;
-            for (int v = 0; v < G.V(); v++) {
-                for (FlowEdge e : G.adj(v)) {
-                    if ((v == e.from()) && inCut(e.from()) && !inCut(e.to()))
-                        mincutValue += e.capacity();
-                }
-            }
-
-            if (Math.abs(mincutValue - value) > FLOATING_POINT_EPSILON) {
-                System.err.println("Max flow value = " + value + ", min cut value = " + mincutValue);
-                return false;
-            }
-
-            return true;
+            return 0;
         }
     }
 
+    private static Reader in = o.new Reader(System.in);
+    private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+    
     private static int M;
     private static int N;
     
     public static void main(String[] args) throws IOException {
-        Reader in = o.new Reader(System.in);
-        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
         N = in.nextInt();
         FlowNetwork G = o.new FlowNetwork(out(N));
         for (int i = 1; i <= N - 1; i++) {
@@ -733,10 +628,10 @@ public class GENESIS {
             int w = in.nextInt();
             G.addEdge(o.new FlowEdge(out(v), in(w), Integer.MAX_VALUE));
         }
-        FordFulkersonMaxFlow ff = o.new FordFulkersonMaxFlow(G, in(1), in(N));
+        DinicMaxFlow ff = o.new DinicMaxFlow(G, in(1), in(N));
         out.println((int) ff.value());
         out.close();
-    }
+    }  
     
     private static int in(int i) {
         return (i - 1) * 2;

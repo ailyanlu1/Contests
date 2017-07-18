@@ -1,3 +1,4 @@
+package dmpg16s6_black_and_white_ii;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,8 +14,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class FlowNetworkTemplate {
-    private static FlowNetworkTemplate o = new FlowNetworkTemplate();
+public class DMPG16S6_Dinic {
+    private static DMPG16S6_Dinic o = new DMPG16S6_Dinic();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;
@@ -500,15 +501,13 @@ public class FlowNetworkTemplate {
             return s.toString();
         }
     }
-
-    public class EdmondsKarpMaxFlow {
-        private static final double FLOATING_POINT_EPSILON = 1E-10;
-
-        private final int V;          // number of vertices
-        private boolean[] marked;     // marked[v] = true iff s->v path in residual graph
-        private FlowEdge[] edgeTo;    // edgeTo[v] = last edge on shortest residual s->v path
-        private double value;         // current value of max flow
-      
+    
+    public class DinicMaxFlow {
+        private final int V;
+        private double value;
+        private int[] level;
+        private int[] start;
+        
         /**
          * Compute a maximum flow and minimum cut in the network {@code G}
          * from vertex {@code s} to vertex {@code t}.
@@ -519,34 +518,25 @@ public class FlowNetworkTemplate {
          * @throws IllegalArgumentException unless {@code 0 <= s < V}
          * @throws IllegalArgumentException unless {@code 0 <= t < V}
          * @throws IllegalArgumentException if {@code s == t}
-         * @throws IllegalArgumentException if initial flow is infeasible
          */
-        public EdmondsKarpMaxFlow(FlowNetwork G, int s, int t) {
+        public DinicMaxFlow(FlowNetwork G, int s, int t) {
             V = G.V();
             validate(s);
             validate(t);
-            if (s == t)               throw new IllegalArgumentException("Source equals sink");
-            // if (!isFeasible(G, s, t)) throw new IllegalArgumentException("Initial flow is infeasible");
-
-            // while there exists an augmenting path, use it
-            value = excess(G, t);
+            if (s == t) throw new IllegalArgumentException("Source equals sink");
+            level = new int[V];
+            start = new int[V];
             while (hasAugmentingPath(G, s, t)) {
-
-                // compute bottleneck capacity
-                double bottle = Double.POSITIVE_INFINITY;
-                for (int v = t; v != s; v = edgeTo[v].other(v)) {
-                    bottle = Math.min(bottle, edgeTo[v].residualCapacityTo(v));
+                for (int v = 0; v < V; v++) {
+                    start[v] = 0;
                 }
-
-                // augment flow
-                for (int v = t; v != s; v = edgeTo[v].other(v)) {
-                    edgeTo[v].addResidualFlowTo(v, bottle); 
+                double flow;
+                while ((flow = sendFlow(G, s, t, start, Double.POSITIVE_INFINITY)) > 0) {
+                    value += flow;
                 }
-
-                value += bottle;
             }
         }
-
+        
         /**
          * Returns the value of the maximum flow.
          *
@@ -566,139 +556,105 @@ public class FlowNetworkTemplate {
          */
         public boolean inCut(int v)  {
             validate(v);
-            return marked[v];
+            return level[v] != -1;
         }
-
-        // throw an IllegalArgumentException if v is outside prescibed range
+        
+        // throw an IllegalArgumentException if v is outside prescribed range
         private void validate(int v)  {
             if (v < 0 || v >= V)
                 throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
         }
-
-
+        
         // is there an augmenting path? 
-        // if so, upon termination edgeTo[] will contain a parent-link representation of such a path
-        // this implementation finds a shortest augmenting path (fewest number of edges),
-        // which performs well both in theory and in practice
+        // this implementation finds a shortest augmenting path (fewest number of edges)
         private boolean hasAugmentingPath(FlowNetwork G, int s, int t) {
-            edgeTo = new FlowEdge[G.V()];
-            marked = new boolean[G.V()];
-
-            // breadth-first search
+            for (int v = 0; v < V; v++) {
+                level[v] = -1;
+            }
+            level[s] = 0;
             Queue<Integer> queue = new Queue<Integer>();
             queue.enqueue(s);
-            marked[s] = true;
-            while (!queue.isEmpty() && !marked[t]) {
+            while (!queue.isEmpty()) {
                 int v = queue.dequeue();
-
                 for (FlowEdge e : G.adj(v)) {
                     int w = e.other(v);
-
-                    // if residual capacity from v to w
-                    if (e.residualCapacityTo(w) > 0) {
-                        if (!marked[w]) {
-                            edgeTo[w] = e;
-                            marked[w] = true;
-                            queue.enqueue(w);
-                        }
+                    if (level[w] < 0 && e.residualCapacityTo(w) > 0) {
+                        level[w] = level[v] + 1;
+                        queue.enqueue(w);
                     }
                 }
             }
-
-            // is there an augmenting path?
-            return marked[t];
+            return level[t] < 0 ? false : true;
         }
-
-
-
-        // return excess flow at vertex v
-        private double excess(FlowNetwork G, int v) {
-            double excess = 0.0;
-            for (FlowEdge e : G.adj(v)) {
-                if (v == e.from()) excess -= e.flow();
-                else               excess += e.flow();
-            }
-            return excess;
-        }
-
-        // return excess flow at vertex v
-        private boolean isFeasible(FlowNetwork G, int s, int t) {
-
-            // check that capacity constraints are satisfied
-            for (int v = 0; v < G.V(); v++) {
-                for (FlowEdge e : G.adj(v)) {
-                    if (e.flow() < -FLOATING_POINT_EPSILON || e.flow() > e.capacity() + FLOATING_POINT_EPSILON) {
-                        System.err.println("Edge does not satisfy capacity constraints: " + e);
-                        return false;
+        
+        // v : current vertex
+        // t : sink
+        // start : start[v] stores the number of edges that have been explored from v
+        // flow : current flow sent from parent
+        private double sendFlow(FlowNetwork G, int v, int t, int[] start, double flow) {
+            if (v == t) return flow;
+            for ( ; start[v] < G.adj(v).size(); start[v]++) {
+                FlowEdge e = G.adj(v).get(start[v]);
+                int w = e.other(v);
+                if (level[w] == level[v] + 1 && e.residualCapacityTo(w) > 0) {
+                    double curFlow = Math.min(flow, e.residualCapacityTo(w));
+                    double tempFlow = sendFlow(G, w, t, start, curFlow);
+                    if (tempFlow > 0) {
+                        e.addResidualFlowTo(w, tempFlow);
+                        return tempFlow;
                     }
                 }
             }
-
-            // check that net flow into a vertex equals zero, except at source and sink
-            if (Math.abs(value + excess(G, s)) > FLOATING_POINT_EPSILON) {
-                System.err.println("Excess at source = " + excess(G, s));
-                System.err.println("Max flow         = " + value);
-                return false;
-            }
-            if (Math.abs(value - excess(G, t)) > FLOATING_POINT_EPSILON) {
-                System.err.println("Excess at sink   = " + excess(G, t));
-                System.err.println("Max flow         = " + value);
-                return false;
-            }
-            for (int v = 0; v < G.V(); v++) {
-                if (v == s || v == t) continue;
-                else if (Math.abs(excess(G, v)) > FLOATING_POINT_EPSILON) {
-                    System.err.println("Net flow out of " + v + " doesn't equal zero");
-                    return false;
-                }
-            }
-            return true;
-        }
-
-
-
-        // check optimality conditions
-        private boolean check(FlowNetwork G, int s, int t) {
-
-            // check that flow is feasible
-            if (!isFeasible(G, s, t)) {
-                System.err.println("Flow is infeasible");
-                return false;
-            }
-
-            // check that s is on the source side of min cut and that t is not on source side
-            if (!inCut(s)) {
-                System.err.println("source " + s + " is not on source side of min cut");
-                return false;
-            }
-            if (inCut(t)) {
-                System.err.println("sink " + t + " is on source side of min cut");
-                return false;
-            }
-
-            // check that value of min cut = value of max flow
-            double mincutValue = 0.0;
-            for (int v = 0; v < G.V(); v++) {
-                for (FlowEdge e : G.adj(v)) {
-                    if ((v == e.from()) && inCut(e.from()) && !inCut(e.to()))
-                        mincutValue += e.capacity();
-                }
-            }
-
-            if (Math.abs(mincutValue - value) > FLOATING_POINT_EPSILON) {
-                System.err.println("Max flow value = " + value + ", min cut value = " + mincutValue);
-                return false;
-            }
-
-            return true;
+            return 0.0;
         }
     }
-    
+
+
     private static Reader in = o.new Reader(System.in);
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
+    private static int M;
+    private static int N;
+    
     public static void main(String[] args) throws IOException {
-        // TODO INSERT CODE HERE
+        M = in.nextInt();
+        N = in.nextInt();
+        int superSource = 0;
+        int superSink = N * M * 2 + 1;
+        char[][] grid = new char[N][M];
+        for (int i = 0; i < N; i++) {
+            grid[i] = in.nextLine().toCharArray();
+        }
+        FlowNetwork G = o.new FlowNetwork(N * M * 2 + 2);
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (grid[i][j] == '#') continue;
+                G.addEdge(o.new FlowEdge(getIn(i, j), getOut(i, j), 1));
+                // Stay
+                if (grid[(i + 1) % N][j] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 1) % N, j), Integer.MAX_VALUE));
+                // Down
+                if (grid[(i + 2) % N][j] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 2) % N, j), Integer.MAX_VALUE));
+                // Left
+                if (j > 0 && grid[(i + 1) % N][j - 1] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 1) % N, j - 1), Integer.MAX_VALUE));
+                // Right
+                if (j < M - 1 && grid[(i + 1) % N][j + 1] == '.') G.addEdge(o.new FlowEdge(getOut(i, j), getIn((i + 1) % N, j + 1), Integer.MAX_VALUE));
+                // Up
+            }
+        }
+        for (int i = 0; i < N; i++) {
+            G.addEdge(o.new FlowEdge(superSource, getIn(i, 0), Integer.MAX_VALUE));
+            G.addEdge(o.new FlowEdge(getOut(i, M-1), superSink, Integer.MAX_VALUE));
+        }
+        DinicMaxFlow mf = o.new DinicMaxFlow(G, superSource, superSink);
+        out.println((int) mf.value());
         out.close();
-    }    
+    }
+    
+    private static int getIn(int i, int j) {
+        return (i * M + j) * 2 + 1;
+    }
+    
+    private static int getOut(int i, int j) {
+        return (i * M + j) * 2 + 2;
+    }   
 }
