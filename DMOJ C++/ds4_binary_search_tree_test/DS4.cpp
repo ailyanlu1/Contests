@@ -120,6 +120,12 @@ private:
         return height(x->left) - height(x->right);
     }
 
+    /**
+     * Rotates the given subtree to the right.
+     *
+     * @param x the subtree
+     * @return the right rotated subtree
+     */
     Node *rotateRight(Node *&x) {
         Node *y = x->left;
         x->left = y->right;
@@ -211,30 +217,6 @@ private:
     }
 
     /**
-     * Removes the specified value and its associated value from the given
-     * subtree.
-     *
-     * @param x the subtree
-     * @param val the value
-     * @return the updated subtree
-     */
-    Node *remove(Node *&x, Value val) {
-        if (val < x->val) x->left = remove(x->left, val);
-        else if (val > x->val) x->right = remove(x->right, val);
-        else {
-            if (x->left == nullptr) return x->right;
-            else if (x->right == nullptr) return x->left;
-            else {
-                Node *y = x;
-                x = getMin(y->right);
-                x->right = removeMin(y->right);
-                x->left = y->left;
-            }
-        }
-        return balance(x);
-    }
-
-    /**
      * Returns the node with the smallest value in the subtree.
      *
      * @param x the subtree
@@ -254,6 +236,31 @@ private:
     Node *getMax(Node *&x) {
         if (x->right == nullptr) return x;
         return getMax(x->right);
+    }
+
+    /**
+     * Removes the specified value and its associated value from the given
+     * subtree.
+     *
+     * @param x the subtree
+     * @param val the value
+     * @return the updated subtree
+     */
+    Node *remove(Node *&x, Value val) {
+        if (val < x->val) x->left = remove(x->left, val);
+        else if (val > x->val) x->right = remove(x->right, val);
+        else {
+            if (x->left == nullptr) return x->right;
+            else if (x->right == nullptr) return x->left;
+            else {
+                Node *y = x;
+                x = getMin(y->right);
+                x->right = removeMin(y->right);
+                x->left = y->left;
+                free(y);
+            }
+        }
+        return balance(x);
     }
 
     /**
@@ -292,7 +299,13 @@ private:
         else return x;
     }
 
-    // auxiliary function for select
+    /**
+     * Returns the node with value the kth smallest value in the subtree.
+     *
+     * @param x the subtree
+     * @param k the kth smallest value in the subtree
+     * @return the node with value the kth smallest value in the subtree
+     */
     Node *select(Node *&x, int k) {
         if (x == nullptr) return nullptr;
         int t = size(x->left);
@@ -308,10 +321,10 @@ private:
      * @param x the subtree
      * @return the number of values in the subtree less than val
      */
-    int rank(Node *&x, Value val) {
+    int getRank(Node *&x, Value val) {
         if (x == nullptr) return 0;
-        if (val <= x->val) return rank(x->left, val);
-        else return 1 + size(x->left) + rank(x->right, val);
+        if (val <= x->val) return getRank(x->left, val);
+        else return 1 + size(x->left) + getRank(x->right, val);
     }
 
     /**
@@ -325,6 +338,22 @@ private:
         valuesInOrder(x->left, queue);
         queue->push_back(x->val);
         valuesInOrder(x->right, queue);
+    }
+
+    /**
+     * Adds the values between {@code lo} and {@code hi} in the subtree
+     * to the {@code queue}.
+     *
+     * @param x the subtree
+     * @param queue the queue
+     * @param lo the lowest value
+     * @param hi the highest value
+     */
+    void values(Node *&x, vector<Value> *queue, Value lo, Value hi) {
+        if (x == nullptr) return;
+        if (lo < x->val) values(x->left, queue, lo, hi);
+        if (lo <= x->val && hi >= x->val) queue->push_back(x->val);
+        if (hi > x->val) values(x->right, queue, lo, hi);
     }
 
 public:
@@ -409,7 +438,7 @@ public:
      */
     void removeMax() {
         if (isEmpty()) throw runtime_error("called removeMax() with empty symbol table");
-        root = deleteMax(root);
+        root = removeMax(root);
     }
 
     /**
@@ -446,7 +475,7 @@ public:
         if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
         Node *x = floor(root, val);
         if (x == nullptr) throw no_such_element_exception("call to floor() resulted in no such value");
-        else return x->val;
+        return x->val;
     }
 
     /**
@@ -461,7 +490,7 @@ public:
         if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
         Node *x = ceiling(root, val);
         if (x == nullptr) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        else return x->val;
+        return x->val;
     }
 
     /**
@@ -485,8 +514,8 @@ public:
      * @return the number of values in the symbol table strictly less than
      *         {@code val}
      */
-    int rank(Value val) {
-        return rank(root, val);
+    int getRank(Value val) {
+        return getRank(root, val);
     }
 
     /**
@@ -501,6 +530,20 @@ public:
     }
 
     /**
+     * Returns all values in the symbol table in the given range.
+     *
+     * @param lo the lowest value
+     * @param hi the highest value
+     * @return all value in the symbol table between {@code lo} (inclusive)
+     *         and {@code hi} (exclusive)
+     */
+    vector<Value> values(Value lo, Value hi) {
+        vector<Value> queue;
+        values(root, &queue, lo, hi);
+        return queue;
+    }
+
+    /**
      * Returns the number of values in the symbol table in the given range.
      *
      * @param lo minimum endpoint
@@ -510,8 +553,8 @@ public:
      */
     int size(Value lo, Value hi) {
         if (lo > hi) return 0;
-        if (contains(hi)) return rank(hi) - rank(lo) + 1;
-        else return rank(hi) - rank(lo);
+        if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
+        else return getRank(hi) - getRank(lo);
     }
 };
 
@@ -541,7 +584,7 @@ int main() {
             lastAns = tree.select(x - 1);
             printf("%d\n", lastAns);
         } else if (op == 'L') {
-            lastAns = tree.contains(x) ? tree.rank(x) + 1 : -1;
+            lastAns = tree.contains(x) ? tree.getRank(x) + 1 : -1;
             printf("%d\n", lastAns);
         } else {
             i--;
