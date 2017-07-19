@@ -1112,7 +1112,6 @@ public class TLE16C1P5 {
             distFrom[depth] = (long) (distFrom[depth - 1] + (long) e.weight());
             Pair p = st.getDeepestMin(1, depth, cost[v]);
             costFrom[v] = (long) (distFrom[depth] - distFrom[p.depth]) * (long) cost[v] + costFrom[vert[p.depth]];
-            //out.println("DEBUG: " + v + " " + p.depth + " " + p.cost + " " + depth + " " + distFrom[depth] + " " + distFrom[p.depth] + " " + costFrom[vert[p.depth]]);
         }
         for (WeightedEdge f: G.adj(v)) {
             if (f != e) {
