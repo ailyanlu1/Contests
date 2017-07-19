@@ -1,7 +1,7 @@
 /*
- * IOI13P6_Game_Segment_Tree_and_AVL.cpp
+ * DS3_AVL.cpp
  *
- *  Created on: Jul 15, 2017
+ *  Created on: Jul 5, 2017
  *      Author: Wesley Leung
  */
 
@@ -10,7 +10,6 @@
 #define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
-#define D_INF numeric_limits<double>::infinity()
 #define pb push_back
 #define mp make_pair
 #define l(x) x << 1
@@ -44,37 +43,9 @@ typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 typedef unordered_map<ll, int> umlli;
 
-long long gcd2(long long p, long long q) {
-    return q == 0 ? p : gcd2(q, p % q);
+int gcd(int a, int b) {
+    return b == 0 ? a : gcd (b, a % b);
 }
-
-struct Cell {
-    int r, c;
-
-    bool operator < (const Cell &x) const {
-        return c < x.c || (c == x.c && r < x.r);
-    }
-
-    bool operator > (const Cell &x) const {
-        return c > x.c || (c == x.c && r > x.r);
-    }
-
-    bool operator <= (const Cell &x) const {
-        return c < x.c || (c == x.c && r <= x.r);
-    }
-
-    bool operator >= (const Cell &x) const {
-        return c > x.c || (c == x.c && r >= x.r);
-    }
-
-    bool operator == (const Cell &x) const {
-        return c == x.c && r == x.r;
-    }
-
-    bool operator != (const Cell &x) const {
-        return c != x.c || r != x.r;
-    }
-};
 
 class no_such_element_exception: public runtime_error {
 public:
@@ -83,71 +54,38 @@ public:
 };
 
 template <typename Key, typename Value>
-struct AVLTree {
-    /**
-     * Represents an inner node of the AVL tree.
-     */
-    struct Node {
-    public:
-        Key key;
-        Key maxKey;
-        Key minKey;
-        Value val;
-        Value gcd;
-        int height, size;
-        Node *left = nullptr, *right = nullptr;
-        Node(Key key, Value val, int height, int size) {
-            this->key = key;
-            this->maxKey = key;
-            this->minKey = key;
-            this->val = val;
-            this->size = size;
-            this->height = height;
-            this->gcd = val;
-        }
-    };
-
+struct AVLDynamicSegmentTree {
 private:
-    /**
-     * The root node.
-     */
-    Node *root = nullptr;
+    Key *KEY; // keys (storing indicies)
+    Key *LO; // lower bound of range
+    Key *HI; // upper bound of range
+    Value *VAL; // values
+    int *MIN; // minimum value (for range minimum query)
+    int *GCD; // gcd value
+    int *CNT; // cnt value
+    int *HT; // height of subtree
+    int *SZ; // size of subtree
+    int *L; // index of left child
+    int *R; // index of right child
 
-    /**
-     * Returns the number of nodes in the subtree.
-     *
-     * @param x the subtree
-     *
-     * @return the number of nodes in the subtree
-     */
-    int size(Node *&x) {
-        if (x == nullptr) return 0;
-        return x->size;
-    }
-
-    /**
-     * Returns the height of the subtree.
-     *
-     * @param x the subtree
-     *
-     * @return the height of the subtree.
-     */
-    int height(Node *&x) {
-        if (x == nullptr) return -1;
-        return x->height;
-    }
+    int root;
+    int cnt;
 
     /**
      * Updates the size and height of the subtree.
      *
      * @param x the subtree
      */
-    void update(Node *&x) {
-        x->gcd = gcd2(gcd2(x->left ? x->left->gcd : 0LL, x->right ? x->right->gcd : 0LL), x->val);
-        x->minKey = x->left ? x->left->minKey : x->key;
-        x->maxKey = x->right ? x->right->maxKey : x->key;
-        x->size = 1 + size(x->left) + size(x->right);
-        x->height = 1 + max(height(x->left), height(x->right));
+    void update(int x) {
+        MIN[x] = min(min(L[x] ? MIN[L[x]] : INT_MAX, R[x] ? MIN[R[x]] : INT_MAX), VAL[x]);
+        GCD[x] = gcd(gcd(L[x] ? GCD[L[x]] : 0, R[x] ? GCD[R[x]] : 0), VAL[x]);
+        CNT[x] = GCD[x] == VAL[x] ? 1 : 0;
+        if (L[x] && GCD[L[x]] == GCD[x]) CNT[x] += CNT[L[x]];
+        if (R[x] && GCD[R[x]] == GCD[x]) CNT[x] += CNT[R[x]];
+        LO[x] = L[x] ? LO[L[x]] : KEY[x];
+        HI[x] = R[x] ? HI[R[x]] : KEY[x];
+        SZ[x] = 1 + SZ[L[x]] + SZ[R[x]];
+        HT[x] = 1 + max(HT[L[x]], HT[R[x]]);
     }
 
     /**
@@ -160,8 +98,8 @@ private:
      * @param x the subtree
      * @return the balance factor of the subtree
      */
-    int balanceFactor(Node *&x) {
-        return height(x->left) - height(x->right);
+    int balanceFactor(int x) {
+        return HT[L[x]] - HT[R[x]];
     }
 
     /**
@@ -170,10 +108,10 @@ private:
      * @param x the subtree
      * @return the right rotated subtree
      */
-    Node *rotateRight(Node *&x) {
-        Node *y = x->left;
-        x->left = y->right;
-        y->right = x;
+    int rotateRight(int x) {
+        int y = L[x];
+        L[x] = R[y];
+        R[y] = x;
         update(x);
         update(y);
         return y;
@@ -185,10 +123,10 @@ private:
      * @param x the subtree
      * @return the left rotated subtree
      */
-    Node *rotateLeft(Node *&x) {
-        Node *y = x->right;
-        x->right = y->left;
-        y->left = x;
+    int rotateLeft(int x) {
+        int y = R[x];
+        R[x] = L[y];
+        L[y] = x;
         update(x);
         update(y);
         return y;
@@ -200,13 +138,13 @@ private:
      * @param x the subtree
      * @return the subtree with restored AVL property
      */
-    Node *balance(Node *&x) {
+    int balance(int x) {
         if (balanceFactor(x) < -1) {
-            if (balanceFactor(x->right) > 0) x->right = rotateRight(x->right);
+            if (balanceFactor(R[x]) > 0) R[x] = rotateRight(R[x]);
             x = rotateLeft(x);
         }
         else if (balanceFactor(x) > 1) {
-            if (balanceFactor(x->left) < 0) x->left = rotateLeft(x->left);
+            if (balanceFactor(L[x]) < 0) L[x] = rotateLeft(L[x]);
             x = rotateRight(x);
         }
         update(x);
@@ -222,10 +160,10 @@ private:
      *         {@code null} if no such key
      * @throws no_such_element_exception if there is no such key
      */
-    Node *get(Node *&x, Key key) {
-        if (x == nullptr) return nullptr;
-        if (key < x->key) return get(x->left, key);
-        else if (key > x->key) return get(x->right, key);
+    int get(int x, Key key) {
+        if (x == 0) return 0;
+        if (key < KEY[x]) return get(L[x], key);
+        else if (key > KEY[x]) return get(R[x], key);
         else return x;
     }
 
@@ -238,12 +176,25 @@ private:
      * @param val the value
      * @return the subtree
      */
-    Node *put(Node *&x, Key key, Value val) {
-        if (x == nullptr) return new Node(key, val, 0, 1);
-        if (key < x->key) x->left = put(x->left, key, val);
-        else if (key > x->key) x->right = put(x->right, key, val);
+    int put(int x, Key key, Value val) {
+        if (x == 0) {
+            KEY[cnt] = key;
+            LO[cnt] = key;
+            HI[cnt] = key;
+            VAL[cnt] = val;
+            MIN[cnt] = val;
+            GCD[cnt] = val;
+            CNT[cnt] = 1;
+            HT[cnt] = 0;
+            SZ[cnt] = 1;
+            L[cnt] = 0;
+            R[cnt] = 0;
+            return cnt++;
+        }
+        if (key < KEY[x]) L[x] = put(L[x], key, val);
+        else if (key > KEY[x]) R[x] = put(R[x], key, val);
         else {
-            x->val = val;
+            VAL[x] = val;
             update(x);
             return x;
         }
@@ -256,9 +207,9 @@ private:
      * @param x the subtree
      * @return the updated subtree
      */
-    Node *removeMin(Node *&x) {
-        if (x->left == nullptr) return x->right;
-        x->left = removeMin(x->left);
+    int removeMin(int x) {
+        if (L[x] == 0) return R[x];
+        L[x] = removeMin(L[x]);
         return balance(x);
     }
 
@@ -268,9 +219,9 @@ private:
      * @param x the subtree
      * @return the updated subtree
      */
-    Node *removeMax(Node *&x) {
-        if (x->right == nullptr) return x->left;
-        x->right = removeMax(x->right);
+    int removeMax(int x) {
+        if (R[x] == 0) return L[x];
+        R[x] = removeMax(R[x]);
         return balance(x);
     }
 
@@ -280,9 +231,9 @@ private:
      * @param x the subtree
      * @return the node with the smallest value in the subtree
      */
-    Node *getMin(Node *&x) {
-        if (x->left == nullptr) return x;
-        return getMin(x->left);
+    int getMin(int x) {
+        if (L[x] == 0) return x;
+        return getMin(L[x]);
     }
 
     /**
@@ -291,9 +242,9 @@ private:
      * @param x the subtree
      * @return the node with the largest value in the subtree
      */
-    Node *getMax(Node *&x) {
-        if (x->right == nullptr) return x;
-        return getMax(x->right);
+    int getMax(int x) {
+        if (R[x] == 0) return x;
+        return getMax(R[x]);
     }
 
     /**
@@ -304,18 +255,17 @@ private:
      * @param key the key
      * @return the updated subtree
      */
-    Node *remove(Node *&x, Key key) {
-        if (key < x->key) x->left = remove(x->left, key);
-        else if (key > x->key) x->right = remove(x->right, key);
+    int remove(int x, Key key) {
+        if (key < KEY[x]) L[x] = remove(L[x], key);
+        else if (key > KEY[x]) R[x] = remove(R[x], key);
         else {
-            if (x->left == nullptr) return x->right;
-            else if (x->right == nullptr) return x->left;
+            if (L[x] == 0) return R[x];
+            else if (R[x] == 0) return L[x];
             else {
-                Node *y = x;
-                x = getMin(y->right);
-                x->right = removeMin(y->right);
-                x->left = y->left;
-                free(y);
+                int y = x;
+                x = getMin(R[y]);
+                R[x] = removeMin(R[y]);
+                L[x] = L[y];
             }
         }
         return balance(x);
@@ -330,12 +280,12 @@ private:
      * @return the node in the subtree with the largest key less than or equal
      *         to the given key
      */
-    Node *floor(Node *&x, Key key) {
-        if (x == nullptr) return nullptr;
-        if (key == x->key) return x;
-        if (key < x->key) return floor(x->left, key);
-        Node *y = floor(x->right, key);
-        if (y != nullptr) return y;
+    int floor(int x, Key key) {
+        if (x == 0) return 0;
+        if (key == KEY[x]) return x;
+        if (key < KEY[x]) return floor(L[x], key);
+        int y = floor(R[x], key);
+        if (y != 0) return y;
         else return x;
     }
 
@@ -348,12 +298,12 @@ private:
      * @return the node in the subtree with the smallest key greater than or
      *         equal to the given key
      */
-    Node *ceiling(Node *&x, Key key) {
-        if (x == nullptr) return nullptr;
-        if (key == x->key) return x;
-        if (key > x->key) return ceiling(x->right, key);
-        Node *y = ceiling(x->left, key);
-        if (y != nullptr) return y;
+    int ceiling(int x, Key key) {
+        if (x == 0) return 0;
+        if (key == KEY[x]) return x;
+        if (key > KEY[x]) return ceiling(R[x], key);
+        int y = ceiling(L[x], key);
+        if (y != 0) return y;
         else return x;
     }
 
@@ -364,11 +314,11 @@ private:
      * @param k the kth smallest value in the subtree
      * @return the node with value the kth smallest value in the subtree
      */
-    Node *select(Node *&x, int k) {
-        if (x == nullptr) return nullptr;
-        int t = size(x->left);
-        if (t > k) return select(x->left, k);
-        else if (t < k) return select(x->right, k - t - 1);
+    int select(int x, int k) {
+        if (x == 0) return 0;
+        int t = SZ[L[x]];
+        if (t > k) return select(L[x], k);
+        else if (t < k) return select(R[x], k - t - 1);
         return x;
     }
 
@@ -379,11 +329,11 @@ private:
      * @param x the subtree
      * @return the number of keys in the subtree less than key
      */
-    int rank(Key key, Node *&x) {
-        if (x == nullptr) return 0;
-        if (key < x->key) return rank(key, x->left);
-        else if (key > x->key) return 1 + size(x->left) + rank(key, x->right);
-        else return size(x->left);
+    int getRank(int x, Key key) {
+        if (x == 0) return 0;
+        if (key < KEY[x]) return getRank(KEY[x], key);
+        else if (key > KEY[x]) return 1 + SZ[L[x]] + getRank(R[x], key);
+        else return SZ[L[x]];
     }
 
     /**
@@ -392,11 +342,11 @@ private:
      * @param x the subtree
      * @param queue the queue
      */
-    void keyValuePairsInOrder(Node *&x, vector<pair<Key, Value>> *queue) {
-        if (x == nullptr) return;
-        keyValuePairsInOrder(x->left, queue);
-        queue->push_back({x->key, x->val});
-        keyValuePairsInOrder(x->right, queue);
+    void keyValuePairsInOrder(int x, vector<pair<Key, Value>> *queue) {
+        if (x == 0) return;
+        keyValuePairsInOrder(L[x], queue);
+        queue->push_back({KEY[x], VAL[x]});
+        keyValuePairsInOrder(R[x], queue);
     }
 
     /**
@@ -408,26 +358,69 @@ private:
      * @param lo the lowest key
      * @param hi the highest key
      */
-    void keyValuePairs(Node *&x, vector<pair<Key, Value>> *queue, Key lo, Key hi) {
-        if (x == nullptr) return;
-        if (lo < x->key) keyValuePairs(x->left, queue, lo, hi);
-        if (lo <= x->key && hi >= x->key) queue->push_back({x->key, x->val});
-        if (hi > x->key) keyValuePairs(x->right, queue, lo, hi);
+    void keyValuePairs(int x, vector<pair<Key, Value>> *queue, Key lo, Key hi) {
+        if (x == 0) return;
+        if (lo < KEY[x]) keyValuePairs(L[x], queue, lo, hi);
+        if (lo <= KEY[x] && hi >= KEY[x]) queue->push_back({KEY[x], VAL[x]});
+        if (hi > KEY[x]) keyValuePairs(R[x], queue, lo, hi);
     }
 
-    long long query(Node *&x, Key lo, Key hi) {
-        if (x == nullptr) return 0LL;
-        if (lo <= x->minKey && hi >= x->maxKey) return x->gcd;
-        if (hi < x->key) return query(x->left, lo, hi);
-        if (lo > x->key) return query(x->right, lo, hi);
-        return gcd2(x->val, gcd2(query(x->left, lo, x->left ? x->left->maxKey : hi), query(x->right, x->right ? x->right->minKey : lo, hi)));
+    /**
+     * Queries the tree between {@code lo} and {@code hi} in the subtree.
+     *
+     * @param x the subtree
+     * @param lo the lower bound
+     * @param hi the upper bound
+     * @return the result of the query between {@code lo} (inclusive)
+     *         and {@code hi} (inclusive)
+     */
+    int minQuery(int x, Key lo, Key hi) {
+        if (x == 0) return INT_MAX;
+        if (lo <= LO[x] && hi >= HI[x]) return MIN[x];
+        if (hi < KEY[x]) return minQuery(L[x], lo, hi);
+        if (lo > KEY[x]) return minQuery(R[x], lo, hi);
+        return min(min(L[x] ? minQuery(L[x], lo, HI[L[x]]) : INT_MAX, R[x] ? minQuery(R[x], LO[R[x]], hi) : INT_MAX), VAL[x]);
+    }
+
+    pair<int, int> gcdQuery(int x, Key lo, Key hi) {
+        if (x == 0) return {0, 0};
+        if (lo <= LO[x] && hi >= HI[x]) return {GCD[x], CNT[x]};
+        if (hi < KEY[x]) return gcdQuery(L[x], lo, hi);
+        if (lo > KEY[x]) return gcdQuery(R[x], lo, hi);
+        pair<int, int> left = L[x] ? gcdQuery(L[x], lo, HI[L[x]]) : make_pair(0, 0);
+        pair<int, int> right = R[x] ? gcdQuery(R[x], LO[R[x]], hi) : make_pair(0, 0);
+        int g = gcd(gcd(left.first, right.first), VAL[x]);
+        int c = g == VAL[x] ? 1 : 0;
+        if (left.first == g) c += left.second;
+        if (right.first == g) c += right.second;
+        return {g, c};
     }
 
 public:
     /**
-     * Initializes an empty symbol table.
+     * Initializes an empty symbol table with a fixed size.
+     *
+     * @param N the maximum size of the symbol table
      */
-    AVLTree() {}
+    AVLDynamicSegmentTree(int N) {
+        KEY = new Key[N];
+        LO = new Key[N];
+        HI = new Key[N];
+        VAL = new Value[N];
+        MIN = new int[N];
+        GCD = new int[N];
+        CNT = new int[N];
+        HT = new int[N];
+        SZ = new int[N];
+        L = new int[N];
+        R = new int[N];
+        root = 0;
+        HT[root] = -1;
+        SZ[root] = 0;
+        L[root] = 0;
+        R[root] = 0;
+        cnt = 1;
+    }
 
     /**
      * Checks if the symbol table is empty.
@@ -435,7 +428,7 @@ public:
      * @return {@code true} if the symbol table is empty.
      */
     bool isEmpty() {
-        return root == nullptr;
+        return root == 0;
     }
 
     /**
@@ -444,7 +437,7 @@ public:
      * @return the number key-value pairs in the symbol table
      */
     int size() {
-        return size(root);
+        return SZ[root];
     }
 
     /**
@@ -455,7 +448,7 @@ public:
      * @return the height of the internal AVL tree
      */
     int height() {
-        return height(root);
+        return HT[root];
     }
 
     /**
@@ -468,8 +461,8 @@ public:
      */
     Value get(Key key) {
         no_such_element_exception("no such key is in the symbol table");
-        Node *x = get(root, key);
-        return x->val;
+        int x = get(root, key);
+        return VAL[x];
     }
 
     /**
@@ -480,7 +473,7 @@ public:
      *         and {@code false} otherwise
      */
     bool contains(Key key) {
-        return get(root, key) != nullptr;
+        return get(root, key) != 0;
     }
 
     /**
@@ -523,7 +516,7 @@ public:
      */
     void removeMax() {
         if (isEmpty()) throw runtime_error("called removeMax() with empty symbol table");
-        root = deleteMax(root);
+        root = removeMax(root);
     }
 
     /**
@@ -534,8 +527,8 @@ public:
      */
     pair<Key, Value> getMin() {
         if (isEmpty()) throw runtime_error("called getMin() with empty symbol table");
-        Node *x = getMin(root);
-        return {x->key, x->val};
+        int x = getMin(root);
+        return {KEY[x], VAL[x]};
     }
 
     /**
@@ -546,8 +539,8 @@ public:
      */
     pair<Key, Value> getMax() {
         if (isEmpty()) throw runtime_error("called getMax() with empty symbol table");
-        Node *x = getMax(root);
-        return {x->key, x->val};
+        int x = getMax(root);
+        return {KEY[x], VAL[x]};
     }
 
     /**
@@ -560,9 +553,9 @@ public:
      */
     pair<Key, Value> floor(Key key) {
         if (isEmpty()) throw runtime_error("called floor() with empty symbol table");
-        Node *x = floor(root, key);
-        if (x == nullptr) throw no_such_element_exception("call to floor() resulted in no such value");
-        return {x->key, x->val};
+        int x = floor(root, key);
+        if (x == 0) throw no_such_element_exception("call to floor() resulted in no such value");
+        return {KEY[x], VAL[x]};
     }
 
     /**
@@ -575,9 +568,9 @@ public:
      */
     pair<Key, Value> ceiling(Key key) {
         if (isEmpty()) throw runtime_error("called ceiling() with empty symbol table");
-        Node *x = ceiling(root, key);
-        if (x == nullptr) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        return {x->key, x->val};
+        int x = ceiling(root, key);
+        if (x == 0) throw no_such_element_exception("call to ceiling() resulted in no such value");
+        return {KEY[x], VAL[x]};
     }
 
     /**
@@ -590,8 +583,8 @@ public:
      */
     pair<Key, Value> select(int k) {
         if (k < 0 || k >= size()) throw invalid_argument("k is not in range 0 to size");
-        Node *x = select(root, k);
-        return {x->key, x->val};
+        int x = select(root, k);
+        return {KEY[x], VAL[x]};
     }
 
     /**
@@ -602,8 +595,8 @@ public:
      * @return the number of keys in the symbol table strictly less than
      *         {@code key}
      */
-    int rank(Key key) {
-        return rank(key, root);
+    int getRank(Key key) {
+        return getRank(root, key);
     }
 
     /**
@@ -631,8 +624,20 @@ public:
         return queue;
     }
 
-    long long query(Key lo, Key hi) {
-        return query(root, lo, hi);
+    /**
+     * Returns the result of the query in the given range.
+     *
+     * @param lo the lower bound
+     * @param hi the upper bound
+     * @return the result of the query between {@code lo} (inclusive)
+     *         and {@code hi} (inclusive)
+     */
+    int minQuery(Key lo, Key hi) {
+        return minQuery(root, lo, hi);
+    }
+
+    pair<int, int> gcdQuery(Key lo, Key hi) {
+        return gcdQuery(root, lo, hi);
     }
 
     /**
@@ -645,111 +650,38 @@ public:
      */
     int size(Key lo, Key hi) {
         if (lo > hi) return 0;
-        if (contains(hi)) return rank(hi) - rank(lo) + 1;
-        else return rank(hi) - rank(lo);
+        if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
+        else return getRank(hi) - getRank(lo);
     }
 };
 
-struct DynamicSegmentTree {
-    struct Node {
-    public:
-        Node *up = nullptr, *down = nullptr;
-        AVLTree<Cell, long long> *rowTree = nullptr;
-    };
+AVLDynamicSegmentTree<int, int> *st;
 
-private:
-    Node *root;
-    int R; // number of rows
-    int C; // number of columns
 
-    void update(Node *cur, int cU, int cD, int rowInd, int colInd, long long val) {
-        if (cU > rowInd || cD < rowInd) return;
-        if (cur->rowTree == nullptr) cur->rowTree = new AVLTree<Cell, long long>();
-        cur->rowTree->put({rowInd, colInd}, val);
-        if (cU >= rowInd && cD <= rowInd) return;
-        int m = cU + (cD - cU) / 2;
-        if (rowInd <= m) {
-           if (cur->up == nullptr) cur->up = new Node();
-           update(cur->up, cU, m, rowInd, colInd, val);
-        } else {
-           if (cur->down == nullptr) cur->down = new Node();
-           update(cur->down, m + 1, cD, rowInd, colInd, val);
-        }
-    }
-
-    long long query(Node *cur, int cU, int cD, int u, int l, int d, int r) {
-        if (cur == nullptr || cU > d || cD < u) return 0LL;
-        if (cU >= u && cD <= d) {
-            if (cur->rowTree == nullptr) return 0LL;
-            return cur->rowTree->query({u, l}, {d, r});
-        }
-        int m = cU + (cD - cU) / 2;
-        if (d <= m) return query(cur->up, cU, m, u, l, d, r);
-        else if (u > m) return query(cur->down, m + 1, cD, u, l, d, r);
-        long long up = query(cur->up, cU, m, u, l, m, r);
-        long long down = query(cur->down, m + 1, cD, m + 1, l, d, r);
-        return gcd2(up, down);
-    }
-
-public:
-    DynamicSegmentTree(int rows, int cols) {
-        root = new Node();
-        R = rows;
-        C = cols;
-    }
-
-    void update(int rowInd, int colInd, long long val) {
-        update(root, 1, R, rowInd, colInd, val);
-    }
-
-    long long query(int u, int l, int d, int r) {
-        return query(root, 1, R, u, l, d, r);
-    }
-
-    int rows() {
-        return R;
-    }
-
-    int cols() {
-        return C;
-    }
-} *st;
-
-void init(int R, int C) {
-    st = new DynamicSegmentTree(R, C);
-}
-
-void update(int P, int Q, long long K) {
-    st->update(P + 1, Q + 1, K);
-}
-
-long long calculate(int P, int Q, int U, int V) {
-    return st->query(P + 1, Q + 1, U + 1, V + 1);
-}
+int N, M, x, y;
+char op;
 
 int main() {
-    int R, C, N;
-    ri(R);
-    ri(C);
     ri(N);
-    init(R, C);
-    for (int i = 0; i < N; i++) {
-        int T;
-        ri(T);
-        if (T == 1) {
-            int P, Q;
-            ll K;
-            ri(P);
-            ri(Q);
-            rll(K);
-            update(P, Q, K);
-        } else if (T == 2) {
-            int P, Q, U, V;
-            ri(P);
-            ri(Q);
-            ri(U);
-            ri(V);
-            printf("%lld\n", calculate(P, Q, U, V));
+    ri(M);
+    st = new AVLDynamicSegmentTree<int, int>(N);
+    for (int i = 1; i <= N; i++) {
+        int x;
+        ri(x);
+        st->put(i, x);
+    }
+    for (int i = 0; i < M; i++) {
+        rc(op);
+        ri(x);
+        ri(y);
+        if (op == 'C') {
+            st->put(x, y);
+        } else if (op =='M') {
+            printf("%d\n", st->minQuery(x, y));
+        } else if (op == 'G') {
+            printf("%d\n", st->gcdQuery(x, y).f);
+        } else if (op == 'Q') {
+            printf("%d\n", st->gcdQuery(x, y).s);
         } else {
             i--;
         }
