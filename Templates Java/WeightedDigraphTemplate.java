@@ -1062,7 +1062,7 @@ public class WeightedDigraphTemplate {
         @Override
         public int hashCode() {
             int result = 31 * v + w;
-            result = 31 * result + (int) (new Double(weight).hashCode() ^ (new Double(weight).hashCode() >>> 32));
+            result = 31 * result + ((Double) weight).hashCode();
             return result;
         }
         
