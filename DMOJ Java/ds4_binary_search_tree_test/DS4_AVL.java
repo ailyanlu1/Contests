@@ -12,9 +12,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class DS4 {
+public class DS4_AVL {
 
-    private static DS4 o = new DS4();
+    private static DS4_AVL o = new DS4_AVL();
     
     public class Reader {
         private BufferedReader in;
