@@ -389,6 +389,7 @@ public:
      * @param N the initial capacity of the symbol table
      */
     SBTArraySet(int N) {
+        N++; // zero node is never used
         VAL = new Value[N];
         SZ = new int[N];
         L = new int[N];
