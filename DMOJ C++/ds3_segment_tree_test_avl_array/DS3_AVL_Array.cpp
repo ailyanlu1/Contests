@@ -1,5 +1,5 @@
 /*
- * DS3_AVL.cpp
+ * DS3_AVL_Array.cpp
  *
  *  Created on: Jul 5, 2017
  *      Author: Wesley Leung
@@ -403,6 +403,7 @@ public:
      * @param N the maximum size of the symbol table
      */
     AVLDynamicSegmentTree(int N) {
+        N++;
         KEY = new Key[N];
         LO = new Key[N];
         HI = new Key[N];
