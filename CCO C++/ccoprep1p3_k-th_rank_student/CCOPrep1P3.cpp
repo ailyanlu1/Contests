@@ -115,19 +115,19 @@ Node *maintain(Node *&x, bool flag) {
     return x;
 }
 
-Node *put(Node *&x, Node *y) {
-    if (x == nullptr) return y;
-    if (y->rank < x->rank) x->left = put(x->left, y);
-    else x->right = put(x->right, y);
+Node *put(Node *&x, int rank, int id) {
+    if (x == nullptr) return new Node(rank, id);
+    if (rank < x->rank) x->left = put(x->left, rank, id);
+    else x->right = put(x->right, rank, id);
     update(x);
-    return maintain(x, y->rank > x->rank);
+    return maintain(x, rank > x->rank);
 }
 
 void merge(Node *&x, Node *&y) {
     if (x == nullptr) return;
     merge(x->left, y);
     merge(x->right, y);
-    y = put(y, x);
+    y = put(y, x->rank, x->id);
 }
 
 int select(Node *&x, int k) {
@@ -151,8 +151,8 @@ public:
      * @param  n the number of sites
      */
     UF(int n) {
-        parent = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
+        parent = new int[n];
+        for (int i = 0; i < n; i++) {
             parent[i] = i;
         }
     }
@@ -194,10 +194,10 @@ UF *uf;
 int main() {
     ri(N);
     ri(M);
-    uf = new UF(N);
+    uf = new UF(N + 1);
     for (int i = 1; i <= N; i++) {
         ri(n);
-        tree[i] = put(tree[i], new Node(n, i));
+        tree[i] = put(tree[i], n, i);
     }
     for (int i = 0; i < M; i++) {
         ri(x);
