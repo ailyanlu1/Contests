@@ -223,7 +223,7 @@ int main() {
         ft->update(i, 1);
     }
     sort(T + 1, T + K + 1);
-    T[K + 1].f = INT_INF;
+    T[K + 1] = {INT_INF, K + 1};
     st = new SegmentTree(K + 1);
     for (int i = 1; i <= N; i++) {
         for ( ; cur <= K && T[cur].f < C[i].MAX; cur++) {
