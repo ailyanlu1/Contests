@@ -468,7 +468,7 @@ public class DigraphTemplate {
             if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
             else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
             else {
-                parent[rootQ] = rootP;
+                parent[rootQ] = rootQ;
                 rank[rootP]--;
             }
             count++;

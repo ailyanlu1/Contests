@@ -469,7 +469,7 @@ public class GraphTemplate {
             if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
             else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
             else {
-                parent[rootQ] = rootP;
+                parent[rootQ] = rootQ;
                 rank[rootP]--;
             }
             count++;
@@ -483,7 +483,7 @@ public class GraphTemplate {
             }
         }
     }
-
+    
     public class Graph {
         private final String NEWLINE = System.getProperty("line.separator");
 
