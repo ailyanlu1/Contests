@@ -1,5 +1,6 @@
 import sys
 input = sys.stdin.readline
+
 N = int(input())
 hor = ' *' * 3 + '\n'
 ver2 = ('*' + ' ' * 5 + '*\n') * 3
