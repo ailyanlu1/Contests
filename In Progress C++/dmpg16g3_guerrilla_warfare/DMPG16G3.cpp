@@ -172,6 +172,7 @@ private:
     int *depth, *parent, *chain, *size, *head, *base, *val;
     int chainNum, baseNum;
     LazySegmentTree *st;
+    Graph *G;
     int n;
 
     void dfs(Graph *G, int v, int d, int prev) {
@@ -231,6 +232,7 @@ public:
         hld(G, 0, -1);
         st = new LazySegmentTree(G->getV(), val, true);
         n = G->getV();
+        this->G = G;
     }
 
     /**
@@ -256,6 +258,7 @@ public:
     }
 
     int query(int v) {
+        int below = st->query(base[v], base[v] + size[v] - 1);
         // TODO
         return 0;
     }
