@@ -1,47 +1,40 @@
+from collections import deque
 import sys
+input = sys.stdin.readline
 
 
-def bfs(a, N, p, q):
-    v = []
-    for r in range(N):
-        v.append(False)
-    queue = []
-    for x in a[p]:
-        queue.append(x)
-    while len(queue) > 0:
-        h = queue.pop(0)
-        if h == q:
-            return True
-        if not v[h]:
-            v[h] = True
-            for x in a[h]:
-                queue.append(x)
+def bfs(s, t):
+    marked = [False] * N
+    if s == t:
+        return True
+    q = deque()
+    marked[s] = True
+    q.append(s)
+    while len(q) != 0:
+        v = q.popleft()
+        for w in adj[v]:
+            if not marked[w]:
+                if w == t:
+                    return True
+                marked[w] = True
+                q.append(w)
     return False
 
 
-x = sys.stdin.readline().strip().split()
-N = int(x[0])
-M = int(x[1])
-
-a = []
-for r in range(N):
-    row = []
-    a.append(row)
-
+N, M = map(int, input().split())
+adj = []
+for i in range(N):
+    adj.append([])
 
 for i in range(M):
-    x = sys.stdin.readline().strip().split()
-    p = int(x[0]) - 1
-    q = int(x[1]) - 1
-    a[p].append(q)
+    x, y = map(int, input().split())
+    adj[x - 1].append(y - 1)
 
-x = sys.stdin.readline().strip().split()
-p = int(x[0]) - 1
-q = int(x[1]) - 1
+p, q = map(int, input().split())
 
-if bfs(a, N, p, q):
+if bfs(p - 1, q - 1):
     print("yes")
-elif bfs(a, N, q, p):
+elif bfs(q - 1, p - 1):
     print("no")
 else:
     print("unknown")
