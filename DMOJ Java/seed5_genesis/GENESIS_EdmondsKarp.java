@@ -733,8 +733,8 @@ public class GENESIS_EdmondsKarp {
             int w = in.nextInt();
             G.addEdge(o.new FlowEdge(out(v), in(w), Integer.MAX_VALUE));
         }
-        EdmondsKarpMaxFlow ff = o.new EdmondsKarpMaxFlow(G, in(1), in(N));
-        out.println((int) ff.value());
+        EdmondsKarpMaxFlow mf = o.new EdmondsKarpMaxFlow(G, in(1), in(N));
+        out.println((int) mf.value());
         out.close();
     }
     

@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class GENESIS_Dinic {
-    private static GENESIS_Dinic o = new GENESIS_Dinic();
+public class GENESIS_PushRelabel {
+    private static GENESIS_PushRelabel o = new GENESIS_PushRelabel();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;
@@ -502,14 +502,18 @@ public class GENESIS_Dinic {
         }
     }
     
-    public class DinicMaxFlow {
+    public class PushRelabelMaxFlow {
+        private static final double FLOATING_POINT_EPSILON = 1E-10;
+        
         private final int V;
         private double value;
-        private int[] level;
-        private int[] start;
+        private int[] height;
+        private double[] excess;
+        private boolean[] done;
+        
         
         /**
-         * Compute a maximum flow and minimum cut in the network {@code G}
+         * Compute a maximum flow and in the network {@code G}
          * from vertex {@code s} to vertex {@code t}.
          *
          * @param  G the flow network
@@ -519,22 +523,59 @@ public class GENESIS_Dinic {
          * @throws IllegalArgumentException unless {@code 0 <= t < V}
          * @throws IllegalArgumentException if {@code s == t}
          */
-        public DinicMaxFlow(FlowNetwork G, int s, int t) {
+        public PushRelabelMaxFlow(FlowNetwork G, int s, int t) {
             V = G.V();
             validate(s);
             validate(t);
             if (s == t) throw new IllegalArgumentException("Source equals sink");
-            level = new int[V];
-            start = new int[V];
-            while (hasAugmentingPath(G, s, t)) {
-                for (int v = 0; v < V; v++) {
-                    start[v] = 0;
+            Queue<Integer> q = new Queue<Integer>();
+            height = new int[G.V()];
+            height[s] = G.V();
+            excess = new double[G.V()];
+            done = new boolean[G.V()];
+            for (FlowEdge e : G.adj(s)) {
+                int v = e.other(s);
+                if (v == e.to()) {
+                    e.addResidualFlowTo(v, e.capacity());
+                    excess[s] -= e.capacity();
+                    excess[v] += e.capacity();
                 }
-                double flow;
-                while ((flow = sendFlow(G, s, t, start, Double.POSITIVE_INFINITY)) > 0) {
-                    value += flow;
+                if (v != t) {
+                    done[v] = true;
+                    q.enqueue(v);
                 }
             }
+            
+            while (!q.isEmpty()) {
+                int v = q.peek();
+                int tempHeight = 2 * G.V();
+                for (FlowEdge e : G.adj(v)) {
+                    if (Math.abs(excess[v]) <= FLOATING_POINT_EPSILON) break;
+                    int w = e.other(v);
+                    if (e.residualCapacityTo(w) > FLOATING_POINT_EPSILON) {
+                        if (height[v] > height[w]) {
+                            // PUSH
+                            double tempFlow = Math.min(excess[v], e.residualCapacityTo(w));
+                            e.addResidualFlowTo(w, tempFlow);
+                            excess[v] -= tempFlow;
+                            excess[w] += tempFlow;
+                            // END PUSH
+                            if (!done[w] && w != s && w != t) {
+                                done[w] = true;
+                                q.enqueue(w);
+                            }
+                        } else {
+                            tempHeight = Math.min(height[v], tempHeight);
+                        }
+                    }
+                }
+                if (excess[v] > FLOATING_POINT_EPSILON) height[v] = tempHeight + 1;
+                else {
+                    done[v] = false;
+                    q.dequeue();
+                }
+            }
+            value = excess[t];
         }
         
         /**
@@ -546,69 +587,14 @@ public class GENESIS_Dinic {
             return value;
         }
 
-        /**
-         * Returns true if the specified vertex is on the {@code s} side of the mincut.
-         *
-         * @param  v vertex
-         * @return {@code true} if vertex {@code v} is on the {@code s} side of the micut;
-         *         {@code false} otherwise
-         * @throws IllegalArgumentException unless {@code 0 <= v < V}
-         */
-        public boolean inCut(int v)  {
-            validate(v);
-            return level[v] != -1;
-        }
         
         // throw an IllegalArgumentException if v is outside prescribed range
         private void validate(int v)  {
             if (v < 0 || v >= V)
                 throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
         }
-        
-        // is there an augmenting path? 
-        // this implementation finds a shortest augmenting path (fewest number of edges)
-        private boolean hasAugmentingPath(FlowNetwork G, int s, int t) {
-            for (int v = 0; v < V; v++) {
-                level[v] = -1;
-            }
-            level[s] = 0;
-            Queue<Integer> queue = new Queue<Integer>();
-            queue.enqueue(s);
-            while (!queue.isEmpty()) {
-                int v = queue.dequeue();
-                for (FlowEdge e : G.adj(v)) {
-                    int w = e.other(v);
-                    if (level[w] < 0 && e.residualCapacityTo(w) > 0) {
-                        level[w] = level[v] + 1;
-                        queue.enqueue(w);
-                    }
-                }
-            }
-            return level[t] < 0 ? false : true;
-        }
-        
-        // v : current vertex
-        // t : sink
-        // start : start[v] stores the number of edges that have been explored from v
-        // flow : current flow sent from parent
-        private double sendFlow(FlowNetwork G, int v, int t, int[] start, double flow) {
-            if (v == t) return flow;
-            for ( ; start[v] < G.adj(v).size(); start[v]++) {
-                FlowEdge e = G.adj(v).get(start[v]);
-                int w = e.other(v);
-                if (level[w] == level[v] + 1 && e.residualCapacityTo(w) > 0) {
-                    double curFlow = Math.min(flow, e.residualCapacityTo(w));
-                    double tempFlow = sendFlow(G, w, t, start, curFlow);
-                    if (tempFlow > 0) {
-                        e.addResidualFlowTo(w, tempFlow);
-                        return tempFlow;
-                    }
-                }
-            }
-            return 0;
-        }
     }
-
+    
     private static Reader in = o.new Reader(System.in);
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
@@ -628,7 +614,7 @@ public class GENESIS_Dinic {
             int w = in.nextInt();
             G.addEdge(o.new FlowEdge(out(v), in(w), Integer.MAX_VALUE));
         }
-        DinicMaxFlow mf = o.new DinicMaxFlow(G, in(1), in(N));
+        PushRelabelMaxFlow mf = o.new PushRelabelMaxFlow(G, in(1), in(N));
         out.println((int) mf.value());
         out.close();
     }  
