@@ -49,7 +49,7 @@ typedef unordered_map<ll, int> umlli;
 int N, S, t, f, T[MAXN + 1], F[MAXN + 1], dp[MAXN + 2];
 deque<int> q;
 
-double div2(int a, int b) {
+inline double div2(int a, int b) {
     return (double) (dp[b + 1] - dp[a + 1]) / (T[a] - T[b]);
 }
 
