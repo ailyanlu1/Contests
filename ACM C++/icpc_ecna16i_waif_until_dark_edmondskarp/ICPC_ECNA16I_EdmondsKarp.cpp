@@ -260,12 +260,12 @@ public:
      * @return the edges incident on vertex {@code v} as an Iterable
      * @throws invalid_argument unless {@code 0 <= v < V}
      */
-    vector<FlowEdge*> adj(int v) {
+    vector<FlowEdge*> &adj(int v) {
         return adjList[v];
     }
 
     // return list of all edges - excludes self loops
-    vector<FlowEdge*> edges() {
+    vector<FlowEdge*> &edges() {
         vector<FlowEdge*> list;
         for (int v = 0; v < V; v++)
             for (FlowEdge *e : adj(v)) {

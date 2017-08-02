@@ -158,7 +158,7 @@ public:
         E++;
     }
 
-    vector<int> adj(int v) {
+    vector<int> &adj(int v) {
         return adjList[v];
     }
 

@@ -100,7 +100,7 @@ public:
         E++;
     }
 
-    vector<WeightedEdge*> adjTo(int v) {
+    vector<WeightedEdge*> &adjTo(int v) {
         return adj[v];
     }
 
@@ -108,7 +108,7 @@ public:
         return adj[v].size();
     }
 
-    vector<WeightedEdge*> edges() {
+    vector<WeightedEdge*> &edges() {
         vector<WeightedEdge*> list;
         for (int v = 0; v < V; v++) {
             int selfLoops = 0;
