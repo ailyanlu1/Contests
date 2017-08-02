@@ -14,6 +14,7 @@ for i in range(N):
     largeInd = bisect.bisect_right(large, r)
     total += len(large) - largeInd + sum(x > r for x in small) + 1
     if len(small) > sqrtN:
-        large = sorted(large + small)
+        large += small
+        large.sort()
         small = []
 print('%.2f' % (total / N))
