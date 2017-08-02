@@ -5,7 +5,7 @@ input = sys.stdin.readline
 def isAWord(word):
     if word == 'A':
         return True
-    if len(word) >= 1 and word[0] == 'B' and isMonkey(word[1:-1]) and word[-1] == 'S':
+    if len(word) >= 1 and word[0] == 'B' and word[-1] == 'S' and isMonkey(word[1:-1]):
         return True
     return False
 
