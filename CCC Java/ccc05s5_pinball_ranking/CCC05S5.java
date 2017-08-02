@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
@@ -265,32 +264,26 @@ public class CCC05S5 {
          * @throws IllegalArgumentException if {@code val} is {@code null}
          */
         public boolean contains(Value val) {
+            if (val == null) throw new IllegalArgumentException("argument to delete() is null");
             return contains(root, val);
         }
 
         // auxiliary method for contains
-        private boolean contains(Node n, Value val) {
-            if (n == null)
-                return false;
-            else if (val.compareTo(n.val) < 0)
-                return contains(n.left, val);
-            else if (val.compareTo(n.val) > 0)
-                return contains(n.right, val);
+        private boolean contains(Node x, Value val) {
+            if (x == null) return false;
+            else if (val.compareTo(x.val) < 0) return contains(x.left, val);
+            else if (val.compareTo(x.val) > 0) return contains(x.right, val);
             return true;
         }
 
         /**
          * Inserts the specified value into the symbol table, allowing for duplicates.
-         * Deletes the specified values from this symbol table if the specified value is {@code null}.
          * 
          * @param val the value
-         * @throws IllegalArgumentException if {@code key} is {@code null}
+         * @throws IllegalArgumentException if {@code val} is {@code null}
          */
         public void add(Value val) {
-            if (val == null) {
-                delete(val);
-                return;
-            }
+            if (val == null) throw new IllegalArgumentException("argument to delete() is null");
             root = add(root, val);
         }
         
@@ -305,14 +298,8 @@ public class CCC05S5 {
         private Node add(Node x, Value val) {
             if (x == null) return new Node(val, 0, 1);
             int cmp = val.compareTo(x.val);
-            if (cmp < 0) {
-                x.left = add(x.left, val);
-            }
-            else {
-                x.right = add(x.right, val);
-            }
-            x.size = 1 + size(x.left) + size(x.right);
-            x.height = 1 + Math.max(height(x.left), height(x.right));
+            if (cmp < 0) x.left = add(x.left, val);
+            else x.right = add(x.right, val);
             return balance(x);
         }
 
@@ -324,17 +311,13 @@ public class CCC05S5 {
          */
         private Node balance(Node x) {
             if (balanceFactor(x) < -1) {
-                if (balanceFactor(x.right) > 0) {
-                    x.right = rotateRight(x.right);
-                }
+                if (balanceFactor(x.right) > 0) x.right = rotateRight(x.right);
                 x = rotateLeft(x);
-            }
-            else if (balanceFactor(x) > 1) {
-                if (balanceFactor(x.left) < 0) {
-                    x.left = rotateLeft(x.left);
-                }
+            } else if (balanceFactor(x) > 1) {
+                if (balanceFactor(x.left) < 0) x.left = rotateLeft(x.left);
                 x = rotateRight(x);
             }
+            update(x);
             return x;
         }
 
@@ -362,10 +345,8 @@ public class CCC05S5 {
             Node y = x.left;
             x.left = y.right;
             y.right = x;
-            y.size = x.size;
-            x.size = 1 + size(x.left) + size(x.right);
-            x.height = 1 + Math.max(height(x.left), height(x.right));
-            y.height = 1 + Math.max(height(y.left), height(y.right));
+            update(x);
+            update(y);
             return y;
         }
 
@@ -379,18 +360,26 @@ public class CCC05S5 {
             Node y = x.right;
             x.right = y.left;
             y.left = x;
-            y.size = x.size;
+            update(x);
+            update(y);
+            return y;
+        }
+        
+        /**
+         * Updates the size and height of the subtree.
+         *
+         * @param x the subtree
+         */
+        private void update(Node x) {
             x.size = 1 + size(x.left) + size(x.right);
             x.height = 1 + Math.max(height(x.left), height(x.right));
-            y.height = 1 + Math.max(height(y.left), height(y.right));
-            return y;
         }
 
         /**
          * Removes the specified value from the symbol table
          * 
          * @param val the value
-         * @throws IllegalArgumentException if {@code key} is {@code null}
+         * @throws IllegalArgumentException if {@code val} is {@code null}
          */
         public void delete(Value val) {
             if (val == null) throw new IllegalArgumentException("argument to delete() is null");
@@ -408,19 +397,11 @@ public class CCC05S5 {
          */
         private Node delete(Node x, Value val) {
             int cmp = val.compareTo(x.val);
-            if (cmp < 0) {
-                x.left = delete(x.left, val);
-            }
-            else if (cmp > 0) {
-                x.right = delete(x.right, val);
-            }
+            if (cmp < 0) x.left = delete(x.left, val);
+            else if (cmp > 0) x.right = delete(x.right, val);
             else {
-                if (x.left == null) {
-                    return x.right;
-                }
-                else if (x.right == null) {
-                    return x.left;
-                }
+                if (x.left == null) return x.right;
+                else if (x.right == null) return x.left;
                 else {
                     Node y = x;
                     x = min(y.right);
@@ -428,8 +409,6 @@ public class CCC05S5 {
                     x.left = y.left;
                 }
             }
-            x.size = 1 + size(x.left) + size(x.right);
-            x.height = 1 + Math.max(height(x.left), height(x.right));
             return balance(x);
         }
 
@@ -452,13 +431,11 @@ public class CCC05S5 {
         private Node deleteMin(Node x) {
             if (x.left == null) return x.right;
             x.left = deleteMin(x.left);
-            x.size = 1 + size(x.left) + size(x.right);
-            x.height = 1 + Math.max(height(x.left), height(x.right));
             return balance(x);
         }
 
         /**
-         * Removes the largest key and associated value from the symbol table.
+         * Removes the largest value from the symbol table.
          * 
          * @throws NoSuchElementException if the symbol table is empty
          */
@@ -468,7 +445,7 @@ public class CCC05S5 {
         }
 
         /**
-         * Removes the largest key and associated value from the given subtree.
+         * Removes the largest value from the given subtree.
          * 
          * @param x the subtree
          * @return the updated subtree
@@ -476,8 +453,6 @@ public class CCC05S5 {
         private Node deleteMax(Node x) {
             if (x.right == null) return x.left;
             x.right = deleteMax(x.right);
-            x.size = 1 + size(x.left) + size(x.right);
-            x.height = 1 + Math.max(height(x.left), height(x.right));
             return balance(x);
         }
 
@@ -545,7 +520,7 @@ public class CCC05S5 {
 
         /**
          * Returns the node in the subtree with the largest value less than or equal
-         * to the given key.
+         * to the given value.
          * 
          * @param x the subtree
          * @param val the value
@@ -600,32 +575,25 @@ public class CCC05S5 {
         }
 
         /**
-         * Returns the kth smallest key in the symbol table.
+         * Returns the kth smallest value in the symbol table.
          * 
          * @param k the order statistic
-         * @return the kth smallest key in the symbol table
+         * @return the kth smallest value in the symbol table
          * @throws IllegalArgumentException unless {@code k} is between 0 and
          *             {@code size() -1 }
          */
         public Value select(int k) {
             if (k < 0 || k >= size()) throw new IllegalArgumentException("k is not in range 0-" + (size() - 1));
-            return select(root, k + 1);
+            return select(root, k).val;
         }
-
-        private Value select(Node x, int k) {
-            if (x == null) {
-                return null;
-            }
-
-            int rank = size(x.left) + 1;
-
-            if (rank == k) {
-                return x.val;
-            } else if (rank > k) {
-                return select(x.left, k);
-            } else {
-                return select(x.right, k - rank);
-            }
+        
+        // auxiliary method for select
+        private Node select(Node x, int k) {
+            if (x == null) return null;
+            int t = size(x.left);
+            if (t > k) return select(x.left, k);
+            else if (t < k) return select(x.right, k - t - 1);
+            return x;
         }
 
         /**
@@ -639,7 +607,7 @@ public class CCC05S5 {
          */
         public int rank(Value val) {
             if (val == null) throw new IllegalArgumentException("argument to rank() is null");
-            return (rank(root, val)) - 1;
+            return rank(root, val);
         }
 
         /**
@@ -649,38 +617,10 @@ public class CCC05S5 {
          * @param x the subtree
          * @return the number of values in the subtree less than val
          */
-        private int rank(Node n, Value val) {
-            if (n == null) {
-                return -1;
-            }
-
-            if (n.val.compareTo(val) == 0) {
-                int temp = rank(n.left, val);
-                if (temp == -1) {
-                    return size(n.left) + 1;
-                } else {
-                    return temp;
-                }
-            } else if (val.compareTo(n.val) < 0) {
-                return rank(n.left, val);
-            } else {
-                int temp = rank(n.right, val);
-                if (temp == -1) {
-                    return temp;
-                } else {
-                    return size(n.left) + 1 + temp;
-                }
-
-            }
-        }
-
-        /**
-         * Returns all values in the symbol table.
-         * 
-         * @return all values in the symbol table
-         */
-        public Iterable<Value> values() {
-            return valuesInOrder();
+        private int rank(Node x, Value val) {
+            if (x == null) return 0;
+            if (val.compareTo(x.val) <= 0) return rank(x.left, val);
+            else return 1 + size(x.left) + rank(x.right, val);
         }
 
         /**
@@ -688,7 +628,7 @@ public class CCC05S5 {
          * 
          * @return all values in the symbol table following an in-order traversal
          */
-        public Iterable<Value> valuesInOrder() {
+        public Iterable<Value> values() {
             Queue<Value> queue = new Queue<Value>();
             valuesInOrder(root, queue);
             return queue;
@@ -720,12 +660,8 @@ public class CCC05S5 {
                 while (!queue2.isEmpty()) {
                     Node x = queue2.dequeue();
                     queue.enqueue(x.val);
-                    if (x.left != null) {
-                        queue2.enqueue(x.left);
-                    }
-                    if (x.right != null) {
-                        queue2.enqueue(x.right);
-                    }
+                    if (x.left != null) queue2.enqueue(x.left);
+                    if (x.right != null) queue2.enqueue(x.right);
                 }
             }
             return queue;
@@ -784,13 +720,11 @@ public class CCC05S5 {
             if (contains(hi)) return rank(hi) - rank(lo) + 1;
             else return rank(hi) - rank(lo);
         }
-
     }
     
     public static void main(String[] args) throws IOException {
         Reader in = o.new Reader(System.in);
         PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
-        DecimalFormat output = new DecimalFormat("0.00");
         long N = in.nextLong();
         AVLTreeSet<Long> avl = o.new AVLTreeSet<Long>();
         long sum = 0;
@@ -800,8 +734,7 @@ public class CCC05S5 {
             int rank = avl.rank(-r) + 1;
             sum += rank;
         }
-        double avg = Math.round(((double) (sum) / (double) (N)) * 100.00 - 0.01) / 100.00;
-        out.println(output.format(avg));
+        out.printf("%.2f\n", (((double) (sum) / (double) (N)) * 100.00 - 0.01) / 100.00);
         out.close();
     }
 }
