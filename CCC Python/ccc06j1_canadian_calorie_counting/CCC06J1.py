@@ -11,4 +11,4 @@ side = int(input())
 drink = int(input())
 dessert = int(input())
 total = burgerCal[burger] + sideCal[side] + drinkCal[drink] + dessertCal[dessert]
-print('You total Calorie count is ' + str(total) + '.')
+print('Your total Calorie count is ' + str(total) + '.')
