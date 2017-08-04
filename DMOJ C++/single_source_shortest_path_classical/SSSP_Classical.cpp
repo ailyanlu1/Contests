@@ -1,7 +1,7 @@
 /*
- * SSSP.cpp
+ * SSSP_Classical.cpp
  *
- *  Created on: Jul 8, 2017
+ *  Created on: Aug 4, 2017
  *      Author: Wesley Leung
  */
 
@@ -155,23 +155,26 @@ int N, M, u, v, w;
 WeightedGraph *G;
 
 double *distTo;
-priority_queue<pair<double, int>, vector<pair<double, int>> , greater<pair<double, int>>> pq;
+bool *marked;
 
 void dijkstraSP(int s) {
     distTo = new double[G->getV()];
+    marked = new bool[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
         distTo[v] = numeric_limits<double>::infinity();
+        marked[v] = false;
     }
     distTo[s] = 0.0;
-    pq.push({distTo[s], s});
-    while (!pq.empty()) {
-        int v = pq.top().second;
-        pq.pop();
-        for (WeightedEdge *e : G->adj(v)) {
-            int w = e->other(v);
-            if (distTo[w] > distTo[v] + e->getWeight()) {
-                distTo[w] = distTo[v] + e->getWeight();
-                pq.push({distTo[w], w});
+    for (int v = 0; v < G->getV() - 1; v++) {
+        int minV = -1;
+        for (int w = 0; w < G->getV(); w++) {
+            if (!marked[w] && (minV == -1 || distTo[minV] > distTo[w])) minV = w;
+        }
+        marked[minV] = true;
+        for (WeightedEdge *e : G->adj(minV)) {
+            int w = e->other(minV);
+            if (distTo[w] > distTo[minV] + e->getWeight()) {
+                distTo[w] = distTo[minV] + e->getWeight();
             }
         }
     }

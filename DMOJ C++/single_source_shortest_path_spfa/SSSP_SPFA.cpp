@@ -1,7 +1,7 @@
 /*
- * SSSP.cpp
+ * SSSP_SPFA.cpp
  *
- *  Created on: Jul 8, 2017
+ *  Created on: Aug 4, 2017
  *      Author: Wesley Leung
  */
 
@@ -155,23 +155,32 @@ int N, M, u, v, w;
 WeightedGraph *G;
 
 double *distTo;
-priority_queue<pair<double, int>, vector<pair<double, int>> , greater<pair<double, int>>> pq;
+bool *inQueue;
+deque<int> q;
 
-void dijkstraSP(int s) {
+void spfa(int s) {
     distTo = new double[G->getV()];
+    inQueue = new bool[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
         distTo[v] = numeric_limits<double>::infinity();
+        inQueue[v] = false;
     }
     distTo[s] = 0.0;
-    pq.push({distTo[s], s});
-    while (!pq.empty()) {
-        int v = pq.top().second;
-        pq.pop();
+    inQueue[s] = true;
+    q.push_back(s);
+    while (!q.empty()) {
+        int v = q.front();
+        q.pop_front();
+        inQueue[v] = false;
         for (WeightedEdge *e : G->adj(v)) {
             int w = e->other(v);
             if (distTo[w] > distTo[v] + e->getWeight()) {
                 distTo[w] = distTo[v] + e->getWeight();
-                pq.push({distTo[w], w});
+                if (!inQueue[w]) {
+                    if (!q.empty() && distTo[w] < distTo[q.front()]) q.push_front(w);
+                    else q.push_back(w);
+                    inQueue[w] = true;
+                }
             }
         }
     }
@@ -189,7 +198,7 @@ int main() {
         v--;
         G->addEdge(new WeightedEdge(u, v, w));
     }
-    dijkstraSP(0);
+    spfa(0);
     for (int i = 0; i < N; i++) {
         if (distTo[i] == D_INF) printf("-1\n");
         else printf("%d\n", (int) distTo[i]);
