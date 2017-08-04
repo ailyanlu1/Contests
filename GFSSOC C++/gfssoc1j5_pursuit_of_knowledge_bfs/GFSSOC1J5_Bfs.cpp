@@ -1,5 +1,5 @@
 /*
- * GFSSOC1J5.cpp
+ * GFSSOC1J5_Bfs.cpp
  *
  *  Created on: Jul 3, 2017
  *      Author: Wesley Leung

@@ -15,8 +15,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class DMOPC15C3P4 {
-    private static DMOPC15C3P4 o = new DMOPC15C3P4();
+public class DMOPC15C3P4_Dijkstra {
+    private static DMOPC15C3P4_Dijkstra o = new DMOPC15C3P4_Dijkstra();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;

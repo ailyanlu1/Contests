@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>single_source_shortest_path</name>
+	<name>single_source_shortest_path_dijkstra</name>
 	<comment></comment>
 	<projects>
 	</projects>

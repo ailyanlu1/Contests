@@ -1,5 +1,5 @@
 /*
- * SSSP.cpp
+ * SSSP_Dijkstra.cpp
  *
  *  Created on: Jul 8, 2017
  *      Author: Wesley Leung
