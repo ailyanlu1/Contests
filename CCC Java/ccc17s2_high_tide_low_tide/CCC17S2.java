@@ -8,20 +8,17 @@ public class CCC17S2 {
     
     public static void main(String[] args) {
         int n = keyboard.nextInt();
-        Integer[] m = new Integer[n];
+        int[] m = new int[n];
         for (int i = 0; i < n; i++) {
             m[i] = keyboard.nextInt();
         }
         Arrays.sort(m);
-        if (n%2 == 1) {
-            System.out.print(m[(n-1)/2] + " ");
-            for (int i = (n-1)/2 + 1; i < n; i++) {
-                System.out.print(m[i] + " " +  m[n-i-1] + " ");
-            }
-        } else {
-            for (int i = (n-1)/2; i >= 0; i--) {
-                System.out.print(m[i] + " " +  m[n-i-1] + " ");
-            }
+        int lo = (n - 1) / 2;
+        int hi = lo + 1;
+        for (int i = 0; i < n; i++) { 
+            if (i % 2 == 0) System.out.print(m[lo--] + " ");
+            else System.out.print(m[hi++] + " ");
         }
+        System.out.println();
     } // main method
 }
