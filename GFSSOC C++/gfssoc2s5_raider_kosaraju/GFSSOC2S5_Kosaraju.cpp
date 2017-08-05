@@ -1,5 +1,5 @@
 /*
- * GFSSOC2S5.cpp
+ * GFSSOC2S5_Kosaraju.cpp
  *
  *  Created on: Aug 1, 2017
  *      Author: Wesley Leung
@@ -84,38 +84,42 @@ public:
     int indegree(int v) {
         return indegreeArr[v];
     }
+
+    Digraph *reverse() {
+        Digraph *reverse = new Digraph(V);
+        for (int v = 0; v < V; v++) {
+            for (int w : adj(v)) {
+                reverse->addEdge(w, v);
+            }
+        }
+        return reverse;
+    }
 };
 
-class TarjanSCC {
+class KosarajuSharirSCC {
 private:
-    bool *marked;            // marked[v] = has v been visited?
-    int *id;                 // id[v] = id of strong component containing v
-    int *low;                // low[v] = low number of v
-    int pre;                 // preorder number counter
-    int count;               // number of strongly-connected components
-    stack<int> s;
+    bool *marked;           // marked[v] = has vertex v been visited?
+    int *id;                // id[v] = id of strong component containing v
+    int *size;              // size[x] = size of component x
+    int count;              // number of strongly-connected components
+    stack<int> reversePost; // stack storing reverse postorder of the digraph
 
+    void postOrder(Digraph *G, int v) {
+        marked[v] = true;
+        for (int w : G->adj(v)) {
+            if (!marked[w]) postOrder(G, w);
+        }
+        reversePost.push(v);
+    }
+
+    // DFS on graph G
     void dfs(Digraph *G, int v) {
         marked[v] = true;
-        low[v] = pre++;
-        int min = low[v];
-        s.push(v);
+        id[v] = count;
+        size[count]++;
         for (int w : G->adj(v)) {
             if (!marked[w]) dfs(G, w);
-            if (low[w] < min) min = low[w];
         }
-        if (min < low[v]) {
-            low[v] = min;
-            return;
-        }
-        int w;
-        do {
-            w = s.top();
-            s.pop();
-            id[w] = count;
-            low[w] = G->getV();
-        } while (w != v);
-        count++;
     }
 
 public:
@@ -123,17 +127,29 @@ public:
      * Computes the strong components of the digraph {@code G}.
      * @param G the digraph
      */
-    TarjanSCC(Digraph *G) {
+    KosarajuSharirSCC(Digraph *G) {
         marked = new bool[G->getV()];
         id = new int[G->getV()];
-        low = new int[G->getV()];
-        for (int v = 0; v < G->getV(); v++) {
+        size = new int[G->getV()];
+        count = 0;
+        Digraph *reverse = G->reverse();
+        for (int v = 0; v < reverse->getV(); v++) {
             marked[v] = false;
         }
-        pre = 0;
-        count = 0;
+        for (int v = 0; v < reverse->getV(); v++) {
+            if (!marked[v]) postOrder(reverse, v);
+        }
         for (int v = 0; v < G->getV(); v++) {
-            if (!marked[v]) dfs(G, v);
+            marked[v] = false;
+            size[v] = 0;
+        }
+        while (!reversePost.empty()) {
+            int v = reversePost.top();
+            reversePost.pop();
+            if (!marked[v]) {
+                dfs(G, v);
+                count++;
+            }
         }
     }
 
@@ -144,7 +160,6 @@ public:
     int getCount() {
         return count;
     }
-
 
     /**
      * Are vertices {@code v} and {@code w} in the same strong component?
@@ -163,10 +178,30 @@ public:
      * Returns the component id of the strong component containing vertex {@code v}.
      * @param  v the vertex
      * @return the component id of the strong component containing vertex {@code v}
-     * @throws IllegalArgumentException unless {@code 0 <= v < V}
+     * @throws IllegalArgumentException unless {@code 0 <= s < V}
      */
     int getId(int v) {
         return id[v];
+    }
+
+    /**
+     * Returns the size of the strong component containing vertex {@code v}.
+     * @param  v the vertex
+     * @return the size of the strong component containing vertex {@code v}
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
+     */
+    int getSize(int v) {
+        return size[id[v]];
+    }
+
+    /**
+     * Returns the size of the specified id.
+     * @param  x the id number
+     * @return the size of the specified id
+     * @throws IllegalArgumentException unless {@code 0 <= x < count}
+     */
+    int getIdSize(int x) {
+        return size[x];
     }
 };
 
@@ -176,7 +211,7 @@ public:
 int N, M, V[MAXN], a, b, sumV[MAXN];
 pii dp[MAXN][2];
 Digraph *G, *prov;
-TarjanSCC *scc;
+KosarajuSharirSCC *scc;
 
 void rebuild() {
     prov = new Digraph(scc->getCount());
@@ -224,7 +259,7 @@ int main() {
         ri(b);
         G->addEdge(a - 1, b - 1);
     }
-    scc = new TarjanSCC(G);
+    scc = new KosarajuSharirSCC(G);
     for (int v = 0; v < N; v++) {
         sumV[scc->getId(v)] += V[v];
     }

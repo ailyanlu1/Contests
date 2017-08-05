@@ -1,7 +1,7 @@
 /*
- * TLE15P6.cpp
+ * GFSSOC2S5_Tarjan.cpp
  *
- *  Created on: Aug 2, 2017
+ *  Created on: Aug 1, 2017
  *      Author: Wesley Leung
  */
 
@@ -90,7 +90,6 @@ class TarjanSCC {
 private:
     bool *marked;            // marked[v] = has v been visited?
     int *id;                 // id[v] = id of strong component containing v
-    int *size;
     int *low;                // low[v] = low number of v
     int pre;                 // preorder number counter
     int count;               // number of strongly-connected components
@@ -114,7 +113,6 @@ private:
             w = s.top();
             s.pop();
             id[w] = count;
-            size[count]++;
             low[w] = G->getV();
         } while (w != v);
         count++;
@@ -128,11 +126,9 @@ public:
     TarjanSCC(Digraph *G) {
         marked = new bool[G->getV()];
         id = new int[G->getV()];
-        size = new int[G->getV()];
         low = new int[G->getV()];
         for (int v = 0; v < G->getV(); v++) {
             marked[v] = false;
-            size[v] = 0;
         }
         pre = 0;
         count = 0;
@@ -156,6 +152,8 @@ public:
      * @param  w the other vertex
      * @return {@code true} if vertices {@code v} and {@code w} are in the same
      *         strong component, and {@code false} otherwise
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
+     * @throws IllegalArgumentException unless {@code 0 <= w < V}
      */
     bool stronglyConnected(int v, int w) {
         return id[v] == id[w];
@@ -165,89 +163,76 @@ public:
      * Returns the component id of the strong component containing vertex {@code v}.
      * @param  v the vertex
      * @return the component id of the strong component containing vertex {@code v}
+     * @throws IllegalArgumentException unless {@code 0 <= v < V}
      */
     int getId(int v) {
         return id[v];
     }
-
-    /**
-     * Returns the size of the strong component containing vertex {@code v}.
-     * @param  v the vertex
-     * @return the size of the strong component containing vertex {@code v}
-     */
-    int getSize(int v) {
-        return size[id[v]];
-    }
-
-    /**
-     * Returns the size of the specified id.
-     * @param  x the id number
-     * @return the size of the specified id
-          */
-    int getIdSize(int x) {
-        return size[x];
-    }
 };
 
-#define MAXN 5000
+#define MAXN 500000
+#define MOD (int) (1e9 + 7)
 
-int N, M, Q, a, b, dp[MAXN][MAXN], cnt;
-Digraph *G, *GG;
+int N, M, V[MAXN], a, b, sumV[MAXN];
+pii dp[MAXN][2];
+Digraph *G, *prov;
 TarjanSCC *scc;
 
 void rebuild() {
-    GG = new Digraph(cnt);
+    prov = new Digraph(scc->getCount());
     int idV, idW;
     for (int v = 0; v < N; v++) {
         idV = scc->getId(v);
         for (int w : G->adj(v)) {
             idW = scc->getId(w);
-            if (idV != idW) GG->addEdge(idV, idW);
+            if (idV != idW) prov->addEdge(idV, idW);
         }
     }
 }
 
-int dfs(int v, int x) {
-    if (dp[v][x] != -1) return dp[v][x];
-    if (v == x) return dp[v][x] = 0;
-    int ret = -INT_INF;
-    for (int w : GG->adj(v)) {
-        ret = max(ret, dfs(w, x) + scc->getIdSize(v));
+pii solve(int v, bool take) {
+    if (v == scc->getId(N - 1)) {
+        if (take) return mp(sumV[v], 1);
+        else return mp(0, 1);
     }
-    return dp[v][x] = ret;
+    if (dp[v][take] != mp(-1, -1)) return dp[v][take];
+    pii ret = mp(INT_MIN, 0);
+    pii hold;
+    for (int w : prov->adj(v)) {
+        if (take) {
+            hold = solve(w, false);
+            hold.f += sumV[v];
+            if (hold.f > ret.f) ret = hold;
+            else if (hold.f == ret.f) ret.s = (ret.s + hold.s) % MOD;
+        }
+        hold = solve(w, true);
+        if (hold.f > ret.f) ret = hold;
+        else if (hold.f == ret.f) ret.s = (ret.s + hold.s) % MOD;
+    }
+    return dp[v][take] = ret;
 }
 
 int main() {
     ri(N);
     ri(M);
-    ri(Q);
     G = new Digraph(N);
+    for (int i = 0; i < N; i++) {
+        ri(V[i]);
+    }
     for (int i = 0; i < M; i++) {
         ri(a);
         ri(b);
         G->addEdge(a - 1, b - 1);
     }
     scc = new TarjanSCC(G);
-    cnt = scc->getCount();
+    for (int v = 0; v < N; v++) {
+        sumV[scc->getId(v)] += V[v];
+    }
+    for (int i = 0; i < scc->getCount(); i++) {
+        dp[i][0] = dp[i][1] = mp(-1, -1);
+    }
     rebuild();
-    for (int i = 0; i < cnt; i++) {
-        for (int j = 0; j < cnt; j++) {
-            dp[i][j] = -1;
-        }
-    }
-    for (int i = 0; i < cnt; i++) {
-        for (int j = 0; j < cnt; j++) {
-            dfs(i, j);
-        }
-    }
-    for (int i = 0, idA, idB; i < Q; i++) {
-        ri(a);
-        ri(b);
-        idA = scc->getId(a - 1);
-        idB = scc->getId(b - 1);
-        if (dp[idA][idB] > 0) printf("%d %d\n", a, dp[idA][idB] - scc->getIdSize(idA));
-        else if (dp[idB][idA] > 0) printf("%d %d\n", b, dp[idB][idA] - scc->getIdSize(idB));
-        else printf("Indeterminate\n");
-    }
+    pii ans = solve(scc->getId(0), true);
+    printf("%d %d\n", ans.f, ans.s);
     return 0;
 }
