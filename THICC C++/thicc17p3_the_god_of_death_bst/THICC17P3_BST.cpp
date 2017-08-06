@@ -1,5 +1,5 @@
 /*
- * THICC17P3.cpp
+ * THICC17P3_BST.cpp
  *
  *  Created on: Aug 5, 2017
  *      Author: Wesley Leung
