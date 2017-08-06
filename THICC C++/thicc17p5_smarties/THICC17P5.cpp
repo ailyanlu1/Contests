@@ -56,15 +56,12 @@ int main() {
     for (int i = 1; i <= N; i++) {
         ri(F[i]);
     }
-    int l = 1, r = 1, k = 0;
-    while (r <= N) {
+    for (int l = 1, r = 1, k = 0; r <= N; r++) {
         if (cnt[F[r]]++ == 0) k++;
         while (k >= K) {
-            if (--cnt[F[l]] == 0) k--;
-            l++;
+            if (--cnt[F[l++]] == 0) k--;
         }
         ans += r - l + 1;
-        r++;
     }
     printf("%lld\n", (ll) N * (ll) (N + 1) / 2 - ans);
     return 0;
