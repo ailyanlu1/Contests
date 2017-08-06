@@ -167,7 +167,6 @@ public:
 
 int N, T, a, b, c, total = 0, dist[3][MAXN], maxDist;
 vector<int> leaves;
-vector<pii> ans;
 WeightedGraph *G;
 
 void dfs(int v, int prev, int d, int i) {
@@ -211,11 +210,8 @@ int main() {
     dfs(d2, -1, 0, 2);
     for (int v = 0; v < N; v++) {
         if (G->degree(v) == T) {
-            ans.pb(mp(v + 1, total - max(dist[1][v], dist[2][v])));
+            printf("%d %d\n", v + 1, total - max(dist[1][v], dist[2][v]));
         }
-    }
-    for (pii p : ans) {
-        printf("%d %d\n", p.f, p.s);
     }
     return 0;
 }
