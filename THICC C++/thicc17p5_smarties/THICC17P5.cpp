@@ -49,7 +49,6 @@ typedef unordered_map<ll, int> umlli;
 
 int N, K, F[MAXN], cnt[MAXF];
 ll ans = 0;
-unordered_set<int> s;
 
 int main() {
     ri(N);
@@ -57,12 +56,11 @@ int main() {
     for (int i = 1; i <= N; i++) {
         ri(F[i]);
     }
-    int l = 1, r = 1;
+    int l = 1, r = 1, k = 0;
     while (r <= N) {
-        cnt[F[r]]++;
-        s.insert(F[r]);
-        while (s.size() >= K) {
-            if (--cnt[F[l]] == 0) s.erase(F[l]);
+        if (cnt[F[r]]++ == 0) k++;
+        while (k >= K) {
+            if (--cnt[F[l]] == 0) k--;
             l++;
         }
         ans += r - l + 1;
