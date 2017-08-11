@@ -107,7 +107,7 @@ struct Edge {
         weight = w;
     }
 
-    bool operator < (const Edge &e) {
+    bool operator < (const Edge &e) const {
         return weight < e.weight;
     }
 };
@@ -133,7 +133,7 @@ ll plan_roller_coaster(int n, int s[], int t[]) {
         uf.join(s[i], t[i]);
     }
     int cur = 1;
-    ll ans = 0;
+    ll ans = 0LL;
     vector<Edge> edges;
     for (int i = all.size() - 1; i >= 1; i--) {
         cur += dist[i];
@@ -141,11 +141,11 @@ ll plan_roller_coaster(int n, int s[], int t[]) {
             ans -= (ll) cur * (all[i] - all[i - 1]);
             dist[i - 1] += cur;
             uf.join(i - 1, i);
+            edges.pb(Edge(i, i - 1, all[i] - all[i - 1]));
             cur = 0;
-        }
-        if (cur > 0) {
+        } else if (cur > 0) {
             uf.join(i, i - 1);
-        } else if (cur == 0) {
+        } else {
             edges.pb(Edge(i, i - 1, all[i] - all[i - 1]));
         }
     }
@@ -157,9 +157,13 @@ ll plan_roller_coaster(int n, int s[], int t[]) {
 }
 
 int main() {
-    int n = 4;
-    int s[] = {1, 4, 5, 6};
-    int t[] = {7, 3, 8, 6};
-    printf("%lld", plan_roller_coaster(n, s, t));
+    int n;
+    ri(n);
+    int s[n], t[n];
+    for (int i = 0; i < n; i++) {
+        ri(s[i]);
+        ri(t[i]);
+    }
+    printf("%lld\n", plan_roller_coaster(n, s, t));
     return 0;
 }
