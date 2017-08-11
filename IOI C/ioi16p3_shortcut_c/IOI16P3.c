@@ -106,7 +106,6 @@ int main() {
     for (i = 0; i < n - 1; i++) {
         ri(l[i]);
     }
-    i = 0;
     for (i = 0; i < n; i++) {
         ri(d[i]);
     }
