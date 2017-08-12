@@ -1,10 +1,3 @@
-/*
- * Template.c
- *
- *  Created on: Aug 11, 2017
- *      Author: Wesley Leung
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 
