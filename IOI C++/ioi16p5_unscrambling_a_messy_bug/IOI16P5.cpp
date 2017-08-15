@@ -95,7 +95,7 @@ void add(int lo, int hi) {
     add(m + 1, hi);
 }
 
-void check(int lo, int hi, vector<int> ind) {
+void check(int lo, int hi, vector<int> &ind) {
     if (lo == hi) {
         ans[ind[0]] = lo;
         return;
