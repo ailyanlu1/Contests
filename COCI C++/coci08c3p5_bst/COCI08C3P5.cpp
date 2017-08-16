@@ -37,18 +37,19 @@ typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 typedef unordered_map<ll, int> umlli;
 
-int N, x;
+int N, x, curDep;
 ll cnt = 0;
 mii depth;
-mii::iterator iter;
 
 int main() {
     ri(N);
     for (int i = 0; i < N; i++) {
         ri(x);
-        iter = depth.lower_bound(x);
-        depth[x] = max(iter != depth.end() ? iter->second + 1 : 0, iter != depth.begin() ? (--iter)->second + 1 : 0);
-        cnt += depth[x];
+        curDep = 0;
+        auto iter = depth.lower_bound(x);
+        curDep = max(iter != depth.end() ? iter->s + 1 : 0, iter != depth.begin() ? (--iter)->s + 1 : 0);
+        depth[x] = curDep;
+        cnt += curDep;
         printf("%lld\n", cnt);
     }
     return 0;
