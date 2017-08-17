@@ -1,0 +1,22 @@
+Primes 3
+
+Given T (1 ≤ T ≤ 100) positive integers, one per line, determine whether each one is prime. The integers will be no greater than 2^63−1.
+
+The first line of input will be the integer T. The next T lines each contain a number to be tested.
+
+For each of the T integers, you should output on a separate line PRIME if the corresponding integer is prime, or NOT if it is composite.
+
+Sample Input
+5
+1
+2
+6
+11
+1000000000000000000
+
+Sample Output
+NOT
+PRIME
+NOT
+PRIME
+NOT
