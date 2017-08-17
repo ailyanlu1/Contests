@@ -1,0 +1,24 @@
+Sorting :)
+
+Given a list of n numbers, sort them and output them one per line from smallest to largest
+
+Input
+The first line of the input contains a positive integer n no greater than 100, the number of numbers to follow.
+
+Each line after will have a single positive integer less than 32000
+
+Output
+Output the numbers in sorted order from smallest to largest, one per line.
+
+Sample Input
+4
+4
+3
+2
+1
+
+Sample Output
+1
+2
+3
+4
