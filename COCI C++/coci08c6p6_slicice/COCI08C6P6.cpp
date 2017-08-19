@@ -440,7 +440,7 @@ int main() {
             if (e->getFlow() > 0 && e->to() >= totPurchases) children.pb(e->to() - totPurchases + 1);
         }
         if (children.size() == 2) printf("%d %d 1\n", children[0], children[1]);
-        else printf("%d %d 2\n", children[0], children[0] == 1 ? 2 : 1);
+        else printf("%d %d 2\n", children[0], children[0] % N + 1);
     }
     return 0;
 }
