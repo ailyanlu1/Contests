@@ -112,7 +112,7 @@ void dfs(int v, int prev) {
     par[v] = prev;
     dep[v] = dep[prev] + 1;
     for (int w : G->adj(v)) {
-        if (w != prev && dep[w] == -1) dfs(w, v);
+        if (dep[w] == -1) dfs(w, v);
     }
 }
 
