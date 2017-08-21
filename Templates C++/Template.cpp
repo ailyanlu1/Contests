@@ -26,6 +26,8 @@ using namespace std;
 typedef long long ll;
 typedef unsigned long long llu;
 typedef pair<int, int> pii;
+typedef pair<int, ll> pill;
+typedef pair<ll, int> plli;
 typedef pair<float, float> pff;
 typedef pair<double, double> pdd;
 typedef pair<ll, ll> pll;
