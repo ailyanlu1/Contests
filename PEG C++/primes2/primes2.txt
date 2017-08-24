@@ -1,0 +1,17 @@
+Primes... again
+
+Given two integers N and M (N ≤ M), output all the prime numbers between N and M inclusive, one per line.
+
+N and M will be positive integers less than or equal to 1,000,000,000.
+The difference between N and M will be less than or equal to 5,000,000.
+
+Sample Input
+5 20
+
+Sample Output
+5
+7
+11
+13
+17
+19

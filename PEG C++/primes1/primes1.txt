@@ -1,0 +1,12 @@
+Primes
+
+Given an integer N ≤ 100, output the first N primes, one per line.
+
+Sample Input
+4
+
+Sample Output
+2
+3
+5
+7

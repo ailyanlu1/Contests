@@ -27,9 +27,17 @@ typedef long long ll;
 typedef unsigned long long llu;
 typedef pair<int, int> pii;
 typedef pair<float, float> pff;
+typedef pair<int, float> pif;
+typedef pair<float, int> pfi;
 typedef pair<double, double> pdd;
+typedef pair<int, double> pid;
+typedef pair<double, int> pdi;
 typedef pair<ll, ll> pll;
+typedef pair<int, ll> pill;
+typedef pair<ll, int> plli;
 typedef pair<llu, llu> pllu;
+typedef pair<int, llu> pillu;
+typedef pair<llu, int> pllui;
 typedef map<int, int> mii;
 typedef map<int, ll> mill;
 typedef map<ll, int> mlli;
@@ -38,10 +46,10 @@ typedef unordered_map<int, ll> umill;
 typedef unordered_map<ll, int> umlli;
 
 int main() {
-    // TODO INSERT CODE HERE
     // freopen("in.txt", "r", stdin);
     // freopen("out.txt", "w", stdout);
     // cin.sync_with_stdio(0);
     // cin.tie(0);
+    // TODO INSERT CODE HERE
     return 0;
 }

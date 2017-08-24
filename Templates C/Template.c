@@ -1,10 +1,3 @@
-/*
- * Template.c
- *
- *  Created on: Aug 11, 2017
- *      Author: Wesley Leung
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -32,8 +25,8 @@ typedef long long ll;
 typedef unsigned long long llu;
 
 int main() {
-    // TODO INSERT CODE HERE
     // freopen("in.txt", "r", stdin);
     // freopen("out.txt", "w", stdout);
+    // TODO INSERT CODE HERE
     return 0;
 }

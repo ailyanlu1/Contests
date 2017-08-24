@@ -1,0 +1,18 @@
+2007 Canadian Computing Competition, Stage 1
+
+Problem J4: Anagram Checker
+
+An anagram is a word or a phrase formed by rearranging the letters of another phrase such as “ITEM” and “TIME”. Anagrams may be several words long such as “CS AT WATERLOO” and “COOL AS WET ART”. Note that two phrases may be anagrams of each other even if each phrase has a different number of words (as in the previous example). Write a program to determine if two phrases are anagrams of each other.
+
+Input
+The program should input two phrases, each entered on a separate line. You may assume that the input only contains upper case letters and spaces.
+
+Output
+The program will print out one of two statements: ”Is an anagram.” or ”Is not an anagram.”
+
+Sample Input
+CS AT WATERLOO
+COOL AS WET ART
+
+Sample Output
+Is an anagram.
