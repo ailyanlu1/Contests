@@ -112,9 +112,6 @@ set<pair<int, int>> small, large;
 void offlineDynamicMST() {
     uf1 = new UF(N);
     uf2 = new UF(N);
-    for (int i = 0; i < Q; i++) {
-        flag[i] = -1;
-    }
     curFlag = 0;
     int cnt;
     ll forest, mst;
