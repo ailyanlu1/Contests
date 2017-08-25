@@ -8,7 +8,7 @@
 #define pb push_back
 #define l(x) (x << 1)
 #define r(x) (x << 1 | 1)
-#define mid(x, y) (x + (y - x) / 2)
+#define m(x, y) (x + (y - x) / 2)
 #define min(a, b) (a < b ? a : b)
 #define max(a, b) (a > b ? a : b)
 #define ri(x) scanf("%d", &x)

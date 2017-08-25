@@ -8,7 +8,7 @@
 #define mp make_pair
 #define l(x) (x << 1)
 #define r(x) (x << 1 | 1)
-#define mid(x, y) (x + (y - x) / 2)
+#define m(x, y) (x + (y - x) / 2)
 #define f first
 #define s second
 #define ri(x) scanf("%d", &x)
