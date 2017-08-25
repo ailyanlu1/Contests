@@ -11,6 +11,8 @@
 #define m(x, y) (x + (y - x) / 2)
 #define min(a, b) (a < b ? a : b)
 #define max(a, b) (a > b ? a : b)
+#define Min(a, b) (a = min(a, b))
+#define Max(a, b) (a = max(a, b))
 #define ri(x) scanf("%d", &x)
 #define rll(x) scanf("%lld", &x)
 #define rllu(x) scanf("%llu", &x)
