@@ -18,6 +18,12 @@
 #define rd(x) scanf("%lf", &x)
 #define rc(x) scanf(" %c", &x)
 #define rs(x) scanf("%s", x)
+#define For(i, a, b) for (int i = (a); i < (b); i++)
+#define Forx(i, b) For(i, 0, b)
+#define Forit(i, c) for (auto i = (c).begin(); i != (c).end(); i++)
+#define Rev(i, a, b) for (int i = (a); i > (b); i--)
+#define Revx(i, a) Rev(i, a, -1)
+#define Revit(i, c) for (auto i = (c).rbegin(); i != (c).rend(); i++)
 #define Fill(a, x) memset(a, x, sizeof(a))
 #define randi(a, b) (rand() % (b - a + 1) + a)
 
