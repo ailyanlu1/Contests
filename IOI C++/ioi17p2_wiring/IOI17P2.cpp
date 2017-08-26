@@ -117,7 +117,7 @@ ll min_total_length(vector<int> r, vector<int> b) {
             above = ceiling(r, 0, n, all[i].f);
         }
         dp[i] = (i == 0 ? 0 : dp[i - 1]) + min(below.f == -1 ? INT_INF : all[i].f - below.s, above.f == (all[i].s == RED ? m : n) ? INT_INF : above.s - all[i].f);
-        if (wiresRange[i] != -1) dp[i] = min(dp[i], dp[wiresRange[i]] + abs((preR[i] - preR[wiresRange[i]]) - (preB[i] - preB[wiresRange[i]])));
+        if (wiresRange[i] != -1) Min(dp[i], dp[wiresRange[i]] + abs((preR[i] - preR[wiresRange[i]]) - (preB[i] - preB[wiresRange[i]])));
     }
     return dp[n + m - 1];
 }
