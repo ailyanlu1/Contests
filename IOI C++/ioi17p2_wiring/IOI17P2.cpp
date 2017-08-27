@@ -81,7 +81,6 @@ pair<int, int> ceiling(vector<int> &a, int start, int end, int key) {
 
 int n, m, cInd, last[MAXNM], wiresRange[MAXNM];
 pii all[MAXNM];
-umii ind;
 ll cut = 0LL, dp[MAXNM], preR[MAXNM], preB[MAXNM];
 
 ll min_total_length(vector<int> r, vector<int> b) {
