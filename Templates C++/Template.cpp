@@ -53,7 +53,7 @@ typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 typedef unordered_map<ll, int> umlli;
 
-template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return hash<T1> {}(p.first) << 31 | hash<T2> {}(p.second);}};
+template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return (hash<T1> {}(p.first) << 31) ^ (hash<T2> {}(p.second));}};
 
 int main() {
     // freopen("in.txt", "r", stdin);
