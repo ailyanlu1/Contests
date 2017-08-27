@@ -1,4 +1,4 @@
-package ccc12s4_a_coin_game;
+package ccc12j5s4_a_coin_game;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,8 +13,8 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-public class CCC12S4 {
-    private static CCC12S4 o = new CCC12S4();
+public class CCC12J5S4 {
+    private static CCC12J5S4 o = new CCC12J5S4();
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;

@@ -9,8 +9,8 @@
 #define l(x) (x << 1)
 #define r(x) (x << 1 | 1)
 #define m(x, y) (x + (y - x) / 2)
-#define Min(a, b) (a = min(a, b))
-#define Max(a, b) (a = max(a, b))
+#define MIN(a, b) (a = min(a, b))
+#define MAX(a, b) (a = max(a, b))
 #define f first
 #define s second
 #define ri(x) scanf("%d", &x)
