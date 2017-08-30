@@ -188,19 +188,19 @@ const pii MINPII = mp(-INT_INF, -INT_INF);
 struct MaxSegmentTree {
 private:
     pii *tree;
-    int depth;
+    int size;
 
 public:
     MaxSegmentTree(int size) {
-        for (depth = 1; depth <= size; depth <<= 1);
-        this->tree = new pii[depth + size + 1];
-        FOR (i, depth + size + 1) {
+        this->size = size;
+        this->tree = new pii[2 * size];
+        FOR (i, 2 * size) {
             tree[i] = MINPII;
         }
     }
 
     void update(int ind, pii val) {
-        int cur = ind + depth;
+        int cur = ind + size;
         tree[cur] = val;
         while (cur > 1) {
             cur >>= 1;
@@ -209,8 +209,8 @@ public:
     }
 
     pii query(int l, int r) {
-        int cL = l + depth;
-        int cR = r + depth;
+        int cL = l + size;
+        int cR = r + size;
         pii ret = MINPII;
         while (cL < cR) {
             if (cL % 2 == 1) ret = max(ret, tree[cL++]);
@@ -226,19 +226,19 @@ public:
 struct MinSegmentTree {
 private:
     pii *tree;
-    int depth;
+    int size;
 
 public:
     MinSegmentTree(int size) {
-        for (depth = 1; depth <= size; depth <<= 1);
-        this->tree = new pii[depth + size + 1];
-        FOR (i, depth + size + 1) {
+        this->size = size;
+        this->tree = new pii[2 * size];
+        FOR (i, 2 * size) {
             tree[i] = MAXPII;
         }
     }
 
     void update(int ind, pii val) {
-        int cur = ind + depth;
+        int cur = ind + size;
         tree[cur] = val;
         while (cur > 1) {
             cur >>= 1;
@@ -247,8 +247,8 @@ public:
     }
 
     pii query(int l, int r) {
-        int cL = l + depth;
-        int cR = r + depth;
+        int cL = l + size;
+        int cR = r + size;
         pii ret = MAXPII;
         while (cL < cR) {
             if (cL % 2 == 1) ret = min(ret, tree[cL++]);
