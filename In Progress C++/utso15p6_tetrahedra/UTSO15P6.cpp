@@ -335,6 +335,30 @@ public:
         if (d != that.d) throw invalid_argument("Dimensions don't agree");
         return that.scale(dot(that) / (that.magnitude() * that.magnitude()));
     }
+
+    /**
+     * Returns a vector that is this vector rotated theta radians around that vector.
+     *
+     * @param that vector representing the axis of rotation
+     * @param theta the angle in radians
+     * @return a vector that is this vector rotated theta radians around that vector
+     */
+    Vector &rotate(Vector &that, double theta) {
+        if (d == 2 && that.d == 2) {
+            Vector *r = new Vector(2);
+            r->data[0] = that.data[0] + (data[0] - that.data[0]) * cos(theta) - (data[1] - that.data[1]) * sin(theta);
+            r->data[0] = that.data[1] + (data[0] - that.data[0]) * sin(theta) + (data[1] - that.data[1]) * cos(theta);
+            return *r;
+        } else if (d == 3 && that.d == 3) {
+            Vector *r = new Vector(3);
+            r = &this->scale(cos(theta)).plus(that.direction().cross3D(*this).scale(sin(theta))).plus(that.direction().scale(that.direction().dot(*this)).scale(1.0 - cos(theta)));
+            return *r;
+        } else if (d == that.d) {
+            throw invalid_argument("Vectors must be 2-dimensional or 3-dimensional");
+        } else {
+            throw invalid_argument("Dimensions don't agree");
+        }
+    }
 };
 
 struct Point2D {
@@ -422,6 +446,19 @@ public:
      */
     static double area2(Point2D &a, Point2D &b, Point2D &c) {
         return (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x);
+    }
+
+    /**
+     * Returns a point that is this point rotated theta radians around that point.
+     *
+     * @param that the pivot point
+     * @param theta the angle in radians
+     * @return a point that is this point rotated theta radians around that point
+     */
+    Point2D &rotate(Point2D &that, double theta) {
+        double x = that.x + (this->x - that.x) * cos(theta) - (this->y - that.y) * sin(theta);
+        double y = that.y + (this->x - that.x) * sin(theta) + (this->y - that.y) * cos(theta);
+        return *(new Point2D(x, y));
     }
 
     /**
@@ -691,7 +728,7 @@ public:
 
 struct Point2D_hash {
     size_t operator ()(const Point2D &p) const {
-        return (hash<double> {}(p.x) << 31) ^ (hash<double> {}(p.y));
+        return 31 * hash<double> {}(p.x) + hash<double> {}(p.y);
     }
 };
 
