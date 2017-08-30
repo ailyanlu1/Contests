@@ -733,6 +733,7 @@ struct Point2D_hash {
 };
 
 Vector T[2][4];
+double totalArea = 0.0;
 
 int main() {
     FOR(t, 2) {
@@ -744,26 +745,27 @@ int main() {
         }
     }
     Vector A, B, C, AB, AC, BC, cross, normal, proj, x, y;
-    double face, abn, acn, px, py, avgX, avgY;
-    Point2D pA, pB, pC;
+    double faceArea, borderArea, abn, acn, px, py, avgX, avgY;
     vector<Point2D> check, border;
+    Point2D face[3];
     FOR(t, 2) {
         FOR(p, 4) {
             check.clear();
+            border.clear();
             A = T[t][(p + 1) % 4];
             B = T[t][(p + 2) % 4];
             C = T[t][(p + 3) % 4];
             AB = B - A;
             AC = C - A;
             cross = AB * AC;
-            face = cross.magnitude() / 2;
+            faceArea = cross.magnitude() / 2.0;
+            borderArea = 0.0;
             normal = cross.direction();
             x = AB.direction();
             y = x * normal;
-            pA = Point2D(A ^ x, A ^ y);
-            pB = Point2D(B ^ x, B ^ y);
-            pC = Point2D(C ^ x, C ^ y);
-            avgX = avgY = 0.0;
+            face[0] = Point2D(A ^ x, A ^ y);
+            face[1] = Point2D(B ^ x, B ^ y);
+            face[2] = Point2D(C ^ x, C ^ y);
             FOR(q, 4) {
                 For(r, q + 1, 4) {
                     B = T[t ^ 1][q];
@@ -777,17 +779,55 @@ int main() {
                         proj = BC - BC.projectionOn(normal);
                         px = BC ^ x;
                         py = BC ^ y;
-                        check.pb(Point2D(py, py));
-                        avgX += px;
-                        avgY += py;
+                        check.pb(Point2D(px, py));
                     }
                 }
             }
-            avgX /= check.size();
-            avgY /= check.size();
-            sort(check.begin(), check.end(), bind(&Point2D::polarOrderLt, Point2D(avgX, avgY), _1, _2));
-            // TODO Check for inside and create border
+            if (check.size() > 0) {
+                check.erase(unique(check.begin(), check.end()), check.end());
+                avgX = avgY = 0.0;
+                for (Point2D &pp : check) {
+                    avgX += pp.x;
+                    avgY += pp.y;
+                }
+                avgX /= check.size();
+                avgY /= check.size();
+                sort(check.begin(), check.end(), bind(&Point2D::polarOrderLt, Point2D(avgX, avgY), _1, _2));
+                if (Point2D::ccw(face[0], face[1], face[2]) == -1) swap(face[1], face[2]);
+                bool inside;
+                for (Point2D &pp : check) {
+                    inside = true;
+                    FOR(i, 3) {
+                        if (Point2D::ccw(face[i], pp ,face[(i + 1) % 3]) == 1) inside = false;
+                    }
+                    if (inside) border.pb(pp);
+                }
+                FOR(i, 3) {
+                    inside = true;
+                    FOR(j, (int) check.size()) {
+                        if (Point2D::ccw(check[j], face[i], check[(j + 1) % check.size()]) == 1) inside = false;
+                    }
+                    if (inside) border.pb(face[i]);
+                }
+                if (border.size() > 0) {
+                    border.erase(unique(border.begin(), border.end()), border.end());
+                    avgX = avgY = 0.0;
+                    for (Point2D &pp : border) {
+                        avgX += pp.x;
+                        avgY += pp.y;
+                    }
+                    avgX /= border.size();
+                    avgY /= border.size();
+                    sort(border.begin(), border.end(), bind(&Point2D::polarOrderLt, Point2D(avgX, avgY), _1, _2));
+                    FOR(i, (int) border.size()) {
+                        borderArea += border[i].x * border[(i + 1) % border.size()].y - border[(i + 1) % border.size()].x * border[i].y;
+                    }
+                    borderArea /= 2.0;
+                }
+            }
+            totalArea += faceArea - borderArea;
         }
     }
+    printf("%.6f\n", totalArea);
     return 0;
 }
