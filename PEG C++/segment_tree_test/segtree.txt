@@ -1,0 +1,40 @@
+Segment Tree Test
+
+Perform the dynamic range minimum query.
+
+Input
+The first line of input will contain two space-separated integers: N (1 ≤ N ≤ 100 000), the number of elements in the array, and M (1 ≤ M ≤ 100 000), the number of operations to perform.
+
+The next N lines each contain one non-negative integer less than 1 000 000. Specifically, line number i contains element i - 2 of the array. Note that the array has zero-based indexing.
+
+The following M lines contain one operation each. Each operation is either of the form M i x, indicating that element number i (0 ≤ i < N) is to be changed to x (0 ≤ x < 1 000 000), or the form Q i j (0 ≤ i ≤ j < N) indicating that your program is to find the minimum value of the elements in the index range [i, j] (that is, inclusive) in the current state of the array and print this value to standard output.
+
+Output
+One integer, on its own line, for each Q statement: the answer to the query.
+
+Sample Input
+5 10
+35232
+390942
+649675
+224475
+18709
+Q 1 3
+M 4 475689
+Q 2 3
+Q 1 3
+Q 1 2
+Q 3 3
+Q 2 3
+M 2 645514
+M 2 680746
+Q 0 4
+
+Sample Output
+224475
+224475
+224475
+390942
+224475
+224475
+35232
