@@ -193,8 +193,8 @@ private:
 public:
     MaxSegmentTree(int size) {
         for (depth = 1; depth <= size; depth <<= 1);
-        this->tree = new pii[2 * depth];
-        FOR (i, 2 * depth) {
+        this->tree = new pii[depth + size + 1];
+        FOR (i, depth + size + 1) {
             tree[i] = MINPII;
         }
     }
@@ -231,8 +231,8 @@ private:
 public:
     MinSegmentTree(int size) {
         for (depth = 1; depth <= size; depth <<= 1);
-        this->tree = new pii[2 * depth];
-        FOR (i, 2 * depth) {
+        this->tree = new pii[depth + size + 1];
+        FOR (i, depth + size + 1) {
             tree[i] = MAXPII;
         }
     }
