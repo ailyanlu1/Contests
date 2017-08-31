@@ -333,7 +333,7 @@ public:
      */
     Vector &projectionOn(Vector &that) {
         if (d != that.d) throw invalid_argument("Dimensions don't agree");
-        return that.scale(dot(that) / (that.magnitude() * that.magnitude()));
+        return that.scale(dot(that) / that.dot(that));
     }
 
     /**
@@ -807,7 +807,7 @@ int main() {
         }
     }
     Vector A, B, C, AB, AC, BC, cross, normal, proj, x, y;
-    double faceArea, borderArea, abn, acn, px, py, avgX, avgY;
+    double faceArea, borderArea, abn, acn, avgX, avgY;
     vector<Point2D> check, intersect, border;
     Point2D face[3];
     FOR(t, 2) {
@@ -826,28 +826,26 @@ int main() {
             normal = cross.direction();
             x = AB.direction();
             y = x * normal;
-            face[0] = Point2D(A ^ x, A ^ y);
-            face[1] = Point2D(B ^ x, B ^ y);
-            face[2] = Point2D(C ^ x, C ^ y);
+            face[0] = Point2D(0, 0);
+            face[1] = Point2D(AB ^ x, AB ^ y);
+            face[2] = Point2D(AC ^ x, AC ^ y);
             FOR(q, 4) {
-                For(r, q + 1, 4) {
+                FOR(r, 4) {
+                    if (q == r) continue;
                     B = T[t ^ 1][q];
                     C = T[t ^ 1][r];
                     AB = B - A;
                     AC = C - A;
                     abn = AB ^ normal;
                     acn = AC ^ normal;
-                    assert (abn != 0.0 && acn != 0.0);
                     if (copysign(1, abn) != copysign(1, acn)) {
                         BC = C - B;
                         proj = BC - BC.projectionOn(normal);
-                        px = BC ^ x;
-                        py = BC ^ y;
-                        check.pb(Point2D(px, py));
+                        check.pb(Point2D(BC ^ x, BC ^ y));
                     }
                 }
             }
-            if (check.size() > 0) {
+            if (check.size() > 2) {
                 check.erase(unique(check.begin(), check.end()), check.end());
                 avgX = avgY = 0.0;
                 for (Point2D &pp : check) {
@@ -879,10 +877,14 @@ int main() {
                     FOR(j, (int) check.size()) {
                         Point2D &p2 = check[j];
                         Point2D &q2 = check[(j + 1) % check.size()];
-                        if (Point2D::intersects(p1, q1, p2, q2)) border.pb(Point2D::intersection(p1, q1, p2, q2));
+                        if (Point2D::intersects(p1, q1, p2, q2)) {
+                            if (p1 == p2 || p1 == q2) border.pb(p1);
+                            else if (q1 == p2 || q1 == q2) border.pb(q1);
+                            else border.pb(Point2D::intersection(p1, q1, p2, q2));
+                        }
                     }
                 }
-                if (border.size() > 0) {
+                if (border.size() > 2) {
                     border.erase(unique(border.begin(), border.end()), border.end());
                     avgX = avgY = 0.0;
                     for (Point2D &pp : border) {
@@ -895,10 +897,10 @@ int main() {
                     FOR(i, (int) border.size()) {
                         borderArea += border[i].x * border[(i + 1) % border.size()].y - border[(i + 1) % border.size()].x * border[i].y;
                     }
-                    assert(borderArea >= 0);
                     borderArea /= 2.0;
                 }
             }
+            printf("%.6f %.6f\n", faceArea, borderArea);
             totalArea += faceArea - borderArea;
         }
     }
