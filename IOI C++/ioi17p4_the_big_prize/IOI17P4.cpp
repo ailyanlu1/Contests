@@ -1,5 +1,3 @@
-// 97.68/100 Query Limit Exceeded
-
 #include <bits/stdc++.h>
 #include "prize.h"
 
@@ -85,7 +83,7 @@ int find_best(int n) {
         minInd[i] = MAXN;
         maxInd[i] = -1;
     }
-    FOR(i, min(n, 472)) {
+    FOR(i, (int) log2(n * n)) {
         q = ask1(i);
         if (q[0] + q[1] == 0) return i;
         MAX(T, q[0] + q[1]);
