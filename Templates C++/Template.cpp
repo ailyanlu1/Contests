@@ -26,8 +26,9 @@
 #define Rev(i, a, b) for (int i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
 #define Revit(i, c) for (auto i = (c).rbegin(); i != (c).rend(); i++)
-#define Fill(a, x) memset(a, x, sizeof(a))
-#define randi(a, b) (rand() % (b - a + 1) + a)
+#define FILL(a, x) memset((a), (x), sizeof(a))
+#define Fill(a, x, n) FOR(_, n) (a)[_] = (x);
+#define randi(a, b) (rand() % ((b) - (a) + 1) + (a))
 
 using namespace std;
 
@@ -56,10 +57,5 @@ typedef unordered_map<ll, int> umlli;
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // cin.sync_with_stdio(0);
-    // cin.tie(0);
-    // TODO INSERT CODE HERE
     return 0;
 }

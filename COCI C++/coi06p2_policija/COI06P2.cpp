@@ -153,15 +153,13 @@ int main() {
             ri(a); ri(b); ri(c); ri(d);
             a--; b--; c--; d--;
             if (inSubtree(d, c)) swap(d, c);
-            if (dep[c] + 1 != dep[d] || low[d] < pre[d] || inSubtree(d, a) == inSubtree(d, b)) ans = true;
-            else ans = false;
+            ans = dep[c] + 1 != dep[d] || low[d] < pre[d] || inSubtree(d, a) == inSubtree(d, b);
         } else {
             ri(a); ri(b); ri(c);
             a--; b--; c--;
             e = inSubtree(c, a) ? findSubtree(c, a) : -1;
             f = inSubtree(c, b) ? findSubtree(c, b) : -1;
-            if (e == f || ((e == -1 || low[e] < pre[c]) && (f == -1 || low[f] < pre[c]))) ans = true;
-            else ans = false;
+            ans = e == f || ((e == -1 || low[e] < pre[c]) && (f == -1 || low[f] < pre[c]));
         }
         printf(ans ? "yes\n" : "no\n");
     }
