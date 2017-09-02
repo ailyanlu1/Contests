@@ -1,3 +1,6 @@
+import sys
+input = sys.stdin.readline
+
 R, C = map(int, input().split())
 K = int(input())
 grid = [[0] * (C + 1) for i in range(0, R + 1)]

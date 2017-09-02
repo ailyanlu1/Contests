@@ -99,7 +99,6 @@ public:
 };
 
 #define MAXMQ 50005
-#define FACTOR 1.0
 
 int N, M, Q, x[MAXMQ], y[MAXMQ], z[MAXMQ], k[MAXMQ], d[MAXMQ];
 
@@ -112,13 +111,10 @@ set<pair<int, int>> small, large;
 void offlineDynamicMST() {
     uf1 = new UF(N);
     uf2 = new UF(N);
-    for (int i = 0; i < Q; i++) {
-        flag[i] = -1;
-    }
     curFlag = 0;
     int cnt;
     ll forest, mst;
-    for (int l = 0, b = (int) (sqrt(Q) * FACTOR), r; l < Q; l += b) {
+    for (int l = 0, b = (int) sqrt(Q), r; l < Q; l += b) {
         r = min(l + b - 1, Q - 1);
         curFlag++;
         uf1->reset();

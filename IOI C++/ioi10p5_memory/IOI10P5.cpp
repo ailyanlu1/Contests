@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "memory.h"
 
 #define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
@@ -37,33 +38,6 @@ typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 typedef unordered_map<ll, int> umlli;
 
-// HELPER FUNCTIONS
-const int _numLetters = 25;
-int _calls = 0;
-char _cards[_numLetters * 2], _first;
-unordered_set<char> _candies;
-void init_perm() {
-    for (int i = 0; i < _numLetters; i++) {
-        _cards[i] = _cards[_numLetters + i] = 'A' + i;
-    }
-    shuffle(_cards, _cards + _numLetters, default_random_engine((unsigned) time(0)));
-}
-
-char faceup(int c) {
-    _calls++;
-    if (_calls % 2 == 1) _first = _cards[c - 1];
-    else if (_first == _cards[c - 1]) _candies.insert(_cards[c - 1]);
-    return _cards[c - 1];
-}
-
-void grader() {
-    if (_candies.size() == 25) printf("All candies found.\n");
-    else printf("Not all candies found\n");
-    if (_calls <= 100) printf("Finished in at most 100 calls to faceup.\n");
-    else printf("Exceeded 100 calls to faceup.\n");
-}
-// END HELPER
-
 #define NUML 25
 
 vector<int> num[NUML];
@@ -77,11 +51,4 @@ void play() {
             faceup(j);
         }
     }
-}
-
-int main() {
-    init_perm();
-    play();
-    grader();
-    return 0;
 }

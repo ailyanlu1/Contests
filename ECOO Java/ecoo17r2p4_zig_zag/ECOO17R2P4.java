@@ -127,7 +127,7 @@ public class ECOO17R2P4 {
                     dp[0][j] = (dp[1][j - 1] + dp[0][j - 1]) % MOD;
                     dp[0][j + 1] = dp[0][j];
                 } else {
-                    if (i <= j) continue;
+                    if (i <= j) break;
                     dp[1][j] = (dp[0][i] - dp[0][j - 1] + dp[1][j - 1] + MOD) % MOD;
                     dp[1][j + 1] = dp[1][j];
                 }
