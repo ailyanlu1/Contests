@@ -55,11 +55,28 @@ typedef unordered_map<ll, ll> umll;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+#define MAXNH 5010
+
+struct NPC {
+    int h, t;
+    ll g, q;
+};
+
+int N, H;
+NPC V[MAXNH];
+ll dp[MAXNH][2];
+
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // cin.sync_with_stdio(0);
-    // cin.tie(0);
-    // TODO INSERT CODE HERE
+    ri(N);
+    ri(H);
+    FOR(i, N) {
+        rll(V[i].g); ri(V[i].h); rll(V[i].q); ri(V[i].t);
+    }
+    FOR(i, H + 1) dp[i][0] = dp[i][1] = 0LL;
+    FOR(i, N) {
+        FOR(j, H + 1) dp[j][1] = max(V[i].h <= j ? dp[j - V[i].h][0] + V[i].g : 0LL, V[i].t <= j && dp[j - V[i].t][1] != 0 ? dp[j - V[i].t][1] + V[i].q : 0LL);
+        FOR(j, H + 1) MAX(dp[j][0], dp[j][1]);
+    }
+    printf("%lld\n", dp[H][0]);
     return 0;
 }

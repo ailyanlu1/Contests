@@ -55,11 +55,58 @@ typedef unordered_map<ll, ll> umll;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+#define MAXN 1010
+
+int N, Q, x, y;
+ll z;
+char c;
+unordered_set<int> G[MAXN];
+unordered_map<pii, ll, pair_hash<int, int>> edges;
+
+inline void addEdge(int v, int w, ll d) {
+    G[v].insert(w);
+    G[w].insert(v);
+    edges[{min(v, w), max(v, w)}] = d;
+}
+
+inline void removeEdge(int v, int w) {
+    G[v].erase(w);
+    G[w].erase(v);
+    edges.erase({min(v, w), max(v, w)});
+}
+
+ll dfs(int v, int prev, int y, ll val) {
+    if (v == y) return val;
+    for (int w : G[v]) {
+        if (w != prev) {
+            ll q = dfs(w, v, y, val ^ edges[{min(v, w), max(v, w)}]);
+            if (q != -1) return q;
+        }
+    }
+    return -1LL;
+}
+
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // cin.sync_with_stdio(0);
-    // cin.tie(0);
-    // TODO INSERT CODE HERE
+    ri(N);
+    ri(Q);
+    FOR(i, N - 1) {
+        ri(x); ri(y); rll(z);
+        addEdge(x - 1, y - 1, z);
+    }
+    FOR(i, Q) {
+        rc(c);
+        if (c == 'A') {
+            ri(x); ri(y); rll(z);
+            addEdge(x - 1, y - 1, z);
+        } else if (c == 'R') {
+            ri(x); ri(y); rll(z);
+            removeEdge(x - 1, y - 1);
+        } else if (c == 'Q') {
+            ri(x); ri(y);
+            printf("%lld\n", dfs(x - 1, -1, y - 1, 0LL));
+        } else {
+            i--;
+        }
+    }
     return 0;
 }
