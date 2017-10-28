@@ -100,7 +100,7 @@ int main() {
         rd(x2);
         rd(y2);
         rd(v);
-        geese[i] = new Goose(x1 + MAXN, y1 + MAXN, x2 + MAXN, y2 + MAXN, v);
+        geese[i] = new Goose(x1, y1, x2, y2, v);
     }
     double t;
     For(i, 1, N) {
