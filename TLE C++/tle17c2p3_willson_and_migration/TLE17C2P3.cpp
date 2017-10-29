@@ -84,7 +84,6 @@ struct Goose {
         if (dd <= R * R + EPS) return 0.0;
         double dvdv = dvx * dvx + dvy * dvy;
         double d = (ddv * ddv) - dvdv * (dd - R * R);
-        if (abs(dvx) < EPS && abs(dvy) < EPS) return dd <= R * R + EPS ? 0.0 : D_INF;
         if (ddv > EPS) return D_INF;
         return d < -EPS ? D_INF : abs((ddv + sqrt(d)) / dvdv);
     }
