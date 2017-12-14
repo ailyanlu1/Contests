@@ -58,40 +58,37 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 #define MAXN 100010
 
 int N;
-int A[MAXN];
+int A[MAXN], B[MAXN];
 vector<int> moves;
 
 int main() {
     ri(N);
     FOR(i, N) {
         ri(A[i]);
+        B[i] = A[i];
     }
-    For(i, (N % 3 + 1) % 2, N) {
-        if (A[max(0, i - 1)]) {
-            For(j, max(0, i - 1), min(N, i + 2)) {
+    For(i, 1, N) {
+        if (A[i - 1]) {
+            For(j, i - 1, i + 2) {
                 A[j] = !A[j];
             }
             moves.pb(i);
         }
     }
-//    FOR(i, N) printf("%d ", A[i]);
-//    printf("\n");
     if (A[N - 1]) {
-        if (N % 3 == 2) assert(false); // I think this is right???
-        for (int i = N - 3; i >= 0; i -= 3) {
-            For(j, max(0, i - 1), min(N, i + 2)) {
-                A[j] = !A[j];
+        moves.clear();
+        B[0] = !B[0];
+        B[1] = !B[1];
+        moves.pb(0);
+        For(i, 1, N) {
+            if (B[i - 1]) {
+                For(j, i - 1, i + 2) {
+                    B[j] = !B[j];
+                }
+                moves.pb(i);
             }
-            moves.pb(i);
-        }
-        for (int i = (N % 3 + 1) % 2; i < N; i += 3) {
-            For(j, max(0, i - 1), min(N, i + 2)) {
-                A[j] = !A[j];
-            }
-            moves.pb(i);
         }
     }
-    FOR(i, N) assert(!A[i]);
     printf("%d\n", (int) moves.size());
     for (int x : moves) {
         printf("%d\n", x + 1);
