@@ -24,7 +24,7 @@
 #define FOR(i, b) For(i, 0, b)
 #define Rev(i, a, b) for (i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
-#define FILL(a, x) memset((a), (x), sizeof(a))
+#define SET0(a) memset((a), 0, sizeof(a))
 #define Fill(a, x, n) FOR(_, n) (a)[_] = (x)
 #define randi(a, b) (rand() % ((b) - (a) + 1) + (a))
 
