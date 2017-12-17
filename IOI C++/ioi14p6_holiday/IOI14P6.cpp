@@ -6,9 +6,11 @@
 #define D_INF numeric_limits<double>::infinity()
 #define pb push_back
 #define mp make_pair
-#define l(x) (x << 1)
-#define r(x) (x << 1 | 1)
-#define mid(x, y) (x + (y - x) / 2)
+#define l(x) ((x) << 1)
+#define r(x) ((x) << 1 | 1)
+#define m(x, y) ((x) + ((y) - (x)) / 2)
+#define MIN(a, b) ((a) = min((a), (b)))
+#define MAX(a, b) ((a) = max((a), (b)))
 #define f first
 #define s second
 #define ri(x) scanf("%d", &x)
@@ -18,24 +20,38 @@
 #define rd(x) scanf("%lf", &x)
 #define rc(x) scanf(" %c", &x)
 #define rs(x) scanf("%s", x)
-#define Fill(a, x) memset(a, x, sizeof(a))
-#define randi(a, b) (rand() % (b - a + 1) + a)
+#define For(i, a, b) for (int i = (a); i < (b); i++)
+#define FOR(i, b) For(i, 0, b)
+#define Forit(i, c) for (auto i = (c).begin(); i != (c).end(); i++)
+#define Rev(i, a, b) for (int i = (a); i > (b); i--)
+#define REV(i, a) Rev(i, a, -1)
+#define Revit(i, c) for (auto i = (c).rbegin(); i != (c).rend(); i++)
+#define FILL(a, x) memset((a), (x), sizeof(a))
+#define Fill(a, x, n) FOR(_, n) (a)[_] = (x)
+#define randi(a, b) (rand() % ((b) - (a) + 1) + (a))
 
 using namespace std;
 
 typedef long long ll;
 typedef unsigned long long llu;
 typedef pair<int, int> pii;
-typedef pair<float, float> pff;
 typedef pair<double, double> pdd;
+typedef pair<int, double> pid;
+typedef pair<double, int> pdi;
 typedef pair<ll, ll> pll;
+typedef pair<int, ll> pill;
+typedef pair<ll, int> plli;
 typedef pair<llu, llu> pllu;
+typedef pair<int, llu> pillu;
+typedef pair<llu, int> pllui;
 typedef map<int, int> mii;
 typedef map<int, ll> mill;
 typedef map<ll, int> mlli;
+typedef map<ll, ll> mll;
 typedef unordered_map<int, int> umii;
 typedef unordered_map<int, ll> umill;
 typedef unordered_map<ll, int> umlli;
+typedef unordered_map<ll, ll> umll;
 
 #define MAXN 100005
 
@@ -59,17 +75,11 @@ struct Node {
     }
 } *root[MAXN];
 
-/*Node *build(int cL, int cR) {
-    if (cL == cR) return new Node(0, 0LL);
-    int m = mid(cL, cR);
-    return new Node(build(cL, m), build(m + 1, cR));
-}*/
-
 Node *update(Node *&cur, int cL, int cR, int ind, int val) {
     if (cur == nullptr) cur = new Node(0, 0LL);
     if (cL > ind || cR < ind) return cur;
     if (cL == cR) return new Node(cur->cnt + 1, cur->sum + val);
-    int m = mid(cL, cR);
+    int m = m(cL, cR);
     return new Node(update(cur->left, cL, m, ind, val), update(cur->right, m + 1, cR, ind, val));
 }
 
@@ -77,70 +87,44 @@ ll query(Node *l, Node *r, int cL, int cR, int x) {
     if (l == nullptr || r == nullptr || x <= 0) return 0LL;
     if (x >= r->cnt - l->cnt) return r->sum - l->sum;
     if (cL == cR) return (ll) x * (ll) indToVal[cL];
-    int m = mid(cL, cR);
+    int m = m(cL, cR);
     int y = (r->right ? r->right->cnt : 0) - (l->right ? l->right->cnt : 0);
     if (x > y) return query(l->left, r->left, cL, m, x - y) + (r->right ? r->right->sum : 0LL) - (l->right ? l->right->sum : 0LL);
     else return query(l->right, r->right, m + 1, cR, x);
 }
 
-ll solve(int cL, int cR, int l, int r) {
+ll solve(int cL, int cR, int l, int r, bool rev) {
     if (cL > cR) return 0LL;
-    int m = mid(cL, cR);
+    int m = m(cL, cR);
     ll ans = 0LL;
     int ind = l;
-    for (int i = l; i <= r; i++) {
-        ll q = query(root[m - 1], root[i], 1, SZ, D - (S - m) - (i - m));
-        if (q > ans) {
+    For(i, l, r + 1) {
+        ll q = rev ? query(root[i - 1], root[m], 1, SZ, D - (m - S) - (m - i)) : query(root[m - 1], root[i], 1, SZ, D - (S - m) - (i - m));
+        if (q + rev > ans) {
             ans = q;
             ind = i;
         }
     }
-    return max(ans, max(solve(cL, m - 1, l, ind), solve(m + 1, cR, ind, r)));
-}
-
-ll solveRev(int cL, int cR, int l, int r) {
-    if (cL > cR) return 0LL;
-    int m = mid(cL, cR);
-    ll ans = 0LL;
-    int ind = l;
-    for (int i = l; i <= r; i++) {
-        ll q = query(root[i - 1], root[m], 1, SZ, D - (m - S) - (m - i));
-        if (q >= ans) {
-            ans = q;
-            ind = i;
-        }
-    }
-    return max(ans, max(solveRev(cL, m - 1, l, ind), solveRev(m + 1, cR, ind, r)));
+    return max(ans, max(solve(cL, m - 1, l, ind, rev), solve(m + 1, cR, ind, r, rev)));
 }
 
 long long findMaxAttraction(int n, int start, int d, int attraction[]) {
     N = n;
     S = start + 1;
     D = d;
-    for (int i = 0; i < N; i++) {
+    FOR(i, N) {
         ordered.insert(attraction[i]);
     }
-    // index
     SZ = 0;
     for (int a : ordered) {
         SZ++;
         indToVal[SZ] = a;
         valToInd[a] = SZ;
     }
-    // forward
-    // root[0] = build(1, SZ);
-    for (int i = 1; i <= N; i++) {
+    For(i, 1, N + 1) {
         root[i] = update(root[i - 1], 1, SZ, valToInd[attraction[i - 1]], attraction[i - 1]);
     }
-    // ll ans = solve(1, S, S, N);
-    // reverse
-    // S = N - start;
-    // root[0] = nullptr;
-    // for (int i = 1; i <= N; i++) {
-    //     root[i] = update(root[i - 1], 1, SZ, valToInd[attraction[N - i]], attraction[N - i]);
-    // }
-    // return max(ans, solve(1, S, S, N));
-    return max(solve(1, S, S, N), solveRev(S, N, 1, S));
+    return max(solve(1, S, S, N, false), solve(S, N, 1, S, true));
 }
 
 int main() {
@@ -149,7 +133,7 @@ int main() {
     ri(start);
     ri(d);
     int attraction[n];
-    for (int i = 0; i < n; i++) {
+    FOR(i, n) {
         ri(attraction[i]);
     }
     printf("%lld\n", findMaxAttraction(n, start, d, attraction));
