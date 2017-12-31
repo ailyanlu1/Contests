@@ -61,7 +61,7 @@ int main() {
     ri(M);
     ri(K);
     ri(N);
-    X = max(0, (int) ceil((0.595 - (double) K / (double) N) * (double) N));
+    X = max(0, (int) ceil(0.595 * (double) N - (double) K));
     if (X <= M) printf("%d\n", X);
     else printf("have mercy snew\n");
     return 0;
