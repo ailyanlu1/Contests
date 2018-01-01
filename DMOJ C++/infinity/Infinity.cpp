@@ -67,62 +67,9 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-#define MAXNK 200010
-
-struct SegmentTree_SAM_RQ {
-private:
-    int N;
-    int *T;
-    const int def = 0; // default value
-    const int qdef = INT_MAX; // query default value
-
-    int merge(int l, int r) {
-        return min(l, r);
-    }
-
-public:
-    SegmentTree_SAM_RQ(int size, int *A, bool oneIndexed) {
-        N = size;
-        T = new int[2 * N];
-        for (int i = 0; i < N; i++) T[N + i] = A[i + oneIndexed];
-        for (int i = N - 1; i > 0; i--) T[i] = merge(T[i << 1], T[i << 1 | 1]);
-    }
-
-    SegmentTree_SAM_RQ(int size) {
-        N = size;
-        T = new int[2 * N];
-        for (int i = 1; i < 2 * N; i++) T[i] = def;
-    }
-
-    void update(int i, int v) {
-        for (T[i += (N - 1)] = v; i >>= 1;) T[i] = merge(T[i << 1], T[i << 1 | 1]); // assignment: T[i += (N - 1)] = v, modification: T[i += (N - 1)] += v
-    }
-
-    int query(int l, int r) {
-        int ql = qdef, qr = qdef;
-        for (l += (N - 1), r += (N - 1); l <= r; l >>= 1, r >>= 1) {
-            if (l & 1) ql = merge(ql, T[l++]);
-            if (!(r & 1)) qr = merge(T[r--], qr);
-        }
-        return merge(ql, qr);
-    }
-
-    int size() {
-        return N;
-    }
-} *st;
-
-int N, K, A[MAXNK], D[MAXNK];
-
 int main() {
-    ri(N);
-    ri(K);
-    FOR(i, N) ri(A[i]);
-    sort(A, A + N);
-    FOR(i, N - K + 1) D[i] = A[K + i - 1] - A[i];
-    st = new SegmentTree_SAM_RQ(N - K + 1, D, false);
-    int L = 0;
-    For(i, 1, N + 1) MAX(L, st->query(max(1, i - K + 1), min(N - K + 1, i)));
-    printf("%d\n", L);
+    unsigned int a, b;
+    scanf("%x %x", &a, &b);
+    printf(a + b > INT_INF ? "Yes\n" : "No\n");
     return 0;
 }

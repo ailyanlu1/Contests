@@ -69,22 +69,35 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 
 #define MAXNK 200010
 
-int N, K, A[MAXNK], D[MAXNK];
-deque<int> dq;
+int N, M, K, A[MAXNK], T[2 * MAXNK];
 
+// 2(N - K + 1)
+void init() {
+    M = N - K + 1;
+    for (int i = 0; i < M; i++) T[M + i] = A[i + K - 1] - A[i];
+    for (int i = M - 1; i > 0; i--) T[i] = min(T[i << 1], T[i << 1 | 1]);
+}
+
+// log(N - K + 1)
+int query(int l, int r) {
+    int q = INT_MAX;
+    for (l += (M - 1), r += (M - 1); l <= r; l >>= 1, r >>= 1) {
+        if (l & 1) MIN(q, T[l++]);
+        if (!(r & 1)) MIN(q, T[r--]);
+    }
+    return q;
+}
+
+// ~ N + (N log N) + (2N - 2K + 2) + (N log (N - K + 1)) time
+// ~ 3N space
 int main() {
     ri(N);
     ri(K);
     FOR(i, N) ri(A[i]);
     sort(A, A + N);
-    FOR(i, N) D[i] = i < N - K + 1 ? A[K + i - 1] - A[i] : INT_MAX;
+    init();
     int L = 0;
-    FOR(i, N) {
-        while (!dq.empty() && dq.front() <= i - K) dq.pop_front();
-        while (!dq.empty() && D[dq.back()] >= D[i]) dq.pop_back();
-        dq.pb(i);
-        MAX(L, D[dq.front()]);
-    }
+    For(i, 1, N + 1) MAX(L, query(max(1, i - K + 1), min(N - K + 1, i)));
     printf("%d\n", L);
     return 0;
 }
