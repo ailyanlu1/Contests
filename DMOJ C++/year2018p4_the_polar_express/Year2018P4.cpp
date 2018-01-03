@@ -67,10 +67,44 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+#define MAXLEN 20
+#define MAXSUM 200
+
+int ans = 0;
+ll L, R, dp[MAXLEN][10][MAXSUM];
+vector<int> LD, RD;
+
+ll solve(int S, vector<int> &D) {
+    ll ret = 0LL;
+    FOR(i, sz(D)) {
+        FOR(j, D[i]) ret += dp[sz(D) - i][j][S];
+        S -= D[i];
+    }
+    return ret;
+}
+
+void pre() {
+    Fill3(dp, 0LL, MAXLEN, 10, MAXSUM);
+    FOR(j, 10) dp[1][j][j] = 1;
+    For(i, 2, max(sz(LD), sz(RD)) + 1) FOR(j, 10) FOR(k, max(sz(LD), sz(RD)) * 9) FOR(m, 10) if (k - j >= 0) dp[i][j][k] += dp[i - 1][m][k - j];
+}
+
+void getDig(ll x, vector<int> &D) {
+    while (x > 0) {
+        D.pb((int) (x % 10));
+        x /= 10;
+    }
+    reverse(D.begin(), D.end());
+}
+
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    // TODO INSERT CODE HERE
+    rll(L);
+    rll(R);
+    R++;
+    getDig(L, LD);
+    getDig(R, RD);
+    pre();
+    FOR(i, max(sz(LD), sz(RD)) * 9) if (solve(i, RD) - solve(i, LD) > 0) ans++;
+    printf("%d\n", ans);
     return 0;
 }

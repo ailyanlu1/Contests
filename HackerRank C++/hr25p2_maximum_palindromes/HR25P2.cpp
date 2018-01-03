@@ -67,10 +67,38 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+#define MAXS 100010
+#define MOD 1000000007
+
+string S;
+int Q, L, R, freq[26][MAXS];
+ll fact[MAXS], inv[MAXS], factInv[MAXS];
+
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    // TODO INSERT CODE HERE
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> S;
+    fact[0] = 1;
+    inv[1] = 1;
+    factInv[0] = 1;
+    For(i, 1, len(S) + 1) fact[i] = (fact[i - 1] * i) % MOD;
+    For(i, 2, len(S) + 1) inv[i] = (inv[MOD % i] * (MOD - MOD / i)) % MOD;
+    For(i, 1, len(S) + 1) factInv[i] = (factInv[i - 1] * inv[i]) % MOD;
+    Fill2(freq, 0, 26, len(S) + 1);
+    FOR(i, len(S)) freq[S[i] - 'a'][i + 1]++;
+    FOR(i, 26) For(j, 1, len(S) + 1) freq[i][j] += freq[i][j - 1];
+    cin >> Q;
+    int single, dual, cnt;
+    ll repInv;
+    FOR(i, Q) {
+        cin >> L >> R;
+        single = 0, dual = 0, repInv = 1;
+        FOR(i, 26) {
+            cnt = freq[i][R] - freq[i][L - 1];
+            single += cnt % 2;
+            dual += cnt / 2;
+            repInv = (repInv * factInv[cnt / 2]) % MOD;
+        }
+        cout << (max(single, 1) * ((fact[dual] * repInv) % MOD)) % MOD << "\n";
+    }
     return 0;
 }

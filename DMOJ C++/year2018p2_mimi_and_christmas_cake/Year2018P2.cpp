@@ -67,10 +67,38 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+bool *isPrime;
+vector<int> primes;
+int *SPF;
+
+void sieve(int N) {
+    isPrime = new bool[N + 1];
+    for (int i = 0; i <= N; i++) isPrime[i] = true;
+    SPF = new int[N + 1];
+    isPrime[0] = isPrime[1] = false;
+    for (int i = 2; i <= N; i++) {
+        if (isPrime[i]) {
+            primes.push_back(i);
+            SPF[i] = i;
+        }
+        for (int j = 0; j < (int) primes.size() && i * primes[j] <= N && primes[j] <= SPF[i]; j++) {
+            isPrime[i * primes[j]] = false;
+            SPF[i * primes[j]] = primes[j];
+        }
+    }
+}
+
+#define MAXF 100010
+
+int N, f, cnt = 0;
+
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    // TODO INSERT CODE HERE
+    ri(N);
+    sieve(MAXF);
+    FOR(i, N) {
+        ri(f);
+        if (isPrime[f]) cnt++;
+    }
+    printf("%d\n", cnt);
     return 0;
 }

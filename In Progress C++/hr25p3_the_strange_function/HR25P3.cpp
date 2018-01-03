@@ -67,10 +67,31 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+int gcd(int p, int q) {
+    return q == 0 ? abs(p) : gcd(q, p % q);
+}
+
+#define MAXN 50010
+
+int N, A[MAXN];
+ll ans = -LL_INF;
+
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    // TODO INSERT CODE HERE
+    ri(N);
+    FOR(i, N) {
+        ri(A[i]);
+    }
+    FOR(i, N) {
+        int g = 0;
+        int m = 0;
+        ll s = 0LL;
+        For(j, i, N) {
+            g = gcd(g, abs(A[j]));
+            m = max(m, A[j]);
+            s += (ll) A[j];
+            MAX(ans, (ll) g * (ll) (s - (ll) m));
+        }
+    }
+    printf("%lld\n", ans);
     return 0;
 }

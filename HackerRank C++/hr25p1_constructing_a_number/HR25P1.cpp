@@ -67,10 +67,21 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+int T, N, a;
+
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    // TODO INSERT CODE HERE
+    ri(T);
+    FOR(t, T) {
+        ri(N);
+        int sum = 0;
+        FOR(i, N) {
+            ri(a);
+            while (a > 0) {
+                sum += a % 10;
+                a /= 10;
+            }
+        }
+        printf(sum % 3 == 0 ? "Yes\n" : "No\n");
+    }
     return 0;
 }
