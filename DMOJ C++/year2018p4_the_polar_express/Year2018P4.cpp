@@ -84,9 +84,9 @@ ll solve(int S, vector<int> &D) {
 }
 
 void pre() {
-    Fill3(dp, 0LL, MAXLEN, 10, MAXSUM);
+    Fill3(dp, 0LL, sz(RD) + 1, 10, sz(RD) * 9);
     FOR(j, 10) dp[1][j][j] = 1;
-    For(i, 2, max(sz(LD), sz(RD)) + 1) FOR(j, 10) FOR(k, max(sz(LD), sz(RD)) * 9) FOR(m, 10) if (k - j >= 0) dp[i][j][k] += dp[i - 1][m][k - j];
+    For(i, 2, sz(RD) + 1) FOR(j, 10) FOR(k, sz(RD) * 9) FOR(m, 10) if (k - j >= 0) dp[i][j][k] += dp[i - 1][m][k - j];
 }
 
 void getDig(ll x, vector<int> &D) {
