@@ -73,13 +73,10 @@ int main() {
     ri(T);
     FOR(t, T) {
         ri(N);
-        int sum = 0;
+        ll sum = 0LL;
         FOR(i, N) {
             ri(a);
-            while (a > 0) {
-                sum += a % 10;
-                a /= 10;
-            }
+            sum += (ll) a;
         }
         printf(sum % 3 == 0 ? "Yes\n" : "No\n");
     }
