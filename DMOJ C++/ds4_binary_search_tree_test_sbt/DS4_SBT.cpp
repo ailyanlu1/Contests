@@ -1,10 +1,3 @@
-/*
- * DS4_SBT.cpp
- *
- *  Created on: Jul 21, 2017
- *      Author: Wesley Leung
- */
-
 #include <bits/stdc++.h>
 
 #define SHORT_INF 0x3f3f
@@ -250,7 +243,6 @@ private:
                 x = getMin(y->right);
                 x->right = removeMin(y->right);
                 x->left = y->left;
-                free(y);
             }
         }
         update(x);
