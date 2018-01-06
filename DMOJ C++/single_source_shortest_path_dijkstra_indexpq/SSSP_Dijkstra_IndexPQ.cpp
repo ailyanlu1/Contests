@@ -232,21 +232,23 @@ struct IndexPQ {
 private:
     Comparator cmp;
 
-    const int INIT_CAPACITY = 4;            // default capacity
+    const int INIT_CAPACITY = 3;            // default capacity
     int n;                                  // number of elements on PQ
-    Index *pq;                                // binary heap using 1-based indexing
+    int curCapacity;                        // current capacity of the priority queue
+    Index *pq;                              // binary heap using 1-based indexing
     unordered_map<Index, int> qp;           // inverse of pq; qp[i] = heap location of the key at index i; qp[pq[i]] = pq[qp[i]] = i
     unordered_map<Index, Key> keys;         // keys[i] = priority of index i
 
     // helper function to double the size of the heap array
     void resize(int capacity) {
         // assert capacity > n;
-        Index *newpq = new Index[capacity];
+        Index *newpq = new Index[capacity + 1];
         for (int i = 1; i <= n; i++) {
             newpq[i] = pq[i];
         }
         swap(newpq, pq);
         delete[](newpq);
+        curCapacity = capacity;
     }
 
     void exch(int i, int j) {
@@ -278,7 +280,8 @@ public:
      */
     IndexPQ() {
         n = 0;
-        pq = new Index[INIT_CAPACITY];
+        curCapacity = INIT_CAPACITY;
+        pq = new Index[INIT_CAPACITY + 1];
     }
 
     /**
@@ -288,6 +291,7 @@ public:
      */
     IndexPQ(int N) {
         n = 0;
+        curCapacity = N;
         pq = new Index[N + 1];
     }
 
@@ -331,6 +335,7 @@ public:
       */
      void insert(Index i, Key key) {
          if (contains(i)) throw illegal_argument_exception("index is already in the priority queue");
+         if (n >= curCapacity) resize(2 * curCapacity + 1);
          n++;
          qp[i] = n;
          pq[n] = i;
@@ -366,6 +371,7 @@ public:
          qp.erase(minInd);        // delete
          keys.erase(minInd);
          pq[n+1] = -1;        // not needed
+         if ((n > 0) && (n == (curCapacity - 1) / 4)) resize((curCapacity + 1) / 2);
          return make_pair(minInd, minKey);
      }
 
@@ -410,6 +416,7 @@ public:
          sink(index);
          qp.erase(i);
          keys.erase(i);
+         if ((n > 0) && (n == (curCapacity - 1) / 4)) resize((curCapacity + 1) / 2);
      }
 };
 
@@ -422,7 +429,7 @@ WeightedEdge **edgeTo;
 const unit INF = INT_INF;
 
 void dijkstraSP(int s) {
-    IndexPQ<int, unit, greater<unit>> PQ(G->getV());
+    IndexPQ<int, unit, greater<unit>> PQ;
     distTo = new unit[G->getV()];
     edgeTo = new WeightedEdge *[G->getV()];
     for (int v = 0; v < G->getV(); v++) {
