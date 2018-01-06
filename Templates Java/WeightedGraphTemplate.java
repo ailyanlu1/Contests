@@ -596,10 +596,10 @@ public class WeightedGraphTemplate {
             if (maxN < 0) throw new IllegalArgumentException();
             this.maxN = maxN;
             n = 0;
-            keys = (Key[]) new Comparable[maxN + 1];    // make this of length maxN??
+            keys = (Key[]) new Comparable[maxN];
             pq   = new int[maxN + 1];
-            qp   = new int[maxN + 1];                   // make this of length maxN??
-            for (int i = 0; i <= maxN; i++)
+            qp   = new int[maxN];
+            for (int i = 0; i < maxN; i++)
                 qp[i] = -1;
         }
 
@@ -678,6 +678,7 @@ public class WeightedGraphTemplate {
 
         /**
          * Removes a minimum key and returns its associated index.
+         * 
          * @return an index associated with a minimum key
          * @throws NoSuchElementException if this priority queue is empty
          */
@@ -686,7 +687,7 @@ public class WeightedGraphTemplate {
             int min = pq[1];
             exch(1, n--);
             sink(1);
-            assert min == pq[n+1];
+            // assert min == pq[n+1];
             qp[min] = -1;        // delete
             keys[min] = null;    // to help with garbage collection
             pq[n+1] = -1;        // not needed
@@ -721,19 +722,6 @@ public class WeightedGraphTemplate {
             keys[i] = key;
             swim(qp[i]);
             sink(qp[i]);
-        }
-
-        /**
-         * Change the key associated with index {@code i} to the specified value.
-         *
-         * @param  i the index of the key to change
-         * @param  key change the key associated with index {@code i} to this key
-         * @throws IndexOutOfBoundsException unless {@code 0 <= i < maxN}
-         * @deprecated Replaced by {@code changeKey(int, Key)}.
-         */
-        @Deprecated
-        public void change(int i, Key key) {
-            changeKey(i, key);
         }
 
         /**
@@ -827,7 +815,6 @@ public class WeightedGraphTemplate {
             }
         }
 
-
        /***************************************************************************
         * Iterators.
         ***************************************************************************/
@@ -839,7 +826,9 @@ public class WeightedGraphTemplate {
          *
          * @return an iterator that iterates over the keys in ascending order
          */
-        public Iterator<Integer> iterator() { return new HeapIterator(); }
+        public Iterator<Integer> iterator() { 
+            return new HeapIterator();
+        }
 
         private class HeapIterator implements Iterator<Integer> {
             // create a new pq
@@ -854,6 +843,7 @@ public class WeightedGraphTemplate {
             }
 
             public boolean hasNext()  { return !copy.isEmpty();                     }
+            
             public void remove()      { throw new UnsupportedOperationException();  }
 
             public Integer next() {

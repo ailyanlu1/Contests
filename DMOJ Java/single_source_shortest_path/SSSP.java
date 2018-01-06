@@ -1,59 +1,119 @@
 package single_source_shortest_path;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Stack;
+import java.util.StringTokenizer;
 
 public class SSSP {
-    
     private static SSSP o = new SSSP();
-    
     public class Reader {
         private BufferedReader in;
         private StringTokenizer st;
-        
+
         public Reader(InputStream inputStream) {
             in = new BufferedReader(new InputStreamReader(inputStream));
-        } // Reader InputStream constructor
-        
+        }
+
         public Reader(String fileName) throws FileNotFoundException {
             in = new BufferedReader(new FileReader(fileName));
-        } // Reader String constructor
+        }
 
         public String next() throws IOException {
             while (st == null || !st.hasMoreTokens()) {
                 st = new StringTokenizer(in.readLine().trim());
-            } // while
+            }
             return st.nextToken();
-        } // next method
-        
-        public long nextLong() throws IOException {
-            return Long.parseLong(next());
-        } // nextLong method
-        
-        public int nextInt() throws IOException {
-            return Integer.parseInt(next());
-        } // nextInt method
-        
+        }
+
+        public String next(String delim) throws IOException {
+            while (st == null || !st.hasMoreTokens()) {
+                st = new StringTokenizer(in.readLine().trim());
+            }
+            return st.nextToken(delim);
+        }
+
+        /*
+        public BigInteger nextBigInteger() throws IOException {
+            return new BigInteger(next());
+        }
+        */
+
+        public byte nextByte() throws IOException {
+            return Byte.parseByte(next());
+        }
+
+        public byte nextByte(String delim) throws IOException {
+            return Byte.parseByte(next(delim));
+        }
+
+        public char nextChar() throws IOException {
+            return next().charAt(0);
+        }
+
+        public char nextChar(String delim) throws IOException {
+            return next(delim).charAt(0);
+        }
+
         public double nextDouble() throws IOException {
             return Double.parseDouble(next());
-        } // nextDouble method
-        
+        }
+
+        public double nextDouble(String delim) throws IOException {
+            return Double.parseDouble(next(delim));
+        }
+
+        public float nextFloat() throws IOException {
+            return Float.parseFloat(next());
+        }
+
+        public float nextFloat(String delim) throws IOException {
+            return Float.parseFloat(next(delim));
+        }
+
+        public int nextInt() throws IOException {
+            return Integer.parseInt(next());
+        }
+
+        public int nextInt(String delim) throws IOException {
+            return Integer.parseInt(next(delim));
+        }
+
+        public long nextLong() throws IOException {
+            return Long.parseLong(next());
+        }
+
+        public long nextLong(String delim) throws IOException {
+            return Long.parseLong(next(delim));
+        }
+
+        public short nextShort() throws IOException {
+            return Short.parseShort(next());
+        }
+
+        public short nextShort(String delim) throws IOException {
+            return Short.parseShort(next(delim));
+        }
+
         public String nextLine() throws IOException {
-            return in.readLine().trim();
-        } // nextLine method
+            st = null;
+            return in.readLine();
+        }
     } // Reader class
     
-    public class Bag<Item> implements Iterable<Item> {
-        private Node<Item> first;    // beginning of bag
-        private int n;               // number of elements in bag
+    public class Stack<Item> implements Iterable<Item> {
+        private Node<Item> first;     // top of stack
+        private int n;                // size of the stack
 
         // helper linked list class
         private class Node<Item> {
@@ -62,38 +122,37 @@ public class SSSP {
         }
 
         /**
-         * Initializes an empty bag.
+         * Initializes an empty stack.
          */
-        public Bag() {
+        public Stack() {
             first = null;
             n = 0;
         }
 
         /**
-         * Returns true if this bag is empty.
+         * Returns true if this stack is empty.
          *
-         * @return {@code true} if this bag is empty;
-         *         {@code false} otherwise
+         * @return true if this stack is empty; false otherwise
          */
         public boolean isEmpty() {
             return first == null;
         }
 
         /**
-         * Returns the number of items in this bag.
+         * Returns the number of items in this stack.
          *
-         * @return the number of items in this bag
+         * @return the number of items in this stack
          */
         public int size() {
             return n;
         }
 
         /**
-         * Adds the item to this bag.
+         * Adds the item to this stack.
          *
-         * @param  item the item to add to this bag
+         * @param  item the item to add
          */
-        public void add(Item item) {
+        public void push(Item item) {
             Node<Item> oldfirst = first;
             first = new Node<Item>();
             first.item = item;
@@ -101,11 +160,178 @@ public class SSSP {
             n++;
         }
 
+        /**
+         * Removes and returns the item most recently added to this stack.
+         *
+         * @return the item most recently added
+         * @throws NoSuchElementException if this stack is empty
+         */
+        public Item pop() {
+            if (isEmpty()) throw new NoSuchElementException("Stack underflow");
+            Item item = first.item;        // save item to return
+            first = first.next;            // delete first node
+            n--;
+            return item;                   // return the saved item
+        }
+
 
         /**
-         * Returns an iterator that iterates over the items in this bag in arbitrary order.
+         * Returns (but does not remove) the item most recently added to this stack.
          *
-         * @return an iterator that iterates over the items in this bag in arbitrary order
+         * @return the item most recently added to this stack
+         * @throws NoSuchElementException if this stack is empty
+         */
+        public Item peek() {
+            if (isEmpty()) throw new NoSuchElementException("Stack underflow");
+            return first.item;
+        }
+
+        /**
+         * Returns a string representation of this stack.
+         *
+         * @return the sequence of items in this stack in LIFO order, separated by spaces
+         */
+        public String toString() {
+            StringBuilder s = new StringBuilder();
+            for (Item item : this) {
+                s.append(item);
+                s.append(' ');
+            }
+            return s.toString();
+        }
+           
+
+        /**
+         * Returns an iterator to this stack that iterates through the items in LIFO order.
+         *
+         * @return an iterator to this stack that iterates through the items in LIFO order
+         */
+        public Iterator<Item> iterator() {
+            return new ListIterator<Item>(first);
+        }
+
+        // an iterator, doesn't implement remove() since it's optional
+        private class ListIterator<Item> implements Iterator<Item> {
+            private Node<Item> current;
+
+            public ListIterator(Node<Item> first) {
+                current = first;
+            }
+
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+
+            public Item next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                Item item = current.item;
+                current = current.next; 
+                return item;
+            }
+        }
+    }
+    
+    public class Queue<Item> implements Iterable<Item> {
+        private Node<Item> first;    // beginning of queue
+        private Node<Item> last;     // end of queue
+        private int n;               // number of elements on queue
+
+        // helper linked list class
+        private class Node<Item> {
+            private Item item;
+            private Node<Item> next;
+        }
+
+        /**
+         * Initializes an empty queue.
+         */
+        public Queue() {
+            first = null;
+            last  = null;
+            n = 0;
+        }
+
+        /**
+         * Returns true if this queue is empty.
+         *
+         * @return {@code true} if this queue is empty; {@code false} otherwise
+         */
+        public boolean isEmpty() {
+            return first == null;
+        }
+
+        /**
+         * Returns the number of items in this queue.
+         *
+         * @return the number of items in this queue
+         */
+        public int size() {
+            return n;
+        }
+
+        /**
+         * Returns the item least recently added to this queue.
+         *
+         * @return the item least recently added to this queue
+         * @throws NoSuchElementException if this queue is empty
+         */
+        public Item peek() {
+            if (isEmpty()) throw new NoSuchElementException("Queue underflow");
+            return first.item;
+        }
+
+        /**
+         * Adds the item to this queue.
+         *
+         * @param  item the item to add
+         */
+        public void enqueue(Item item) {
+            Node<Item> oldlast = last;
+            last = new Node<Item>();
+            last.item = item;
+            last.next = null;
+            if (isEmpty()) first = last;
+            else           oldlast.next = last;
+            n++;
+        }
+
+        /**
+         * Removes and returns the item on this queue that was least recently added.
+         *
+         * @return the item on this queue that was least recently added
+         * @throws NoSuchElementException if this queue is empty
+         */
+        public Item dequeue() {
+            if (isEmpty()) throw new NoSuchElementException("Queue underflow");
+            Item item = first.item;
+            first = first.next;
+            n--;
+            if (isEmpty()) last = null;   // to avoid loitering
+            return item;
+        }
+
+        /**
+         * Returns a string representation of this queue.
+         *
+         * @return the sequence of items in FIFO order, separated by spaces
+         */
+        public String toString() {
+            StringBuilder s = new StringBuilder();
+            for (Item item : this) {
+                s.append(item);
+                s.append(' ');
+            }
+            return s.toString();
+        } 
+
+        /**
+         * Returns an iterator that iterates over the items in this queue in FIFO order.
+         *
+         * @return an iterator that iterates over the items in this queue in FIFO order
          */
         public Iterator<Item> iterator()  {
             return new ListIterator<Item>(first);  
@@ -131,6 +357,228 @@ public class SSSP {
         }
     }
     
+    public class MinPQ<Key> implements Iterable<Key> {
+        private Key[] pq;                    // store items at indices 1 to n
+        private int n;                       // number of items on priority queue
+        private Comparator<Key> comparator;  // optional comparator
+
+        /**
+         * Initializes an empty priority queue with the given initial capacity.
+         *
+         * @param  initCapacity the initial capacity of this priority queue
+         */
+        public MinPQ(int initCapacity) {
+            pq = (Key[]) new Object[initCapacity + 1];
+            n = 0;
+        }
+
+        /**
+         * Initializes an empty priority queue.
+         */
+        public MinPQ() {
+            this(1);
+        }
+
+        /**
+         * Initializes an empty priority queue with the given initial capacity,
+         * using the given comparator.
+         *
+         * @param  initCapacity the initial capacity of this priority queue
+         * @param  comparator the order to use when comparing keys
+         */
+        public MinPQ(int initCapacity, Comparator<Key> comparator) {
+            this.comparator = comparator;
+            pq = (Key[]) new Object[initCapacity + 1];
+            n = 0;
+        }
+
+        /**
+         * Initializes an empty priority queue using the given comparator.
+         *
+         * @param  comparator the order to use when comparing keys
+         */
+        public MinPQ(Comparator<Key> comparator) {
+            this(1, comparator);
+        }
+
+        /**
+         * Initializes a priority queue from the array of keys.
+         * <p>
+         * Takes time proportional to the number of keys, using sink-based heap construction.
+         *
+         * @param  keys the array of keys
+         */
+        public MinPQ(Key[] keys) {
+            n = keys.length;
+            pq = (Key[]) new Object[keys.length + 1];
+            for (int i = 0; i < n; i++)
+                pq[i+1] = keys[i];
+            for (int k = n/2; k >= 1; k--)
+                sink(k);
+            // assert isMinHeap();
+        }
+
+        /**
+         * Returns true if this priority queue is empty.
+         *
+         * @return {@code true} if this priority queue is empty;
+         *         {@code false} otherwise
+         */
+        public boolean isEmpty() {
+            return n == 0;
+        }
+
+        /**
+         * Returns the number of keys on this priority queue.
+         *
+         * @return the number of keys on this priority queue
+         */
+        public int size() {
+            return n;
+        }
+
+        /**
+         * Returns a smallest key on this priority queue.
+         *
+         * @return a smallest key on this priority queue
+         * @throws NoSuchElementException if this priority queue is empty
+         */
+        public Key min() {
+            if (isEmpty()) throw new NoSuchElementException("Priority queue underflow");
+            return pq[1];
+        }
+
+        // helper function to double the size of the heap array
+        private void resize(int capacity) {
+            // assert capacity > n;
+            Key[] temp = (Key[]) new Object[capacity];
+            for (int i = 1; i <= n; i++) {
+                temp[i] = pq[i];
+            }
+            pq = temp;
+        }
+
+        /**
+         * Adds a new key to this priority queue.
+         *
+         * @param  x the key to add to this priority queue
+         */
+        public void insert(Key x) {
+            // double size of array if necessary
+            if (n == pq.length - 1) resize(2 * pq.length);
+
+            // add x, and percolate it up to maintain heap invariant
+            pq[++n] = x;
+            swim(n);
+            // assert isMinHeap();
+        }
+
+        /**
+         * Removes and returns a smallest key on this priority queue.
+         *
+         * @return a smallest key on this priority queue
+         * @throws NoSuchElementException if this priority queue is empty
+         */
+        public Key delMin() {
+            if (isEmpty()) throw new NoSuchElementException("Priority queue underflow");
+            exch(1, n);
+            Key min = pq[n--];
+            sink(1);
+            pq[n+1] = null;         // avoid loitering and help with garbage collection
+            if ((n > 0) && (n == (pq.length - 1) / 4)) resize(pq.length  / 2);
+            // assert isMinHeap();
+            return min;
+        }
+
+
+       /***************************************************************************
+        * Helper functions to restore the heap invariant.
+        ***************************************************************************/
+
+        private void swim(int k) {
+            while (k > 1 && greater(k/2, k)) {
+                exch(k, k/2);
+                k = k/2;
+            }
+        }
+
+        private void sink(int k) {
+            while (2*k <= n) {
+                int j = 2*k;
+                if (j < n && greater(j, j+1)) j++;
+                if (!greater(k, j)) break;
+                exch(k, j);
+                k = j;
+            }
+        }
+
+       /***************************************************************************
+        * Helper functions for compares and swaps.
+        ***************************************************************************/
+        private boolean greater(int i, int j) {
+            if (comparator == null) {
+                return ((Comparable<Key>) pq[i]).compareTo(pq[j]) > 0;
+            }
+            else {
+                return comparator.compare(pq[i], pq[j]) > 0;
+            }
+        }
+
+        private void exch(int i, int j) {
+            Key swap = pq[i];
+            pq[i] = pq[j];
+            pq[j] = swap;
+        }
+
+        // is pq[1..N] a min heap?
+        private boolean isMinHeap() {
+            return isMinHeap(1);
+        }
+
+        // is subtree of pq[1..n] rooted at k a min heap?
+        private boolean isMinHeap(int k) {
+            if (k > n) return true;
+            int left = 2*k;
+            int right = 2*k + 1;
+            if (left  <= n && greater(k, left))  return false;
+            if (right <= n && greater(k, right)) return false;
+            return isMinHeap(left) && isMinHeap(right);
+        }
+
+
+        /**
+         * Returns an iterator that iterates over the keys on this priority queue
+         * in ascending order.
+         * <p>
+         * The iterator doesn't implement {@code remove()} since it's optional.
+         *
+         * @return an iterator that iterates over the keys in ascending order
+         */
+        public Iterator<Key> iterator() { return new HeapIterator(); }
+
+        private class HeapIterator implements Iterator<Key> {
+            // create a new pq
+            private MinPQ<Key> copy;
+
+            // add all items to copy of heap
+            // takes linear time since already in heap order so no keys move
+            public HeapIterator() {
+                if (comparator == null) copy = new MinPQ<Key>(size());
+                else                    copy = new MinPQ<Key>(size(), comparator);
+                for (int i = 1; i <= n; i++)
+                    copy.insert(pq[i]);
+            }
+
+            public boolean hasNext()  { return !copy.isEmpty();                     }
+            public void remove()      { throw new UnsupportedOperationException();  }
+
+            public Key next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                return copy.delMin();
+            }
+        }
+    }
+    
     public class IndexMinPQ<Key extends Comparable<Key>> implements Iterable<Integer> {
         private int maxN;        // maximum number of elements on PQ
         private int n;           // number of elements on PQ
@@ -149,10 +597,10 @@ public class SSSP {
             if (maxN < 0) throw new IllegalArgumentException();
             this.maxN = maxN;
             n = 0;
-            keys = (Key[]) new Comparable[maxN + 1];    // make this of length maxN??
+            keys = (Key[]) new Comparable[maxN];
             pq   = new int[maxN + 1];
-            qp   = new int[maxN + 1];                   // make this of length maxN??
-            for (int i = 0; i <= maxN; i++)
+            qp   = new int[maxN];
+            for (int i = 0; i < maxN; i++)
                 qp[i] = -1;
         }
 
@@ -231,6 +679,7 @@ public class SSSP {
 
         /**
          * Removes a minimum key and returns its associated index.
+         * 
          * @return an index associated with a minimum key
          * @throws NoSuchElementException if this priority queue is empty
          */
@@ -239,7 +688,7 @@ public class SSSP {
             int min = pq[1];
             exch(1, n--);
             sink(1);
-            assert min == pq[n+1];
+            // assert min == pq[n+1];
             qp[min] = -1;        // delete
             keys[min] = null;    // to help with garbage collection
             pq[n+1] = -1;        // not needed
@@ -274,19 +723,6 @@ public class SSSP {
             keys[i] = key;
             swim(qp[i]);
             sink(qp[i]);
-        }
-
-        /**
-         * Change the key associated with index {@code i} to the specified value.
-         *
-         * @param  i the index of the key to change
-         * @param  key change the key associated with index {@code i} to this key
-         * @throws IndexOutOfBoundsException unless {@code 0 <= i < maxN}
-         * @deprecated Replaced by {@code changeKey(int, Key)}.
-         */
-        @Deprecated
-        public void change(int i, Key key) {
-            changeKey(i, key);
         }
 
         /**
@@ -380,7 +816,6 @@ public class SSSP {
             }
         }
 
-
        /***************************************************************************
         * Iterators.
         ***************************************************************************/
@@ -392,7 +827,9 @@ public class SSSP {
          *
          * @return an iterator that iterates over the keys in ascending order
          */
-        public Iterator<Integer> iterator() { return new HeapIterator(); }
+        public Iterator<Integer> iterator() { 
+            return new HeapIterator();
+        }
 
         private class HeapIterator implements Iterator<Integer> {
             // create a new pq
@@ -407,11 +844,140 @@ public class SSSP {
             }
 
             public boolean hasNext()  { return !copy.isEmpty();                     }
+            
             public void remove()      { throw new UnsupportedOperationException();  }
 
             public Integer next() {
                 if (!hasNext()) throw new NoSuchElementException();
                 return copy.delMin();
+            }
+        }
+    }
+    
+    public class UF {
+
+        private int[] parent;  // parent[i] = parent of i
+        private byte[] rank;   // rank[i] = rank of subtree rooted at i (never more than 31)
+        private int count;     // number of components
+
+        /**
+         * Initializes an empty union–find data structure with {@code n} sites
+         * {@code 0} through {@code n-1}. Each site is initially in its own 
+         * component.
+         *
+         * @param  n the number of sites
+         * @throws IllegalArgumentException if {@code n < 0}
+         */
+        public UF(int n) {
+            if (n < 0) throw new IllegalArgumentException();
+            count = n;
+            parent = new int[n];
+            rank = new byte[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        /**
+         * Returns the component identifier for the component containing site {@code p}.
+         *
+         * @param  p the integer representing one site
+         * @return the component identifier for the component containing site {@code p}
+         * @throws IndexOutOfBoundsException unless {@code 0 <= p < n}
+         */
+        public int find(int p) {
+            validate(p);
+            while (p != parent[p]) {
+                parent[p] = parent[parent[p]];    // path compression by halving
+                p = parent[p];
+            }
+            return p;
+        }
+
+        /**
+         * Returns the number of components.
+         *
+         * @return the number of components (between {@code 1} and {@code n})
+         */
+        public int count() {
+            return count;
+        }
+      
+        /**
+         * Returns true if the the two sites are in the same component.
+         *
+         * @param  p the integer representing one site
+         * @param  q the integer representing the other site
+         * @return {@code true} if the two sites {@code p} and {@code q} are in the same component;
+         *         {@code false} otherwise
+         * @throws IndexOutOfBoundsException unless
+         *         both {@code 0 <= p < n} and {@code 0 <= q < n}
+         */
+        public boolean connected(int p, int q) {
+            return find(p) == find(q);
+        }
+        
+        /**
+         * Returns the rank by size of the component containing p
+         * 
+         * @param p the integer representing one site
+         * @return the rank by size of the component containing p
+         */
+        public byte rank(int p) {
+            return rank[find(p)];
+        }
+      
+        /**
+         * Merges the component containing site {@code p} with the 
+         * the component containing site {@code q}.
+         *
+         * @param  p the integer representing one site
+         * @param  q the integer representing the other site
+         * @throws IndexOutOfBoundsException unless
+         *         both {@code 0 <= p < n} and {@code 0 <= q < n}
+         */
+        public void union(int p, int q) {
+            int rootP = find(p);
+            int rootQ = find(q);
+            if (rootP == rootQ) return;
+
+            // make root of smaller rank point to root of larger rank
+            if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootQ;
+            else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootP;
+            else {
+                parent[rootQ] = rootP;
+                rank[rootP]++;
+            }
+            count--;
+        }
+        
+        /**
+         * Unmerges the component containing site {@code p} with the 
+         * the component containing site {@code q}.
+         *
+         * @param  p the integer representing one site
+         * @param  q the integer representing the other site
+         * @throws IndexOutOfBoundsException unless
+         *         both {@code 0 <= p < n} and {@code 0 <= q < n}
+         */
+        public void disjoin(int p, int q) {
+            int rootP = find(p);
+            int rootQ = find(q);
+            if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
+            else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
+            else {
+                parent[rootQ] = rootQ;
+                rank[rootP]--;
+            }
+            count++;
+        }
+
+        // validate that p is a valid index
+        private void validate(int p) {
+            int n = parent.length;
+            if (p < 0 || p >= n) {
+                throw new IndexOutOfBoundsException("index " + p + " is not between 0 and " + (n-1));  
             }
         }
     }
@@ -497,15 +1063,29 @@ public class SSSP {
         public String toString() {
             return String.format("%d-%d %.5f", v, w, weight);
         }
+        
+        @Override
+        public int hashCode() {
+            int result = 31 * Math.min(v, w) + Math.max(v, w);
+            result = 31 * result + ((Double) weight).hashCode();
+            return result;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof WeightedEdge)) return false;
+            WeightedEdge e = (WeightedEdge) o;
+            return ((v == e.v && w == e.w) || (v == e.w && w == e.v)) && e.weight() == weight;
+        }
     }
-
-
-    public class EdgeWeightedGraph {
+    
+    public class WeightedGraph {
         private final String NEWLINE = System.getProperty("line.separator");
 
         private final int V;
         private int E;
-        private Bag<WeightedEdge>[] adj;
+        private ArrayList<WeightedEdge>[] adj;
         
         /**
          * Initializes an empty edge-weighted graph with {@code V} vertices and 0 edges.
@@ -513,13 +1093,13 @@ public class SSSP {
          * @param  V the number of vertices
          * @throws IllegalArgumentException if {@code V < 0}
          */
-        public EdgeWeightedGraph(int V) {
+        public WeightedGraph(int V) {
             if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
             this.V = V;
             this.E = 0;
-            adj = (Bag<WeightedEdge>[]) new Bag[V];
+            adj = (ArrayList<WeightedEdge>[]) new ArrayList[V];
             for (int v = 0; v < V; v++) {
-                adj[v] = new Bag<WeightedEdge>();
+                adj[v] = new ArrayList<WeightedEdge>();
             }
         }
 
@@ -528,7 +1108,7 @@ public class SSSP {
          *
          * @param  G the edge-weighted graph to copy
          */
-        public EdgeWeightedGraph(EdgeWeightedGraph G) {
+        public WeightedGraph(WeightedGraph G) {
             this(G.V());
             this.E = G.E();
             for (int v = 0; v < G.V(); v++) {
@@ -569,7 +1149,7 @@ public class SSSP {
         }
 
         /**
-         * Adds the undirected edge {@code e} to this edge-weighted graph.
+         * Adds the undirected weighted edge {@code e} to this edge-weighted graph.
          *
          * @param  e the edge
          * @throws IllegalArgumentException unless both endpoints are between {@code 0} and {@code V-1}
@@ -585,13 +1165,13 @@ public class SSSP {
         }
 
         /**
-         * Returns the edges incident on vertex {@code v}.
+         * Returns the weighted edges incident on vertex {@code v}.
          *
          * @param  v the vertex
-         * @return the edges incident on vertex {@code v} as an Iterable
+         * @return the weighted edges incident on vertex {@code v} as an Iterable
          * @throws IllegalArgumentException unless {@code 0 <= v < V}
          */
-        public Iterable<WeightedEdge> adj(int v) {
+        public ArrayList<WeightedEdge> adj(int v) {
             validateVertex(v);
             return adj[v];
         }
@@ -611,12 +1191,12 @@ public class SSSP {
         /**
          * Returns all edges in this edge-weighted graph.
          * To iterate over the edges in this edge-weighted graph, use foreach notation:
-         * {@code for (Edge e : G.edges())}.
+         * {@code for (WeightedEdge e : G.edges())}.
          *
          * @return all edges in this edge-weighted graph, as an iterable
          */
-        public Iterable<WeightedEdge> edges() {
-            Bag<WeightedEdge> list = new Bag<WeightedEdge>();
+        public ArrayList<WeightedEdge> edges() {
+            ArrayList<WeightedEdge> list = new ArrayList<WeightedEdge>();
             for (int v = 0; v < V; v++) {
                 int selfLoops = 0;
                 for (WeightedEdge e : adj(v)) {
@@ -665,15 +1245,9 @@ public class SSSP {
          *
          * @param  G the edge-weighted digraph
          * @param  s the source vertex
-         * @throws IllegalArgumentException if an edge weight is negative
          * @throws IllegalArgumentException unless {@code 0 <= s < V}
          */
-        public DijkstraUndirectedSP(EdgeWeightedGraph G, int s) {
-            for (WeightedEdge e : G.edges()) {
-                if (e.weight() < 0)
-                    throw new IllegalArgumentException("edge " + e + " has negative weight");
-            }
-
+        public DijkstraUndirectedSP(WeightedGraph G, int s) {
             distTo = new double[G.V()];
             edgeTo = new WeightedEdge[G.V()];
 
@@ -692,8 +1266,6 @@ public class SSSP {
                     relax(e, v);
             }
 
-            // check optimality conditions
-            assert check(G, s);
         }
 
         // relax edge e and update pq if changed
@@ -755,58 +1327,6 @@ public class SSSP {
             return path;
         }
 
-
-        // check optimality conditions:
-        // (i) for all edges e = v-w:            distTo[w] <= distTo[v] + e.weight()
-        // (ii) for all edge e = v-w on the SPT: distTo[w] == distTo[v] + e.weight()
-        private boolean check(EdgeWeightedGraph G, int s) {
-
-            // check that edge weights are nonnegative
-            for (WeightedEdge e : G.edges()) {
-                if (e.weight() < 0) {
-                    System.err.println("negative edge weight detected");
-                    return false;
-                }
-            }
-
-            // check that distTo[v] and edgeTo[v] are consistent
-            if (distTo[s] != 0.0 || edgeTo[s] != null) {
-                System.err.println("distTo[s] and edgeTo[s] inconsistent");
-                return false;
-            }
-            for (int v = 0; v < G.V(); v++) {
-                if (v == s) continue;
-                if (edgeTo[v] == null && distTo[v] != Double.POSITIVE_INFINITY) {
-                    System.err.println("distTo[] and edgeTo[] inconsistent");
-                    return false;
-                }
-            }
-
-            // check that all edges e = v-w satisfy distTo[w] <= distTo[v] + e.weight()
-            for (int v = 0; v < G.V(); v++) {
-                for (WeightedEdge e : G.adj(v)) {
-                    int w = e.other(v);
-                    if (distTo[v] + e.weight() < distTo[w]) {
-                        System.err.println("edge " + e + " not relaxed");
-                        return false;
-                    }
-                }
-            }
-
-            // check that all edges e = v-w on SPT satisfy distTo[w] == distTo[v] + e.weight()
-            for (int w = 0; w < G.V(); w++) {
-                if (edgeTo[w] == null) continue;
-                WeightedEdge e = edgeTo[w];
-                if (w != e.either() && w != e.other(e.either())) return false;
-                int v = e.other(w);
-                if (distTo[v] + e.weight() != distTo[w]) {
-                    System.err.println("edge " + e + " on shortest path not tight");
-                    return false;
-                }
-            }
-            return true;
-        }
-
         // throw an IllegalArgumentException unless {@code 0 <= v < V}
         private void validateVertex(int v) {
             int V = distTo.length;
@@ -815,18 +1335,38 @@ public class SSSP {
         }
     }
     
+    private static Reader in = o.new Reader(System.in);
+    private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+    
+    /*
+    private static char[][] grid;
+    
+    private static boolean isPoint(int i, int j) {
+        return (i >= 0 && i < grid.length && j >= 0 && j < grid[0].length);
+    }
+    private static int toPoint(int i, int j) {
+        return i * grid[0].length + j;
+    }
+    private static int getI(int point) {
+        return point / grid[0].length;
+    }
+    private static int getJ(int point) {
+        return point % grid[0].length;
+    }
+    */
+    
     public static void main(String[] args) throws IOException {
-        Reader in = o.new Reader(System.in);
         int n = in.nextInt();
         int m = in.nextInt();
-        EdgeWeightedGraph G = o.new EdgeWeightedGraph(n+1);
+        WeightedGraph G = o.new WeightedGraph(n);
         for (int i = 0; i < m; i++) {
-            G.addEdge(o.new WeightedEdge(in.nextInt(), in.nextInt(), in.nextInt()));
+            G.addEdge(o.new WeightedEdge(in.nextInt() - 1, in.nextInt() - 1, in.nextInt()));
         }
-        DijkstraUndirectedSP sp = o.new DijkstraUndirectedSP(G, 1);
-        for (int i = 1; i <= n; i++) {
-            if (sp.hasPathTo(i)) System.out.println((int) sp.distTo(i));
-            else System.out.println(-1);
+        DijkstraUndirectedSP sp = o.new DijkstraUndirectedSP(G, 0);
+        for (int i = 0; i < n; i++) {
+            if (sp.hasPathTo(i)) out.println((int) sp.distTo(i));
+            else out.println(-1);
         }
+        out.close();
     }
 }
