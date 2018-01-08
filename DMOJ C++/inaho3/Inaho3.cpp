@@ -67,10 +67,81 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+const llu INF = (1LLU << 63) + (llu) 1e12;
+int N, loInd = -1, hiInd = -1;
+vector<int> L, sufProdL, edgeTo;
+vector<llu> D, distTo;
+
+int toPoint(vector<int> &a) {
+    int p = 0;
+    FOR(i, N) p += a[i] * sufProdL[i];
+    return p;
+}
+
+void fromPoint(int p, vector<int> &ret) {
+    FOR(i, N) {
+        ret.pb(p / sufProdL[i]);
+        p %= sufProdL[i];
+    }
+}
+
 int main() {
-//    freopen("in.txt", "r", stdin);
-//    freopen("out.txt", "w", stdout);
-//    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-//    TODO INSERT CODE HERE
+    ri(N);
+    int li;
+    FOR(i, N) {
+        ri(li);
+        L.pb(li);
+    }
+    int prod = 1;
+    REV(i, N - 1) {
+        sufProdL.pb(prod);
+        prod *= L[i];
+    }
+    reverse(sufProdL.begin(), sufProdL.end());
+    llu di;
+    FOR(i, prod) {
+        rllu(di);
+        D.pb(di);
+        distTo.pb(INF);
+        edgeTo.pb(-1);
+        if (loInd == -1 || di < D[loInd]) loInd = i;
+        if (hiInd == -1 || di >= D[hiInd]) hiInd = i;
+    }
+    vector<int> cur;
+    priority_queue<pair<llu, int>, vector<pair<llu, int>>, greater<pair<llu, int>>> PQ;
+    distTo[hiInd] = D[hiInd];
+    PQ.push({distTo[hiInd], hiInd});
+    while (!PQ.empty()) {
+        int v = PQ.top().second;
+        if (v == loInd) break;
+        cur.clear();
+        fromPoint(v, cur);
+        PQ.pop();
+        FOR(i, N) {
+            FOR(j, 2) {
+                int dir = j == 0 ? -1 : 1;
+                if ((dir == -1 && cur[i] == 0) || (dir == 1 && cur[i] == L[i] - 1)) continue;
+                int w = v + dir * sufProdL[i];
+                if (distTo[w] > distTo[v] + D[w]) {
+                    distTo[w] = distTo[v] + D[w];
+                    edgeTo[w] = v;
+                    PQ.push({distTo[w], w});
+                }
+            }
+        }
+    }
+    printf("%llu\n", distTo[loInd]);
+    stack<int> path;
+    for (int curInd = loInd; edgeTo[curInd] != -1; curInd = edgeTo[curInd]) {
+        path.push(curInd);
+    }
+    path.push(hiInd);
+    while (!path.empty()) {
+        cur.clear();
+        fromPoint(path.top(), cur);
+        FOR(i, N) printf(i == 0 ? "%d" : " %d", cur[i]);
+        printf("\n");
+        path.pop();
+    }
     return 0;
 }

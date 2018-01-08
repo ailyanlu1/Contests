@@ -67,10 +67,22 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+const double PI = acos(-1);
+ll x;
+
+#define re f
+#define im s
+
 int main() {
-//    freopen("in.txt", "r", stdin);
-//    freopen("out.txt", "w", stdout);
-//    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-//    TODO INSERT CODE HERE
+    rll(x);
+    pdd a = {1.0, 0.0};
+    pdd temp;
+    // should converge to 0.4383 + 0.3606i
+    for (ll i = 1LL; i <= min(x, 1000LL); i++) {
+        temp = a;
+        a.re = exp(-PI * temp.im / 2.0) * cos(PI * temp.re / 2.0);
+        a.im = exp(-PI * temp.im / 2.0) * sin(PI * temp.re / 2.0);
+    }
+    printf("%.4f\n%.4f\n", a.re, a.im);
     return 0;
 }

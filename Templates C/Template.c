@@ -50,8 +50,8 @@ typedef long double ld;
 #define debugarr(fmt, x, a, b) fprintf(stderr, "%d::%s = {", __LINE__, #x); For(_, a, b) { if (_ != (a)) { fprintf(stderr, ", "); } fprintf(stderr, fmt, (x)[_]); } fprintf(stderr, "}\n"); fflush(stderr)
 
 int main() {
-    // freopen("in.txt", "r", stdin);
-    // freopen("out.txt", "w", stdout);
-    // TODO INSERT CODE HERE
+//    freopen("in.txt", "r", stdin);
+//    freopen("out.txt", "w", stdout);
+//    TODO INSERT CODE HERE
     return 0;
 }

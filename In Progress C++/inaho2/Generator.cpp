@@ -67,10 +67,23 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-int main() {
-//    freopen("in.txt", "r", stdin);
-//    freopen("out.txt", "w", stdout);
-//    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-//    TODO INSERT CODE HERE
-    return 0;
+void generate() {
+    freopen("in.txt", "w", stdout);
+    int N = 10, Q = 100000, m = 2, D[N];
+    printf("%d %d\n", N, Q);
+    FOR(i, N) D[i] = m;
+    FOR(i, N) printf("%s%d", i == 0 ? "" : " ", D[i]);
+    printf("\n");
+    FOR(q, Q) {
+        printf("%d ", q % 2 + 1);
+        if (q % 2 == 0) {
+            FOR(i, N) printf("%d ", (q / 2) % D[i] + 1);
+            printf("255");
+        } else {
+            FOR(i, N) printf("%s1", i == 0 ? "" : " ");
+            FOR(i, N) printf(" %d", D[i]);
+        }
+        printf("\n");
+    }
+    fclose(stdout);
 }

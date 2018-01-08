@@ -1,0 +1,197 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define SHORT_INF 0x3f3f
+#define INT_INF 0x3f3f3f3f
+#define LL_INF 0x3f3f3f3f3f3f3f3f
+#define D_INF numeric_limits<double>::infinity()
+#define pb push_back
+#define mp make_pair
+#define l(x) ((x) << 1)
+#define r(x) ((x) << 1 | 1)
+#define m(x, y) ((x) + ((y) - (x)) / 2)
+#define MIN(a, b) ((a) = min((a), (b)))
+#define MAX(a, b) ((a) = max((a), (b)))
+#define f first
+#define s second
+#define ri(x) scanf("%d", &x)
+#define rll(x) scanf("%lld", &x)
+#define rllu(x) scanf("%llu", &x)
+#define rf(x) scanf("%f", &x)
+#define rd(x) scanf("%lf", &x)
+#define rld(x) scanf("%Lf", &x)
+#define rc(x) scanf(" %c", &x)
+#define sc(x) do { scanf("%c", &x); } while (isspace(x))
+#define rs(x) scanf("%s", x)
+#define For(i, a, b) for (int i = (a); i < (b); i++)
+#define FOR(i, b) For(i, 0, b)
+#define Forit(i, c) for (auto i = (c).begin(); i != (c).end(); i++)
+#define Rev(i, a, b) for (int i = (a); i > (b); i--)
+#define REV(i, a) Rev(i, a, -1)
+#define Revit(i, c) for (auto i = (c).rbegin(); i != (c).rend(); i++)
+#define set0(a) memset((a), 0, sizeof(a))
+#define Fill(a, x, n) FOR(_, n) (a)[_] = (x)
+#define Fill2(a, x, n, m) FOR(_, n) FOR(__, m) (a)[_][__] = (x)
+#define Fill3(a, x, n, m, p) FOR(_, n) FOR(__, m) FOR(___, p) (a)[_][__][___] = (x)
+#define randi(a, b) (rand() % ((b) - (a) + 1) + (a))
+#define sz(a) ((int) (a).size())
+#define len(a) ((int) (a).length())
+
+typedef long long ll;
+typedef unsigned long long llu;
+typedef long double ld;
+#define uset unordered_set
+#define umap unordered_map
+#define pq priority_queue
+typedef pair<int, int> pii;
+typedef pair<double, double> pdd;
+typedef pair<ll, ll> pll;
+typedef pair<int, ll> pill;
+typedef pair<ll, int> plli;
+typedef map<int, int> mii;
+typedef map<int, ll> mill;
+typedef map<ll, int> mlli;
+typedef map<ll, ll> mll;
+typedef umap<int, int> umii;
+typedef umap<int, ll> umill;
+typedef umap<ll, int> umlli;
+typedef umap<ll, ll> umll;
+template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
+template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
+
+#define debug(fmt, x) fprintf(stderr, "%d::%s = " fmt, __LINE__, #x, (x)); fflush(stderr)
+#define debug2(x) cerr << __LINE__ << "::" << #x << " = " << (x) << '\n' << flush
+#define debugva(fmt, ...) fprintf(stderr, "%d::%s = " fmt, __LINE__, #__VA_ARGS__, __VA_ARGS__); fflush(stderr)
+#define debugarr(fmt, x, a, b) fprintf(stderr, "%d::%s = {", __LINE__, #x); For(_, a, b) { if (_ != (a)) { fprintf(stderr, ", "); } fprintf(stderr, fmt, (x)[_]); } fprintf(stderr, "}\n"); fflush(stderr)
+#define debugarr2(x, a, b) cerr << __LINE__ << "::" << #x << " = {"; For(_, a, b) { if (_ != (a)) { cerr << ", "; } cerr << (x)[_]; } cerr << "}\n" << flush
+
+template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
+
+template <typename T>
+struct FenwickTreeND {
+private:
+    int prod, n;
+    vector<int> dim, sufProd;
+    T *array;
+
+    int toPoint(vector<int> &a) {
+        int p = 0;
+        for (int i = 0; i < n; i++) p += (a[i] - 1) * sufProd[i];
+        return p;
+    }
+
+    T rsq(vector<int> &ind, vector<int> &curBitInd, int curDim) {
+        T sum = 0;
+        if (curDim == n) {
+            sum += array[toPoint(curBitInd)];
+        } else {
+            for (int i = ind[curDim]; i > 0; i -= (i & -i)) {
+                curBitInd[curDim] = i;
+                sum += rsq(ind, curBitInd, curDim + 1);
+            }
+        }
+        return sum;
+    }
+
+    void update(vector<int> &ind, vector<int> &curBitInd, int curDim, T value) {
+        if (curDim == n) {
+            array[toPoint(curBitInd)] += value;
+        } else {
+            for (int i = ind[curDim]; i <= dim[curDim]; i += (i & -i)) {
+                curBitInd[curDim] = i;
+                update(ind, curBitInd, curDim + 1, value);
+            }
+        }
+    }
+
+public:
+    FenwickTreeND(vector<int> &dim) {
+        prod = 1;
+        n = (int) dim.size();
+        for (int i = 0; i < n; i++) {
+            this->dim.push_back(dim[i]);
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            sufProd.push_back(prod);
+            prod *= dim[i];
+        }
+        reverse(sufProd.begin(), sufProd.end());
+        array = new T[prod];
+        for (int i = 0; i < prod; i++) {
+            array[i] = 0;
+        }
+    }
+
+    T rsq(vector<int> &ind) {
+        vector<int> cur(n);
+        return rsq(ind, cur, 0);
+    }
+
+    T rsq(vector<int> &start, vector<int> &end) {
+        T sum = 0;
+        vector<int> cur(n);
+        for (int i = 0; i < (1 << n); i++) {
+            int cntSet = 0;
+            for (int j = 0; j < n; j++) {
+                if (i & (1 << j)) {
+                    cur[j] = start[j] - 1;
+                    cntSet++;
+                } else {
+                    cur[j] = end[j];
+                }
+            }
+            sum += (cntSet % 2 == 0 ? (T) (1) : (T) (-1)) * rsq(cur);
+        }
+        return sum;
+    }
+
+    void update(vector<int> &ind, T value) {
+        vector<int> cur(n);
+        update(ind, cur, 0, value);
+    }
+
+    int getDimension(int d) {
+        return dim[d];
+    }
+};
+
+int N, Q;
+vector<int> L;
+FenwickTreeND<ll> *ft;
+
+//void generate();
+
+int main() {
+//    generate();
+//    freopen("in.txt", "r", stdin);
+//    freopen("out.txt", "w", stdout);
+//    const auto start_time = chrono::system_clock::now();
+    ri(N);
+    ri(Q);
+    int li;
+    FOR(i, N) {
+        ri(li);
+        L.pb(li);
+    }
+    ft = new FenwickTreeND<ll>(L);
+    int op;
+    vector<int> a(N), b(N);
+    ll x;
+    FOR(q, Q) {
+        ri(op);
+        if (op == 1) {
+            FOR(i, N) ri(a[i]);
+            rll(x);
+            ft->update(a, x - ft->rsq(a, a));
+        } else if (op == 2) {
+            FOR(i, N) ri(a[i]);
+            FOR(i, N) ri(b[i]);
+            printf("%lld\n", ft->rsq(a, b));
+        } else {
+            q--;
+        }
+    }
+//    double time_elapsed = ((chrono::system_clock::now() - start_time).count() / static_cast<double>(chrono::system_clock::period::den));
+//    fprintf(stderr, "Completed in %.3f seconds.\n", time_elapsed);
+    return 0;
+}
