@@ -1,3 +1,4 @@
+// http://codeforces.com/contest/915/problem/E
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -67,125 +68,112 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-const ld EPS = 1e-4;
+#define MAXQ 300010
 
-template <typename T>
-struct FenwickTree {
+int N, Q, num[MAXQ * 2];
+umii ind;
+
+struct SegmentTree {
+    struct Node {
+        int val = 0, lazy = -1, l, r;
+    };
+
 private:
-    int size;
-    T *array;
+    vector<Node> tree;
+    int N;
+    int *array;
+
+    void propogate(int cur, int cL, int cR) {
+        if (tree[cur].lazy != -1) {
+            int m = cL + (cR - cL) / 2;
+            tree[cur * 2].l = tree[cur].l;
+            tree[cur * 2].r = num[m];
+            tree[cur * 2].val = tree[cur].lazy * (tree[cur * 2].r - tree[cur * 2].l);
+            tree[cur * 2].lazy = tree[cur].lazy;
+            tree[cur * 2 + 1].l = num[m];
+            tree[cur * 2 + 1].r = tree[cur].r;
+            tree[cur * 2 + 1].val = tree[cur].lazy * (tree[cur * 2 + 1].r - tree[cur * 2 + 1].l);
+            tree[cur * 2 + 1].lazy = tree[cur].lazy;
+            tree[cur].lazy = -1;
+        }
+    }
+
+    void update(int cur, int cL, int cR, int l, int r, int val) {
+        if (cL != cR) propogate(cur, cL, cR);
+        if (cL > r || cR < l) return;
+        if (cL >= l && cR <= r) {
+            bool ext = cL == l;
+            tree[cur].l = num[cL - !ext] - ext;
+            tree[cur].r = num[cR];
+            tree[cur].val = val * (tree[cur].r - tree[cur].l);
+            tree[cur].lazy = val;
+            return;
+        }
+        int m = cL + (cR - cL) / 2;
+        update(cur * 2, cL, m, l, r, val);
+        update(cur * 2 + 1, m + 1, cR, l, r, val);
+        tree[cur].val = tree[cur * 2].val + tree[cur * 2 + 1].val;
+    }
+
+    int query(int cur, int cL, int cR, int l, int r) {
+        if (cL != cR) propogate(cur, cL, cR);
+        if (cL > r || cR < l) return 0;
+        if (cL >= l && cR <= r) return tree[cur].val;
+        int m = cL + (cR - cL) / 2;
+        int left = query(cur * 2, cL, m, l, r);
+        int right = query(cur * 2 + 1, m + 1, cR, l, r);
+        return left + right;
+    }
 
 public:
-    FenwickTree(int size) {
-        this->size = size;
-        array = new T[size + 1];
-        for (int i = 0; i <= size; i++) {
+    SegmentTree(int size): tree((int) (2 * pow(2.0, ceil(log2((double) size))))) {
+        array = new int[size + 1];
+        for (int i = 1; i <= size; i++) {
             array[i] = 0;
         }
+        N = size;
     }
 
-    /**
-     * Range Sum query from 1 to ind
-     * ind is 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  ind index
-     * @return sum
-     */
-    T rsq(int ind) {
-        T sum = 0;
-        for (int x = ind; x > 0; x -= (x & -x)) {
-            sum += array[x];
-        }
-        return sum;
+    void update(int l, int r, int val) {
+        update(1, 1, N, l, r, val);
     }
 
-    /**
-     * Range Sum Query from a to b.
-     * Search for the sum from array index from a to b
-     * a and b are 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  a left index
-     * @param  b right index
-     * @return sum
-     */
-    T rsq(int a, int b) {
-        return rsq(b) - rsq(a - 1);
+    int query(int l, int r) {
+        return query(1, 1, N, l, r);
     }
 
-    /**
-     * Update the array at ind and all the affected regions above ind.
-     * ind is 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  ind   index
-     * @param  value value
-     */
-    void update(int ind, T value) {
-        for (int x = ind; x <= size; x += (x & -x)) {
-            array[x] += value;
-        }
+    int size() {
+        return N;
     }
+} *st;
 
-    int getSize() {
-        return size;
-    }
-};
-
-/**
- * Performs ternary search to find the minimum of a function.
- *
- * @param f the function
- * @param lo the starting x value
- * @param hi the ending x value
- * @returns a pair containing the x value at the minimum of the function, and the minimum value of the function.
- */
-pair<ld, ld> ternary_search(ld (*f)(ld), ld lo, ld hi) {
-    ld m1, m2;
-    do {
-        m1 = lo + (hi - lo) / 3;
-        m2 = lo + (hi - lo) * 2 / 3;
-        if (f(m1) < f(m2)) hi = m2; // change to f(m1) < f(m2) for minimum, f(m1) > f(m2) for maximum
-        else lo = m1;
-    } while (abs(m1 - m2) >= EPS);
-    return make_pair(lo, f(lo));
-}
-
-#define MAXX 15010
-
-FenwickTree<ll> cube(MAXX * 2), quad(MAXX * 2), lin(MAXX * 2), con(MAXX * 2);
-
-ld f(ld x) {
-    int below = (int) floor(x);
-    int above = (int) ceil(x);
-    ld ret = 0.0;
-    ret += x * x * x * con.rsq(1, below + MAXX);
-    ret -= 3 * x * x * lin.rsq(1, below + MAXX);
-    ret += 3 * x * quad.rsq(1, below + MAXX);
-    ret -= cube.rsq(1, below + MAXX);
-    ret -= x * x * x * con.rsq(above + MAXX, MAXX * 2);
-    ret += 3 * x * x * lin.rsq(above + MAXX, MAXX * 2);
-    ret -= 3 * x * quad.rsq(above + MAXX, MAXX * 2);
-    ret += cube.rsq(above + MAXX, MAXX * 2);
-    return ret;
-}
-
-int N;
+struct query {
+    int l, r, k;
+} q[MAXQ];
 
 int main() {
     ri(N);
-    int x;
-    FOR(i, N) {
-        ri(x);
-        cube.update(x + MAXX, (ll) x * (ll) x * (ll) x);
-        quad.update(x + MAXX, (ll) x * (ll) x);
-        lin.update(x + MAXX, (ll) x);
-        con.update(x + MAXX, 1);
-        printf("%.4Lf\n", ternary_search(f, -15000.0, 15000.0).f);
+    ri(Q);
+    set<int> sorted;
+    sorted.insert(1);
+    sorted.insert(N);
+    FOR(i, Q) {
+        ri(q[i].l);
+        ri(q[i].r);
+        ri(q[i].k);
+        sorted.insert(q[i].l);
+        sorted.insert(q[i].r);
+    }
+    int cur = 1;
+    num[0] = 0;
+    for (int i : sorted) {
+        num[cur] = i;
+        ind[i] = cur++;
+    }
+    st = new SegmentTree((int) sorted.size());
+    FOR(i, Q) {
+        st->update(ind[q[i].l], ind[q[i].r], q[i].k % 2);
+        printf("%d\n", st->query(ind[1], ind[N]));
     }
     return 0;
 }
