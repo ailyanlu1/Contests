@@ -67,8 +67,6 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-const ld EPS = 1e-4;
-
 template <typename T>
 struct FenwickTree {
 private:
@@ -134,7 +132,8 @@ public:
     int getSize() {
         return size;
     }
-};
+};
+const ld EPS = 1e-4;
 
 /**
  * Performs ternary search to find the minimum of a function.
@@ -151,7 +150,8 @@ pair<ld, ld> ternary_search(ld (*f)(ld), ld lo, ld hi) {
         m2 = lo + (hi - lo) * 2 / 3;
         if (f(m1) < f(m2)) hi = m2; // change to f(m1) < f(m2) for minimum, f(m1) > f(m2) for maximum
         else lo = m1;
-    } while (abs(m1 - m2) >= EPS);
+    } while (abs(hi - lo) >= EPS);
+    if (abs(lo) < EPS) lo = 0.0;
     return make_pair(lo, f(lo));
 }
 
@@ -163,14 +163,8 @@ ld f(ld x) {
     int below = (int) floor(x);
     int above = (int) ceil(x);
     ld ret = 0.0;
-    ret += x * x * x * con.rsq(1, below + MAXX);
-    ret -= 3 * x * x * lin.rsq(1, below + MAXX);
-    ret += 3 * x * quad.rsq(1, below + MAXX);
-    ret -= cube.rsq(1, below + MAXX);
-    ret -= x * x * x * con.rsq(above + MAXX, MAXX * 2);
-    ret += 3 * x * x * lin.rsq(above + MAXX, MAXX * 2);
-    ret -= 3 * x * quad.rsq(above + MAXX, MAXX * 2);
-    ret += cube.rsq(above + MAXX, MAXX * 2);
+    ret += ((((con.rsq(1, below + MAXX) - con.rsq(above + MAXX, MAXX * 2)) * x + 3.0 * (lin.rsq(above + MAXX, MAXX * 2) - lin.rsq(1, below + MAXX))))
+            * x + 3.0 * (quad.rsq(1, below + MAXX) - quad.rsq(above + MAXX, MAXX * 2))) * x + (cube.rsq(above + MAXX, MAXX * 2) - cube.rsq(1, below + MAXX));
     return ret;
 }
 
