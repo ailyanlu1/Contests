@@ -133,7 +133,7 @@ public:
         return size;
     }
 };
-const ld EPS = 1e-4;
+const ld EPS = 1e-3;
 
 /**
  * Performs ternary search to find the minimum of a function.
@@ -151,35 +151,47 @@ pair<ld, ld> ternary_search(ld (*f)(ld), ld lo, ld hi) {
         if (f(m1) < f(m2)) hi = m2; // change to f(m1) < f(m2) for minimum, f(m1) > f(m2) for maximum
         else lo = m1;
     } while (abs(hi - lo) >= EPS);
-    if (abs(lo) < EPS) lo = 0.0;
-    return make_pair(lo, f(lo));
+    m1 = lo + (hi - lo) / 2;
+    if (abs(m1) < EPS) m1 = 0.0;
+    return make_pair(m1, f(m1));
 }
 
 #define MAXX 15010
 
+vector<ld> X;
 FenwickTree<ll> cube(MAXX * 2), quad(MAXX * 2), lin(MAXX * 2), con(MAXX * 2);
 
 ld f(ld x) {
     int below = (int) floor(x);
     int above = (int) ceil(x);
     ld ret = 0.0;
-    ret += ((((con.rsq(1, below + MAXX) - con.rsq(above + MAXX, MAXX * 2)) * x + 3.0 * (lin.rsq(above + MAXX, MAXX * 2) - lin.rsq(1, below + MAXX))))
-            * x + 3.0 * (quad.rsq(1, below + MAXX) - quad.rsq(above + MAXX, MAXX * 2))) * x + (cube.rsq(above + MAXX, MAXX * 2) - cube.rsq(1, below + MAXX));
+    ret += ((((con.rsq(1, below + MAXX) - con.rsq(above + MAXX, MAXX * 2)) * x + (lin.rsq(above + MAXX, MAXX * 2) - lin.rsq(1, below + MAXX))))
+            * x + (quad.rsq(1, below + MAXX) - quad.rsq(above + MAXX, MAXX * 2))) * x + (cube.rsq(above + MAXX, MAXX * 2) - cube.rsq(1, below + MAXX));
     return ret;
 }
+
+//ld f(ld x) {
+//    ld ret = 0.0;
+//    for (ld xi : X) {
+//        ret += abs(xi - x) * abs(xi - x) * abs(xi - x);
+//    }
+//    return ret;
+//}
 
 int N;
 
 int main() {
     ri(N);
+    // ld x;
     int x;
     FOR(i, N) {
         ri(x);
+        // X.pb(x);
         cube.update(x + MAXX, (ll) x * (ll) x * (ll) x);
-        quad.update(x + MAXX, (ll) x * (ll) x);
-        lin.update(x + MAXX, (ll) x);
-        con.update(x + MAXX, 1);
-        printf("%.4Lf\n", ternary_search(f, -15000.0, 15000.0).f);
+        quad.update(x + MAXX, 3LL * (ll) x * (ll) x);
+        lin.update(x + MAXX, 3LL * (ll) x);
+        con.update(x + MAXX, 1LL);
+        printf("%.3Lf\n", ternary_search(f, -15000.0, 15000.0).f);
     }
     return 0;
 }
