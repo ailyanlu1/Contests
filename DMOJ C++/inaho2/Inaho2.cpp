@@ -67,97 +67,44 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-template <typename T>
-struct FenwickTreeND {
-private:
-    int prod, n;
-    vector<int> dim, sufProd;
-    T *array;
+#define MAXN 10
+#define MAXPROD 10000000
 
-    int toPoint(vector<int> &a) {
-        int p = 0;
-        for (int i = 0; i < n; i++) p += (a[i] - 1) * sufProd[i];
-        return p;
+int N, Q, BIT[MAXPROD], L[MAXN], sufProd[MAXN], A[MAXN], B[MAXN];
+unsigned char ARR[MAXPROD];
+
+void init() {
+    int prod = 1;
+    for (int i = N - 1; i >= 0; i--) {
+        sufProd[i] = prod;
+        prod *= L[i];
     }
+}
 
-    T rsq(vector<int> &ind, vector<int> &curBitInd, int curDim) {
-        T sum = 0;
-        if (curDim == n) {
-            sum += array[toPoint(curBitInd)];
-        } else {
-            for (int i = ind[curDim]; i > 0; i -= (i & -i)) {
-                curBitInd[curDim] = i;
-                sum += rsq(ind, curBitInd, curDim + 1);
-            }
+int rsq(int curDim, int pos) {
+    int sum = 0;
+    if (curDim == N) {
+        sum += BIT[pos];
+    } else {
+        for (int i = B[curDim]; i > 0; i -= (i & -i)) {
+            sum += rsq(curDim + 1, pos + (i - 1) * sufProd[curDim]);
         }
-        return sum;
-    }
-
-    void update(vector<int> &ind, vector<int> &curBitInd, int curDim, T value) {
-        if (curDim == n) {
-            array[toPoint(curBitInd)] += value;
-        } else {
-            for (int i = ind[curDim]; i <= dim[curDim]; i += (i & -i)) {
-                curBitInd[curDim] = i;
-                update(ind, curBitInd, curDim + 1, value);
-            }
+        for (int i = A[curDim] - 1; i > 0; i -= (i & -i)) {
+            sum -= rsq(curDim + 1, pos + (i - 1) * sufProd[curDim]);
         }
     }
+    return sum;
+}
 
-public:
-    FenwickTreeND(vector<int> &dim) {
-        prod = 1;
-        n = (int) dim.size();
-        for (int i = 0; i < n; i++) {
-            this->dim.push_back(dim[i]);
-        }
-        for (int i = n - 1; i >= 0; i--) {
-            sufProd.push_back(prod);
-            prod *= dim[i];
-        }
-        reverse(sufProd.begin(), sufProd.end());
-        array = new T[prod];
-        for (int i = 0; i < prod; i++) {
-            array[i] = 0;
+void update(int curDim, int pos, int value) {
+    if (curDim == N) {
+        BIT[pos] += value;
+    } else {
+        for (int i = A[curDim]; i <= L[curDim]; i += (i & -i)) {
+            update(curDim + 1, pos + (i - 1) * sufProd[curDim], value);
         }
     }
-
-    T rsq(vector<int> &ind) {
-        vector<int> cur(n);
-        return rsq(ind, cur, 0);
-    }
-
-    T rsq(vector<int> &start, vector<int> &end) {
-        T sum = 0;
-        vector<int> cur(n);
-        for (int i = 0; i < (1 << n); i++) {
-            int cntSet = 0;
-            for (int j = 0; j < n; j++) {
-                if (i & (1 << j)) {
-                    cur[j] = start[j] - 1;
-                    cntSet++;
-                } else {
-                    cur[j] = end[j];
-                }
-            }
-            sum += (cntSet % 2 == 0 ? (T) (1) : (T) (-1)) * rsq(cur);
-        }
-        return sum;
-    }
-
-    void update(vector<int> &ind, T value) {
-        vector<int> cur(n);
-        update(ind, cur, 0, value);
-    }
-
-    int getDimension(int d) {
-        return dim[d];
-    }
-};
-
-int N, Q;
-vector<int> L;
-FenwickTreeND<ll> *ft;
+}
 
 //void generate();
 
@@ -166,27 +113,26 @@ int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
 //    const auto start_time = chrono::system_clock::now();
-    ri(N);
-    ri(Q);
-    int li;
-    FOR(i, N) {
-        ri(li);
-        L.pb(li);
-    }
-    ft = new FenwickTreeND<ll>(L);
-    int op;
-    vector<int> a(N), b(N);
-    ll x;
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> N >> Q;
+    FOR(i, N) cin >> L[i];
+    init();
+    int op, pos, x;
     FOR(q, Q) {
-        ri(op);
+        cin >> op;
         if (op == 1) {
-            FOR(i, N) ri(a[i]);
-            rll(x);
-            ft->update(a, x - ft->rsq(a, a));
+            pos = 0;
+            FOR(i, N) {
+                cin >> A[i];
+                pos += (A[i] - 1) * sufProd[i];
+            }
+            cin >> x;
+            update(0, 0, x - ARR[pos]);
+            ARR[pos] = x;
         } else if (op == 2) {
-            FOR(i, N) ri(a[i]);
-            FOR(i, N) ri(b[i]);
-            printf("%lld\n", ft->rsq(a, b));
+            FOR(i, N) cin >> A[i];
+            FOR(i, N) cin >> B[i];
+            cout << rsq(0, 0) << '\n';
         } else {
             q--;
         }

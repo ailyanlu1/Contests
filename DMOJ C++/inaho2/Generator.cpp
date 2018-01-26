@@ -69,7 +69,7 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 
 void generate() {
     freopen("in.txt", "w", stdout);
-    int N = 10, Q = 100000, m = 2, D[N];
+    int N = 10, Q = 100000, m = 5, D[N];
     printf("%d %d\n", N, Q);
     FOR(i, N) D[i] = m;
     FOR(i, N) printf("%s%d", i == 0 ? "" : " ", D[i]);
