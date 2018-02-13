@@ -6,24 +6,14 @@ using namespace std;
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
 #define pb push_back
-#define mp make_pair
 #define MIN(a, b) ((a) = min((a), (b)))
 #define MAX(a, b) ((a) = max((a), (b)))
 #define f first
 #define s second
-#define For(i, a, b) for (int i = (a); i < (b); i++)
-#define FOR(i, b) For(i, 0, b)
-#define Forit(i, c) for (auto i = (c).begin(); i != (c).end(); i++)
-#define Rev(i, a, b) for (int i = (a); i > (b); i--)
-#define REV(i, a) Rev(i, a, -1)
-#define Revit(i, c) for (auto i = (c).rbegin(); i != (c).rend(); i++)
-#define set0(a) memset((a), 0, sizeof(a))
-#define Fill(a, x, n) FOR(_, n) (a)[_] = (x)
-#define Fill2(a, x, n, m) FOR(_, n) FOR(__, m) (a)[_][__] = (x)
-#define Fill3(a, x, n, m, p) FOR(_, n) FOR(__, m) FOR(___, p) (a)[_][__][___] = (x)
-#define randi(a, b) (rand() % ((b) - (a) + 1) + (a))
+#define rep(i, a, b) for (auto i = (a); (a) < (b) ? i < (b) : i > (b); i += ((a) < (b) ? 1 : -1))
+#define FOR(i, b) rep(i, 0, b)
+#define REV(i, a) rep(i, a, -1)
 #define sz(a) ((int) (a).size())
-#define len(a) ((int) (a).length())
 #define nl "\n"
 
 #define ll long long

@@ -14,7 +14,6 @@
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
-#define pb push_back
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) = min((a), (b)))
@@ -28,19 +27,12 @@
 #define rc(x) scanf(" %c", &x)
 #define sc(x) do { scanf("%c", &x); } while (isspace(x))
 #define rs(x) scanf("%s", x)
-#define For(i, a, b) for (i = (a); i < (b); i++)
-#define FOR(i, b) For(i, 0, b)
-#define Rev(i, a, b) for (i = (a); i > (b); i--)
-#define REV(i, a) Rev(i, a, -1)
-#define set0(a) memset((a), 0, sizeof(a))
-#define Fill(a, x, n) FOR(_, n) (a)[_] = (x)
-#define Fill2(a, x, n, m) FOR(_, n) FOR(__, m) (a)[_][__] = (x)
-#define Fill3(a, x, n, m, p) FOR(_, n) FOR(__, m) FOR(___, p) (a)[_][__][___] = (x)
-#define randi(a, b) (rand() % ((b) - (a) + 1) + (a))
+#define rep(i, a, b) for (auto i = (a); (a) < (b) ? i < (b) : i > (b); i += ((a) < (b) ? 1 : -1))
+#define FOR(i, b) rep(i, 0, b)
+#define REV(i, a) rep(i, a, -1)
 
-typedef long long ll;
-typedef unsigned long long llu;
-typedef long double ld;
+#define ll long long
+#define ld long double
 
 int main() {
 //    freopen("in.txt", "r", stdin);
