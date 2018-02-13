@@ -1,5 +1,3 @@
-package ccc10j5_knight_hop;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

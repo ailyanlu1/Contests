@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -11,8 +10,7 @@ import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
 public class Template {
-    private static Template o = new Template();
-    public class Reader {
+    public static class Reader {
         private BufferedReader in;
         private StringTokenizer st;
 
@@ -106,7 +104,7 @@ public class Template {
         }
     } // Reader class
     
-    private static Reader in = o.new Reader(System.in);
+    private static Reader in = new Reader(System.in);
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
     public static void main(String[] args) throws IOException {

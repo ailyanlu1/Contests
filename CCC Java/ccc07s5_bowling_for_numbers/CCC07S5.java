@@ -1,5 +1,3 @@
-package ccc07s5_bowling_for_numbers;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

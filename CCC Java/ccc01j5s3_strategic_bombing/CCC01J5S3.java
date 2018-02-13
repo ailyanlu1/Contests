@@ -1,5 +1,3 @@
-package ccc01j5s3_strategic_bombing;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

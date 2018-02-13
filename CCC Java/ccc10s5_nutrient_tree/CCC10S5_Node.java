@@ -1,5 +1,3 @@
-package ccc10s5_nutrient_tree;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

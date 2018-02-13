@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -11,12 +10,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class MaxMatchTemplate {
-    private static MaxMatchTemplate o = new MaxMatchTemplate();
-    public class Reader {
+    public static class Reader {
         private BufferedReader in;
         private StringTokenizer st;
 
@@ -110,7 +107,7 @@ public class MaxMatchTemplate {
         }
     } // Reader class
     
-    public class Stack<Item> implements Iterable<Item> {
+    public static class Stack<Item> implements Iterable<Item> {
         private Node<Item> first;     // top of stack
         private int n;                // size of the stack
 
@@ -234,7 +231,7 @@ public class MaxMatchTemplate {
         }
     }
     
-    public class Queue<Item> implements Iterable<Item> {
+    public static class Queue<Item> implements Iterable<Item> {
         private Node<Item> first;    // beginning of queue
         private Node<Item> last;     // end of queue
         private int n;               // number of elements on queue
@@ -356,7 +353,7 @@ public class MaxMatchTemplate {
         }
     }
     
-    public class Graph {
+    public static class Graph {
         private final String NEWLINE = System.getProperty("line.separator");
 
         private final int V;
@@ -485,7 +482,7 @@ public class MaxMatchTemplate {
         }
     }
     
-    public class Cycle {
+    public static class Cycle {
         private boolean[] marked;
         private int[] edgeTo;
         private Stack<Integer> cycle;
@@ -593,7 +590,7 @@ public class MaxMatchTemplate {
         }
     }
     
-    public class BipartiteX {
+    public static class BipartiteX {
         private static final boolean WHITE = false;
         private static final boolean BLACK = true;
 
@@ -711,7 +708,7 @@ public class MaxMatchTemplate {
         }
     }
     
-    public class HopcroftKarpMaxMatch {
+    public static class HopcroftKarpMaxMatch {
         private static final int UNMATCHED = -1;
 
         private final int V;                 // number of vertices in the graph
@@ -948,7 +945,7 @@ public class MaxMatchTemplate {
         }
     }
     
-    private static Reader in = o.new Reader(System.in);
+    private static Reader in = new Reader(System.in);
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
     public static void main(String[] args) throws IOException {

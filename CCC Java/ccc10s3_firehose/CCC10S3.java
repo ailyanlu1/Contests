@@ -1,5 +1,3 @@
-package ccc10s3_firehose;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

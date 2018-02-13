@@ -1,5 +1,3 @@
-package ccc16j3_hidden_palindrome;
-
 import java.util.Scanner;
 
 public class CCC16J3 {  // this is cubic time so it's quite slow

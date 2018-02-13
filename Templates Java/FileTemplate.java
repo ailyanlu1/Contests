@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -13,7 +12,7 @@ import java.util.StringTokenizer;
 
 public class FileTemplate {
     private static FileTemplate o = new FileTemplate();
-    public class Reader {
+    public static class Reader {
         private BufferedReader in;
         private StringTokenizer st;
 
@@ -124,8 +123,8 @@ public class FileTemplate {
                 packageName = o.getClass().getPackage().toString().split(" ")[1] + "/";
             } catch (NullPointerException e) {}
         }
-        if (stdIn) in = o.new Reader(System.in);
-        else in = o.new Reader(packageName + INPUT_FILE_NAME);
+        if (stdIn) in = new Reader(System.in);
+        else in = new Reader(packageName + INPUT_FILE_NAME);
         if (stdOut) out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
         else out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + OUTPUT_FILE_NAME)));
         

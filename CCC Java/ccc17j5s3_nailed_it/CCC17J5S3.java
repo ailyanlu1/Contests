@@ -1,5 +1,3 @@
-package ccc17j5s3_nailed_it;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

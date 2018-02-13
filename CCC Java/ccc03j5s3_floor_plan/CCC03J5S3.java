@@ -1,5 +1,3 @@
-package ccc03j5s3_floor_plan;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

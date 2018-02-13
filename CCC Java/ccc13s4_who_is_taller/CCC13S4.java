@@ -1,5 +1,3 @@
-package ccc13s4_who_is_taller;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;

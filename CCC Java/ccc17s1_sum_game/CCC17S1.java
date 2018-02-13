@@ -1,5 +1,3 @@
-package ccc17s1_sum_game;
-
 import java.util.Scanner;
 
 public class CCC17S1 {

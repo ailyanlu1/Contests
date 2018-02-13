@@ -15,9 +15,6 @@
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
 #define pb push_back
-#define l(x) ((x) << 1)
-#define r(x) ((x) << 1 | 1)
-#define m(x, y) ((x) + ((y) - (x)) / 2)
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) = min((a), (b)))
@@ -45,13 +42,8 @@ typedef long long ll;
 typedef unsigned long long llu;
 typedef long double ld;
 
-#define debug(fmt, x) fprintf(stderr, "%d::%s = " fmt, __LINE__, #x, (x)); fflush(stderr)
-#define debugva(fmt, ...) fprintf(stderr, "%d::%s = " fmt, __LINE__, #__VA_ARGS__, __VA_ARGS__); fflush(stderr)
-#define debugarr(fmt, x, a, b) fprintf(stderr, "%d::%s = {", __LINE__, #x); For(_, a, b) { if (_ != (a)) { fprintf(stderr, ", "); } fprintf(stderr, fmt, (x)[_]); } fprintf(stderr, "}\n"); fflush(stderr)
-
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
-//    TODO INSERT CODE HERE
     return 0;
 }

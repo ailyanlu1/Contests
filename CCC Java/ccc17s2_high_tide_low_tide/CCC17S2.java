@@ -1,5 +1,3 @@
-package ccc17s2_high_tide_low_tide;
-
 import java.util.Arrays;
 import java.util.Scanner;
 

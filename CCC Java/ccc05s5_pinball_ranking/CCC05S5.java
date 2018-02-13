@@ -1,5 +1,3 @@
-package ccc05s5_pinball_ranking;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

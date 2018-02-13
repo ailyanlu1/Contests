@@ -1,5 +1,3 @@
-package ccc16s3_phonomenal_reviews;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

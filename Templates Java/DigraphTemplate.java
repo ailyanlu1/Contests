@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -14,8 +13,7 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 public class DigraphTemplate {
-    private static DigraphTemplate o = new DigraphTemplate();
-    public class Reader {
+    public static class Reader {
         private BufferedReader in;
         private StringTokenizer st;
 
@@ -109,7 +107,7 @@ public class DigraphTemplate {
         }
     } // Reader class
     
-    public class Stack<Item> implements Iterable<Item> {
+    public static class Stack<Item> implements Iterable<Item> {
         private Node<Item> first;     // top of stack
         private int n;                // size of the stack
 
@@ -233,7 +231,7 @@ public class DigraphTemplate {
         }
     }
     
-    public class Queue<Item> implements Iterable<Item> {
+    public static class Queue<Item> implements Iterable<Item> {
         private Node<Item> first;    // beginning of queue
         private Node<Item> last;     // end of queue
         private int n;               // number of elements on queue
@@ -355,7 +353,7 @@ public class DigraphTemplate {
         }
     }
     
-    public class UF {
+    public static class UF {
 
         private int[] parent;  // parent[i] = parent of i
         private byte[] rank;   // rank[i] = rank of subtree rooted at i (never more than 31)
@@ -452,27 +450,6 @@ public class DigraphTemplate {
             }
             count--;
         }
-        
-        /**
-         * Unmerges the component containing site {@code p} with the 
-         * the component containing site {@code q}.
-         *
-         * @param  p the integer representing one site
-         * @param  q the integer representing the other site
-         * @throws IndexOutOfBoundsException unless
-         *         both {@code 0 <= p < n} and {@code 0 <= q < n}
-         */
-        public void disjoin(int p, int q) {
-            int rootP = find(p);
-            int rootQ = find(q);
-            if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
-            else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
-            else {
-                parent[rootQ] = rootQ;
-                rank[rootP]--;
-            }
-            count++;
-        }
 
         // validate that p is a valid index
         private void validate(int p) {
@@ -483,7 +460,7 @@ public class DigraphTemplate {
         }
     }
     
-    public class Digraph {
+    public static class Digraph {
         private final String NEWLINE = System.getProperty("line.separator");
 
         private final int V;           // number of vertices in this digraph
@@ -643,7 +620,7 @@ public class DigraphTemplate {
         }
     }
     
-    private static Reader in = o.new Reader(System.in);
+    private static Reader in = new Reader(System.in);
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
     /*

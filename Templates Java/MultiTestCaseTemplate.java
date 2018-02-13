@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -11,8 +10,7 @@ import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
 public class MultiTestCaseTemplate {
-    private static MultiTestCaseTemplate o = new MultiTestCaseTemplate();
-    public class Reader {
+    public static class Reader {
         private BufferedReader in;
         private StringTokenizer st;
 
@@ -106,7 +104,7 @@ public class MultiTestCaseTemplate {
         }
     } // Reader class
     
-    private static Reader in = o.new Reader(System.in);
+    private static Reader in = new Reader(System.in);
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
     private static final int NUM_OF_TEST_CASES = 10; // TODO CHANGE NUMBER OF TEST CASES

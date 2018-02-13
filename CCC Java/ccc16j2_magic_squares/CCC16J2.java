@@ -1,5 +1,3 @@
-package ccc16j2_magic_squares;
-
 import java.util.Scanner;
 
 public class CCC16J2 {
