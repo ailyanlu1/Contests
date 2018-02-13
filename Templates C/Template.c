@@ -27,8 +27,9 @@
 #define rc(x) scanf(" %c", &x)
 #define sc(x) do { scanf("%c", &x); } while (isspace(x))
 #define rs(x) scanf("%s", x)
-#define rep(i, a, b) for (auto i = (a); (a) < (b) ? i < (b) : i > (b); i += ((a) < (b) ? 1 : -1))
+#define For(i, a, b) for (auto i = (a); i < (b); i++)
 #define FOR(i, b) rep(i, 0, b)
+#define Rev(i, a, b) for (auto i = (a); i > (b); i--)
 #define REV(i, a) rep(i, a, -1)
 
 #define ll long long
