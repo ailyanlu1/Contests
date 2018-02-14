@@ -1,5 +1,3 @@
-package vmss7wc15c5p2_sets;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

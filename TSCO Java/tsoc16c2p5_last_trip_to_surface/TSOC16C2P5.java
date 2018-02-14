@@ -1,5 +1,3 @@
-package tsoc16c2p5_last_trip_to_surface;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
