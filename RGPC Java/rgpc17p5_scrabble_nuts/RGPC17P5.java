@@ -1,5 +1,3 @@
-package rgpc17p5_scrabble_nuts;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package rte16j3_mule_wars;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

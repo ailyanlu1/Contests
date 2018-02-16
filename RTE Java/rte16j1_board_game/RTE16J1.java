@@ -1,5 +1,3 @@
-package rte16j1_board_game;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
