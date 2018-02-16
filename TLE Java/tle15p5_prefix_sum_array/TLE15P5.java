@@ -1,5 +1,3 @@
-package tle15p5_prefix_sum_array;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package tle16c8p3_fools_sequence;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

@@ -1,5 +1,3 @@
-package tle16c8p5_prom_night;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

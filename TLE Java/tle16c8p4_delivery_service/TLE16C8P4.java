@@ -1,5 +1,3 @@
-package tle16c8p4_delivery_service;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
