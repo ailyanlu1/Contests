@@ -1,5 +1,3 @@
-package fhc15c3p3_gentrification;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

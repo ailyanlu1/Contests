@@ -1,5 +1,3 @@
-package cco13p3_lhc;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

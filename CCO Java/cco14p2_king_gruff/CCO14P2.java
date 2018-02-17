@@ -1,5 +1,3 @@
-package cco14p2_king_gruff;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

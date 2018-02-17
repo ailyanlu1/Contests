@@ -1,5 +1,3 @@
-package fhc15c1p4_corporate_gifting;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

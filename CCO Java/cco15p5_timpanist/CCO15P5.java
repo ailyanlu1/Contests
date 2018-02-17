@@ -1,5 +1,3 @@
-package cco15p5_timpanist;
-
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;

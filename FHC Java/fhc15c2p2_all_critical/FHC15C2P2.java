@@ -1,5 +1,3 @@
-package fhc15c2p2_all_critical;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

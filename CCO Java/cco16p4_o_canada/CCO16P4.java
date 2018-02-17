@@ -1,5 +1,3 @@
-package cco16p4_o_canada;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

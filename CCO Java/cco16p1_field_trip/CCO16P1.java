@@ -1,5 +1,3 @@
-package cco16p1_field_trip;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

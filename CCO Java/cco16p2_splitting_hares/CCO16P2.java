@@ -1,5 +1,3 @@
-package cco16p2_splitting_hares;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

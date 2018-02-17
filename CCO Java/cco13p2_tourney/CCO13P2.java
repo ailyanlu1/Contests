@@ -1,5 +1,3 @@
-package cco13p2_tourney;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

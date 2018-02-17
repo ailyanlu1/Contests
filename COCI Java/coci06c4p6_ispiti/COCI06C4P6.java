@@ -1,5 +1,3 @@
-package coci06c4p6_ispiti;
-
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;

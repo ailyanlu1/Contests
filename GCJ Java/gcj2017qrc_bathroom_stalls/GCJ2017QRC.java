@@ -1,5 +1,3 @@
-package gcj2017qrc_bathroom_stalls;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
