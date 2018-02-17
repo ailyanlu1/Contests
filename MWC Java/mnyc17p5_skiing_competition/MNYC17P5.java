@@ -1,5 +1,3 @@
-package mnyc17p5_skiing_competition;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

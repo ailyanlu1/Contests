@@ -1,5 +1,3 @@
-package gfssoc17j2_admission_average;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

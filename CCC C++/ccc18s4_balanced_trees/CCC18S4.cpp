@@ -34,11 +34,11 @@ ll dp1[(int) sqrt(MAXN) + 5], dp2[(int) sqrt(MAXN) + 5];
 
 ll solve(int i) {
     if (i == 1) return 1LL;
-    ll &x = i <= sqrt(N) ? dp1[i] : dp2[(int) floor(N / i)];
+    ll &x = i <= sqrt(N) ? dp1[i] : dp2[N / i];
     if (x) return x;
     for (int j = 1; j <= sqrt(i); j++) {
-        x += solve(j) * (((ll) floor(i / j)) - ((ll) floor(i / (j + 1))));
-        if (j >= 2 && sqrt(i) < floor(i / j)) x += solve((ll) (floor(i / j)));
+        x += solve(j) * (i / j - i / (j + 1));
+        if (j >= 2 && sqrt(i) < i / j) x += solve(i / j);
     }
     return x;
 }

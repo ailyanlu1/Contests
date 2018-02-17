@@ -1,5 +1,3 @@
-package gfssoc16j4_top_courses;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

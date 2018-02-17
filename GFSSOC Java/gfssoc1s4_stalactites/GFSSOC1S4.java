@@ -1,5 +1,3 @@
-package gfssoc1s4_stalactites;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
