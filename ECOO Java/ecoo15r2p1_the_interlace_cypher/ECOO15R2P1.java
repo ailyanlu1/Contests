@@ -1,5 +1,3 @@
-package ecoo15r2p1_the_interlace_cypher;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

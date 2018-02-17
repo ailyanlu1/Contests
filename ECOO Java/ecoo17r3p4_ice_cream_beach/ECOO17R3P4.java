@@ -1,5 +1,3 @@
-package ecoo17r3p4_ice_cream_beach;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

@@ -1,5 +1,3 @@
-package ecoo13r1p3_hexudoku;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

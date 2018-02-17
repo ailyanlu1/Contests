@@ -1,5 +1,3 @@
-package ecoo17r3p2_family_trees;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

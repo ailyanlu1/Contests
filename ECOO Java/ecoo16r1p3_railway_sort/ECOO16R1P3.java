@@ -1,9 +1,4 @@
-package ecoo16r1p3_railway_sort;
-
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -17,7 +12,6 @@ public class ECOO16R1P3 {
     } // main method
     
     public static void run(Scanner f) { // if you change the method of reading input, then the parameter type may have to be changed
-        // TODO insert code for question
         int n = f.nextInt();
         ArrayList<Integer> a = new ArrayList<Integer>(n);
         int cost = 0;

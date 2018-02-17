@@ -1,9 +1,4 @@
-package ecoo16r1p2_spindie;
-
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -17,7 +12,6 @@ public class ECOO16R1P2 {
     } // main method
     
     public static void run(Scanner f) { // if you change the method of reading input, then the parameter type may have to be changed
-        // TODO insert code for question
         int n = f.nextInt();
         HashSet<Double> s = new HashSet<Double>();
         for (int i = 0; i < n; i++) {

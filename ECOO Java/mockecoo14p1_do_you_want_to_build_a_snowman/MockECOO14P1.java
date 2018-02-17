@@ -1,5 +1,3 @@
-package mockecoo14p1_do_you_want_to_build_a_snowman;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

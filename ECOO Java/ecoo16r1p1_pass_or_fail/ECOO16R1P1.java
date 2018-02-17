@@ -1,9 +1,4 @@
-package ecoo16r1p1_pass_or_fail;
-
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class ECOO16R1P1 {

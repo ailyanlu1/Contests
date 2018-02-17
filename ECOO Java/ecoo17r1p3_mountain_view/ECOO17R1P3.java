@@ -1,9 +1,4 @@
-package ecoo17r1p3_mountain_view;
-
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class ECOO17R1P3 {

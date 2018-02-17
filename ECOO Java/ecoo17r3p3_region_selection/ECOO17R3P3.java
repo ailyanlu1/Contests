@@ -1,5 +1,3 @@
-package ecoo17r3p3_region_selection;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

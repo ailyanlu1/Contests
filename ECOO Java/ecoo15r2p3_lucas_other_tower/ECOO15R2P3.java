@@ -1,5 +1,3 @@
-package ecoo15r2p3_lucas_other_tower;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package ecoo15r1p4_neanderthal_numbers;
-
 import java.io.BufferedInputStream;
 import java.util.Scanner;
 
@@ -31,4 +29,4 @@ public class ECOO15R1P4 {
         }
         System.out.println(solutions[n.length()-1]);
     } // run method
-} // QuestionFour2015 class
+}
