@@ -1,3 +1,4 @@
+// http://codeforces.com/contest/935/problem/A
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -33,9 +34,15 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+int N;
+int cnt = 0;
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> N;
+    For(i, 1, N / 2 + 1) if ((N - i) % i == 0) cnt++;
+    cout << cnt << nl;
     return 0;
 }

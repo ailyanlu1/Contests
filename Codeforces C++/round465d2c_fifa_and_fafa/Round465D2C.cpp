@@ -1,3 +1,4 @@
+// http://codeforces.com/contest/935/problem/C
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -33,9 +34,25 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+#define EPS 1e-9
+
+pdd F, L;
+double R;
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> R >> F.f >> F.s >> L.f >> L.s;
+    if (sqrt((L.f - F.f) * (L.f - F.f) + (L.s - F.s) * (L.s - F.s)) >= R) {
+        cout << setprecision(6) << fixed << F.f << " " << F.s << " " << R << nl;
+    } else if (abs(L.f - F.f) <= EPS && abs(L.s - F.s) <= EPS) {
+        cout << setprecision(6) << fixed << F.f + R / 2 << " " << F.s << " " << R / 2 << nl;
+    } else {
+        double angle = atan2((F.s - L.s), (F.f - L.f));
+        double newR = (sqrt((L.f - F.f) * (L.f - F.f) + (L.s - F.s) * (L.s - F.s)) + R) / 2;
+        pdd C = {L.f + newR * cos(angle), L.s + newR * sin(angle)};
+        cout << setprecision(6) << fixed << C.f << " " << C.s << " " << newR << nl;
+    }
     return 0;
 }
