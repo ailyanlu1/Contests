@@ -1,5 +1,3 @@
-package bad_paths;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

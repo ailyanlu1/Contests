@@ -1,5 +1,3 @@
-package dmopc14c1p5_surprise_teleport;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

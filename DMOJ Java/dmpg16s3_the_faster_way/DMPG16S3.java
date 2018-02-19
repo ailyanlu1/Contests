@@ -1,5 +1,3 @@
-package dmpg16s3_the_faster_way;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

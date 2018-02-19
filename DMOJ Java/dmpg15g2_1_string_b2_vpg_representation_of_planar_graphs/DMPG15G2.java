@@ -1,5 +1,3 @@
-package dmpg15g2_1_string_b2_vpg_representation_of_planar_graphs;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

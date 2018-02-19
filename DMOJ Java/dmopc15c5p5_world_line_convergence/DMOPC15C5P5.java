@@ -1,5 +1,3 @@
-package dmopc15c5p5_world_line_convergence;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

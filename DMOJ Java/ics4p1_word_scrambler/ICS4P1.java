@@ -1,5 +1,3 @@
-package ics4p1_word_scrambler;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

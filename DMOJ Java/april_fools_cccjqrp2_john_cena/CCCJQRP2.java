@@ -1,5 +1,3 @@
-package april_fools_cccjqrp2_john_cena;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

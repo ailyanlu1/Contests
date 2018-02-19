@@ -1,5 +1,3 @@
-package dmopc14c8p6_revenge_of_the_bins;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -127,7 +125,7 @@ public class DMOPC14C8P6 {
         SegmentTree st = o.new SegmentTree(N);
         for(int i = 0; i < N/2; i++) {
             st.update(1, a[i], 2);
-            st.update(1,  a[i * 2], -1);
+            st.update(1, a[i * 2], -1);
             st.update(1, a[i * 2 + 1], -1);
             int minimum = st.heap[1].min;
             if (minimum < 0) continue;

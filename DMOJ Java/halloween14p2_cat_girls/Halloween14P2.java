@@ -1,5 +1,3 @@
-package halloween14p2_cat_girls;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

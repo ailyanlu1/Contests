@@ -1,5 +1,3 @@
-package dmpg16s5_pizza_bag;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

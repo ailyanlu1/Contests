@@ -1,5 +1,3 @@
-package dmopc15c1p5_lelei_and_dragon_scales;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

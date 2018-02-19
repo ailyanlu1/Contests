@@ -1,5 +1,3 @@
-package dmopc16c3p6_long_lost_love;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

@@ -1,5 +1,3 @@
-package graph1_breaking_the_friend_chain;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

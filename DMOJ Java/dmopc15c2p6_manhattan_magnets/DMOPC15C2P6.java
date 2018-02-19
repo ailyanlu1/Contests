@@ -1,5 +1,3 @@
-package dmopc15c2p6_manhattan_magnets;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

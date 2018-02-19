@@ -1,5 +1,3 @@
-package dmopc14c3p6_not_enough_time;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

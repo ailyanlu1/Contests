@@ -1,5 +1,3 @@
-package dmpg15s4_signal_hill;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

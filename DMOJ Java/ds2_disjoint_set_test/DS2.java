@@ -1,5 +1,3 @@
-package ds2_disjoint_set_test;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

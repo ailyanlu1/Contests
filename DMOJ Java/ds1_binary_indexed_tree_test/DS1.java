@@ -1,5 +1,3 @@
-package ds1_binary_indexed_tree_test;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

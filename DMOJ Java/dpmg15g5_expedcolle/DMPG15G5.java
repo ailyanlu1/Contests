@@ -1,5 +1,3 @@
-package dpmg15g5_expedcolle;
-
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;

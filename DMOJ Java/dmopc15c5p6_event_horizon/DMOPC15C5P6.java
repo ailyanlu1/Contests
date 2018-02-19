@@ -1,5 +1,3 @@
-package dmopc15c5p6_event_horizon;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

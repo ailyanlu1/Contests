@@ -1,5 +1,3 @@
-package dmopc14c2p5_sawmill_scheme;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

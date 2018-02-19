@@ -1,5 +1,3 @@
-package dmopc14c2p4_deforestation;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

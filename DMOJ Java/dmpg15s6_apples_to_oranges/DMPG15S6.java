@@ -1,5 +1,3 @@
-package dmpg15s6_apples_to_oranges;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

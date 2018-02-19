@@ -1,5 +1,3 @@
-package dmpg15s3_zen_garden;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

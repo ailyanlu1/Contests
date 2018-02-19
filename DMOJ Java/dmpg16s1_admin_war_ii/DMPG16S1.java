@@ -1,5 +1,3 @@
-package dmpg16s1_admin_war_ii;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

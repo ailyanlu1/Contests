@@ -1,5 +1,3 @@
-package dmpg17s2_anime_conventions;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

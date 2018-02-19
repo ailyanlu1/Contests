@@ -1,5 +1,3 @@
-package dmopc14c7p6_trip;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

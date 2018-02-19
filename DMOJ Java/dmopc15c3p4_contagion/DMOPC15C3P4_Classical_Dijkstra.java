@@ -1,5 +1,3 @@
-package dmopc15c3p4_contagion;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

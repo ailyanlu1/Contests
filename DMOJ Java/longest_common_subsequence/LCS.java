@@ -1,5 +1,3 @@
-package longest_common_subsequence;
-
 import java.util.Scanner;
 
 public class LCS {
