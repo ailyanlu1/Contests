@@ -36,16 +36,14 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 #define MAXN 1000005
 
 int N, ind[MAXN], cnt[1 << 4];
-bool A[MAXN][4];
 string S[4], ans;
 
 pair<ll, string> solve() {
     ans.clear();
-    FOR(i, N) FOR(j, 4) A[i][j] = S[j][i] == 'T';
     FOR(i, 1 << 4) cnt[i] = 0;
     FOR(i, N) {
         ind[i] = 0;
-        FOR(j, 4) ind[i] = (ind[i] << 1) | A[i][j];
+        FOR(j, 4) ind[i] = (ind[i] << 1) | (S[j][i] == 'T');
         cnt[ind[i]]++;
     }
     ll sum[4], tot;
