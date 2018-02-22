@@ -39,6 +39,13 @@ int N, A[MAXN], B[MAXN], cnt[MAXN];
 bool done[MAXN];
 vector<int> *ind[MAXN], *temp[MAXN];
 
+/**
+ * SOLUTION 1: GREEDY APPROACH
+ * TIME COMPLEXITY: O(N)
+ * Sort by frequency (using counting sort), the going from highest
+ * to lowest frequency, find first available day to visit bank.
+ */
+
 //void sortBySz() {
 //    int maxSZ = 0;
 //    FOR(i, N) MAX(maxSZ, sz(*ind[i]));
@@ -86,18 +93,24 @@ vector<int> *ind[MAXN], *temp[MAXN];
 //    return true;
 //}
 
+/**
+ * SOLUTION 2: SINGLE ROTATION
+ * TIME COMPLEXITY: O(N)
+ * Cycle the first occurrence of every blocked bank by 1.
+ * Order remaining elements arbitrarily.
+ */
+
 bool solve() {
     FOR(i, N) done[i] = false;
     FOR(i, N) B[i] = -1;
     int firstNum = -1;
     int lastInd = -1;
     FOR(i, N) {
-        if (!done[A[i]]) {
-            if (lastInd == -1) firstNum = A[i];
-            else B[lastInd] = A[i];
-            lastInd = i;
-            done[A[i]] = true;
-        }
+        if (done[A[i]]) continue;
+        if (lastInd == -1) firstNum = A[i];
+        else B[lastInd] = A[i];
+        lastInd = i;
+        done[A[i]] = true;
     }
     if (lastInd != -1 && A[lastInd] == firstNum) return false;
     if (lastInd != -1) B[lastInd] = firstNum;
@@ -106,16 +119,57 @@ bool solve() {
         if (done[i]) continue;
         while (B[cur] != -1) cur++;
         B[cur] = i;
+        done[i] = true;
     }
     return true;
 }
 
+/**
+ * SOLUTION 3: RANDOM SHUFFLING
+ * TIME COMPLEXITY: could go on forever
+ * Repeatedly shuffle the array until a permutation has no
+ * matches. When checking, move on to the next permutation
+ * as soon as a match is found.
+ */
+
+//bool solve() {
+//    FOR(i, N) done[i] = false;
+//    FOR(i, N) B[i] = N - i - 1;
+//    int cnt = 0;
+//    FOR(i, N) {
+//        if (done[A[i]]) continue;
+//        cnt++;
+//        done[A[i]] = true;
+//    }
+//    if (cnt == 1) return false;
+//    mt19937 rng(time(0));
+//    while (true) {
+//        FOR(i, N) {
+//            if (A[i] == B[i]) break;
+//            if (i == N - 1) return true;
+//        }
+//        FOR(i, N) {
+//            int j = i + rng() % (N - i);
+//            swap(B[i], B[j]);
+//        }
+//    }
+//}
+
+/**
+ * SOLUTION 4: SYSTEMATIC SHUFFLING
+ * TIME COMPLEXITY: somewhere between O(N * N!) and O(N!)
+ * Iterate through each permutation of the the array until
+ * once is found with no matches. When checking, move on to
+ * the next permutation as soon as a match is found.
+ */
+
 bool tryAll() {
     FOR(i, N) B[i] = i;
     do {
-        bool good = true;
-        FOR(i, N) if (A[i] == B[i]) good = false;
-        if (good) return true;
+        FOR(i, N) {
+            if (A[i] == B[i]) break;
+            if (i == N - 1) return true;
+        }
     } while (next_permutation(B, B + N));
     return false;
 }
@@ -170,10 +224,9 @@ void completeTest(int n) {
 
 void randomTest(int n) {
     N = n;
-    default_random_engine gen(time(0));
-    uniform_int_distribution<> rng(0, N - 1);
+    mt19937 rng(time(0));
     FOR(i, N) {
-        A[i] = rng(gen);
+        A[i] = rng() % N;
         assert(0 <= A[i] && A[i] < N);
     }
     const auto start_time = chrono::system_clock::now();
