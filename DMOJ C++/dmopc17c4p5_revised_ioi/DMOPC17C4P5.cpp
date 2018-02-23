@@ -35,27 +35,27 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 
 #define MAXN 1000005
 
-int N, ind[MAXN], cnt[1 << 4];
+int N, p[MAXN], cnt[1 << 4];
 string S[4], ans;
 
 pair<ll, string> solve() {
     ans.clear();
     FOR(i, 1 << 4) cnt[i] = 0;
     FOR(i, N) {
-        ind[i] = 0;
-        FOR(j, 4) ind[i] = (ind[i] << 1) | (S[j][i] == 'T');
-        cnt[ind[i]]++;
+        p[i] = 0;
+        FOR(j, 4) p[i] = (p[i] << 1) | (S[j][i] == 'T');
+        cnt[p[i]]++;
     }
     ll sum[4], tot;
     plli best = {-1, -1};
     FOR(i, 1 << (1 << 4)) {
         FOR(k, 4) sum[k] = 0;
-        FOR(j, 1 << 4) FOR(k, 4) sum[k] += (i & (1 << j) ? 1 : 0) == (j & (1 << k) ? 1 : 0) ? cnt[j] : -cnt[j];
+        FOR(j, 1 << 4) FOR(k, 4) sum[k] += ((i >> j) & 1) ^ ((j >> k) & 1) ? -cnt[j] : cnt[j];
         tot = 0;
         FOR(k, 4) tot += sum[k] * sum[k];
         MAX(best, mp(tot, i));
     }
-    FOR(i, N) ans.pb((best.s & (1 << ind[i])) ? 'T' : 'F');
+    FOR(i, N) ans.pb((best.s & (1 << p[i])) ? 'T' : 'F');
     return {best.f, ans};
 }
 
