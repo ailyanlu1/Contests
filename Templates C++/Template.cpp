@@ -11,12 +11,14 @@ using namespace std;
 #define mp make_pair
 #define f first
 #define s second
+#define all(a) (a).begin(), (a).end()
 #define For(i, a, b) for (auto i = (a); i < (b); i++)
 #define FOR(i, b) For(i, 0, b)
 #define Rev(i, a, b) for (auto i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
 #define sz(a) ((int) (a).size())
-#define nl "\n"
+#define nl '\n'
+#define sp ' '
 
 #define ll long long
 #define ld long double

@@ -29,16 +29,17 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 
 #define MAXN ((int) 1e9 + 5)
 
-int N;
+int N, sqrtN;
 ll dp1[(int) sqrt(MAXN) + 5], dp2[(int) sqrt(MAXN) + 5];
 
 ll solve(int i) {
     if (i == 1) return 1LL;
-    ll &x = i <= sqrt(N) ? dp1[i] : dp2[N / i];
+    ll &x = i <= sqrtN ? dp1[i] : dp2[N / i];
     if (x) return x;
-    for (int j = 1; j <= sqrt(i); j++) {
+    int sqrtI = (int) sqrt(i);
+    for (int j = 1; j <= sqrtI; j++) {
         x += solve(j) * (i / j - i / (j + 1));
-        if (j >= 2 && sqrt(i) < i / j) x += solve(i / j);
+        if (j >= 2 && sqrtI < i / j) x += solve(i / j);
     }
     return x;
 }
@@ -48,6 +49,7 @@ int main() {
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> N;
+    sqrtN = (int) sqrt(N);
     memset(dp1, 0, sizeof(dp1));
     memset(dp2, 0, sizeof(dp2));
     cout << solve(N) << nl;
