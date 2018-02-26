@@ -389,14 +389,10 @@ struct BigInt {
 };
 
 BigInt A, B;
-int N;
 
 int main() {
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> N;
-    FOR(i, N) {
-        cin >> A >> B;
-        cout << A + B << nl;
-    }
+    cin >> A >> B;
+    cout << A * B << nl;
     return 0;
 }
