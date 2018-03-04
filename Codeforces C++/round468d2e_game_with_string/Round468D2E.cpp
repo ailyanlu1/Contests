@@ -53,18 +53,21 @@ int main() {
     FOR(i, 26) {
         mc[i] = 0;
         if (freq[i] == 0) continue;
+        if (sz(L[i]) == 1) {
+            mc[i] = 1;
+            continue;
+        }
         For(j, 1, sz(S)) {
             FOR(k, 26) mm[k] = 0;
             FOR(k, sz(L[i])) mm[S[(L[i][k] + j) % sz(S)] - 'a']++;
             int cnt = 0;
             FOR(k, 26) cnt += (mm[k] == 1);
-            if (cnt > mc[i]) mc[i] = cnt;
+            MAX(mc[i], cnt);
             if (mc[i] == sz(L[i])) break;
         }
-        // cout << (char) ('a' + i) << sp << mc[i] << nl;
     }
     int cnt = 0;
     FOR(i, 26) cnt += mc[i];
-    cout << setprecision(6) << fixed << ((double) cnt) / ((double) sz(S)) << nl;
+    cout << setprecision(9) << fixed << ((double) cnt) / ((double) sz(S)) << nl;
     return 0;
 }
