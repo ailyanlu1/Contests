@@ -36,22 +36,13 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-int a, b, A, B, cnt = 0;
+int A, B;
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> a >> b;
-    A = min(a, b);
-    B = max(a, b);
-    int i = 1;
-    while (B - A > 1) {
-        cnt += 2 * i++;
-        A++;
-        B--;
-    }
-    if (B - A == 1) cnt += i;
-    cout << cnt << nl;
+    cin >> A >> B;
+    cout << (abs(A - B) / 2 + abs(A - B) % 2) * (abs(A - B) / 2 + 1) << nl;
     return 0;
 }
