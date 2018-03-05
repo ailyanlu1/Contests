@@ -37,7 +37,7 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
 string S;
-int freq[26], mm[26], mc[26];
+int freq[26], CNT[26];
 vector<int> L[26];
 
 int main() {
@@ -45,29 +45,24 @@ int main() {
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> S;
-    FOR(i, 26) freq[i] = 0;
-    FOR(i, sz(S)) {
-        freq[S[i] - 'a']++;
-        L[S[i] - 'a'].pb(i);
-    }
+    FOR(i, sz(S)) L[S[i] - 'a'].pb(i);
     FOR(i, 26) {
-        mc[i] = 0;
-        if (freq[i] == 0) continue;
-        if (sz(L[i]) == 1) {
-            mc[i] = 1;
+        CNT[i] = 0;
+        if (sz(L[i]) <= 1) {
+            CNT[i] = sz(L[i]);
             continue;
         }
         For(j, 1, sz(S)) {
-            FOR(k, 26) mm[k] = 0;
-            FOR(k, sz(L[i])) mm[S[(L[i][k] + j) % sz(S)] - 'a']++;
+            FOR(k, 26) freq[k] = 0;
+            FOR(k, sz(L[i])) freq[S[(L[i][k] + j) % sz(S)] - 'a']++;
             int cnt = 0;
-            FOR(k, 26) cnt += (mm[k] == 1);
-            MAX(mc[i], cnt);
-            if (mc[i] == sz(L[i])) break;
+            FOR(k, 26) cnt += (freq[k] == 1);
+            MAX(CNT[i], cnt);
+            if (CNT[i] == sz(L[i])) break;
         }
     }
     int cnt = 0;
-    FOR(i, 26) cnt += mc[i];
+    FOR(i, 26) cnt += CNT[i];
     cout << setprecision(9) << fixed << ((double) cnt) / ((double) sz(S)) << nl;
     return 0;
 }
