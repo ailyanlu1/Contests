@@ -41,6 +41,54 @@ vector<int> *ind[MAXN], *temp[MAXN];
 
 /**
  * SOLUTION 1: GREEDY APPROACH
+ * TIME COMPLEXITY: O(N log N)
+ * Sort by frequency, the going from highest to lowest frequency,
+ * find first available day to visit bank.
+ */
+
+//bool cmpBySz(vector<int> *&a, vector<int> *&b) {
+//    return sz(*a) < sz(*b);
+//}
+//
+//bool solve() {
+//    FOR(i, N) ind[i] = new vector<int>();
+//    FOR(i, N) ind[A[i]]->pb(i);
+//    FOR(i, N) done[i] = false;
+//    FOR(i, N) B[i] = -1;
+//    sort(ind, ind + N, cmpBySz);
+//    reverse(ind, ind + N);
+//    if (N == 1) return false;
+//    FOR(i, N) {
+//        if (sz(*ind[i]) != 1) break;
+//        if (i == N - 1) {
+//            FOR(j, N) B[j] = A[(j + 1) % N];
+//            return true;
+//        }
+//    }
+//    int nxt = 0;
+//    FOR(i, N) {
+//        if (sz(*ind[i]) == 0) break;
+//        while (nxt < N && B[nxt] != -1) nxt++;
+//        if (nxt == N) return false;
+//        int curVal = A[(*ind[i])[0]];
+//        int curInd = nxt;
+//        while (curInd < N && (B[curInd] != -1 || A[curInd] == curVal)) curInd++;
+//        if (curInd == N) return false;
+//        B[curInd] = curVal;
+//        done[curVal] = true;
+//    }
+//    FOR(i, N) {
+//        if (done[i]) continue;
+//        while (nxt < N && B[nxt] != -1) nxt++;
+//        if (nxt == N) return false;
+//        B[nxt] = i;
+//        done[i] = true;
+//    }
+//    return true;
+//}
+
+/**
+ * SOLUTION 2: GREEDY APPROACH
  * TIME COMPLEXITY: O(N)
  * Sort by frequency (using counting sort), the going from highest
  * to lowest frequency, find first available day to visit bank.
@@ -55,7 +103,7 @@ vector<int> *ind[MAXN], *temp[MAXN];
 //    FOR(i, N) temp[--cnt[sz(*ind[i])]] = ind[i];
 //    FOR(i, N) ind[i] = temp[i];
 //}
-
+//
 //bool solve() {
 //    FOR(i, N) ind[i] = new vector<int>();
 //    FOR(i, N) ind[A[i]]->pb(i);
@@ -94,7 +142,7 @@ vector<int> *ind[MAXN], *temp[MAXN];
 //}
 
 /**
- * SOLUTION 2: SINGLE ROTATION
+ * SOLUTION 3: SINGLE ROTATION
  * TIME COMPLEXITY: O(N)
  * Cycle the first occurrence of every blocked bank by 1.
  * Order remaining elements arbitrarily.
@@ -125,7 +173,7 @@ bool solve() {
 }
 
 /**
- * SOLUTION 3: RANDOM SHUFFLING
+ * SOLUTION 4: RANDOM SHUFFLING
  * TIME COMPLEXITY: could go on forever
  * Repeatedly shuffle the array until a permutation has no
  * matches. When checking, move on to the next permutation
