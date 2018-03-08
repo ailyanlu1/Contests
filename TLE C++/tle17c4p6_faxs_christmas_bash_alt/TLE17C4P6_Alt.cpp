@@ -35,6 +35,8 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+const ld EPS = 1e-4;
+
 template <typename T>
 struct FenwickTree {
 private:
@@ -73,25 +75,25 @@ public:
     }
 };
 
-ll ternary_search(ll (*f)(ll), ll lo, ll hi) {
-    ll mid;
-    while (lo < hi) {
+ld binary_search(ld (*f)(ld), ld lo, ld hi) {
+    ld mid;
+    do {
         mid = lo + (hi - lo) / 2;
-        if (f(mid) < f(mid + 1)) hi = mid;
-        else lo = mid + 1;
-    }
-    return lo;
+        if (f(mid) < 0) lo = mid;
+        else hi = mid;
+    } while (hi - lo >= EPS);
+    return mid;
 }
 
 #define MAXX 15010
 
-FenwickTree<ll> cube(MAXX * 2), quad(MAXX * 2), lin(MAXX * 2), con(MAXX * 2);
+FenwickTree<ll> quad(MAXX * 2), lin(MAXX * 2), con(MAXX * 2);
 
-ll f(ll x) {
-    int below = (int) (x / 1000 - (x < 0 && x % 1000 ? 1 : 0));
-    int above = (int) (x / 1000 + (x > 0 && x % 1000 ? 1 : 0));
-    ll ret = ((((con.rsq(1, below + MAXX) - con.rsq(above + MAXX, MAXX * 2)) * x + (lin.rsq(above + MAXX, MAXX * 2) - lin.rsq(1, below + MAXX))))
-            * x + (quad.rsq(1, below + MAXX) - quad.rsq(above + MAXX, MAXX * 2))) * x + (cube.rsq(above + MAXX, MAXX * 2) - cube.rsq(1, below + MAXX));
+ld f(ld x) {
+    int below = (int) floor(x);
+    int above = (int) ceil(x);
+    ld ret = ((((con.rsq(1, below + MAXX) - con.rsq(above + MAXX, MAXX * 2)) * x + 2 * (lin.rsq(above + MAXX, MAXX * 2) - lin.rsq(1, below + MAXX))))
+            * x + (quad.rsq(1, below + MAXX) - quad.rsq(above + MAXX, MAXX * 2)));
     return ret;
 }
 
@@ -100,16 +102,13 @@ int N;
 int main() {
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> N;
-    int xx;
-    ll x;
+    int x;
     FOR(i, N) {
-        cin >> xx;
-        x = (ll) xx * 1000;
-        cube.update(xx + MAXX, (ll) 1 * (ll) x * (ll) x * (ll) x);
-        quad.update(xx + MAXX, (ll) 3 * (ll) x * (ll) x);
-        lin.update(xx + MAXX, (ll) 3 * (ll) x);
-        con.update(xx + MAXX, (ll) 1);
-        cout << fixed << setprecision(3) << ((ld) (ternary_search(f, -15000000, 15000000))) / 1000 << nl;
+        cin >> x;
+        quad.update(x + MAXX, (ll) x * (ll) x);
+        lin.update(x + MAXX, (ll) x);
+        con.update(x + MAXX, 1);
+        cout << fixed << setprecision(3) << binary_search(f, -15000.0, 15000.0) << nl;
     }
     return 0;
 }
