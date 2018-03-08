@@ -1,5 +1,3 @@
-package bf4hard_string_finding;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

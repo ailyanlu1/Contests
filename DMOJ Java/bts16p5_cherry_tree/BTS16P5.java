@@ -1,5 +1,3 @@
-package bts16p5_cherry_tree;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

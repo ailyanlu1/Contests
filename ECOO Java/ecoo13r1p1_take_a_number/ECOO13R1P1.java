@@ -1,5 +1,3 @@
-package ecoo13r1p1_take_a_number;
-
 import java.io.BufferedInputStream;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -161,4 +159,4 @@ public class ECOO13R1P1 {
             }
         }
     } // run method
-} // QuestionOne2013 class
+}

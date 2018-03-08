@@ -1,5 +1,3 @@
-package bts16p7_contest_practice;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

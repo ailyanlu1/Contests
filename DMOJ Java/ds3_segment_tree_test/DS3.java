@@ -1,5 +1,3 @@
-package ds3_segment_tree_test;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

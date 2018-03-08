@@ -1,5 +1,3 @@
-package dmpg16b6_counting_money;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

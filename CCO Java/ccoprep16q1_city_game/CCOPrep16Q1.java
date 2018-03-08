@@ -1,5 +1,3 @@
-package ccoprep16q1_city_game;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

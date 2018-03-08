@@ -1,5 +1,3 @@
-package ccc09j5s3_degrees_of_separation;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package utso15p5_distribution_channel;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

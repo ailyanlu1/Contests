@@ -1,10 +1,4 @@
-package ecoo17r1p2_chocolate_chewsday;
-
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ECOO17R1P2 {

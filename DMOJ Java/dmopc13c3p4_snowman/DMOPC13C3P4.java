@@ -1,5 +1,3 @@
-package dmopc13c3p4_snowman;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

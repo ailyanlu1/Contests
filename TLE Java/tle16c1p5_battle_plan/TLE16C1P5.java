@@ -1,5 +1,3 @@
-package tle16c1p5_battle_plan;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package ccc13s5_factor_solitaire;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

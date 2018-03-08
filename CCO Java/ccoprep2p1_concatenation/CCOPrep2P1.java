@@ -1,5 +1,3 @@
-package ccoprep2p1_concatenation;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

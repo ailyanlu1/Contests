@@ -1,5 +1,3 @@
-package ioi00p1_palindrome;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

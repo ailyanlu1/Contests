@@ -1,5 +1,3 @@
-package apio12p1_dispatching;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

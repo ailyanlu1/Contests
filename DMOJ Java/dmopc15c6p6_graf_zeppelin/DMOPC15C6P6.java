@@ -1,5 +1,3 @@
-package dmopc15c6p6_graf_zeppelin;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

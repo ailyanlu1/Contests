@@ -1,5 +1,3 @@
-package ccc16j5s2_tandem_bicycle;
-
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -40,5 +38,4 @@ public class CCC16J5S2 {
         }
         return b;
     } // max method
-
 }

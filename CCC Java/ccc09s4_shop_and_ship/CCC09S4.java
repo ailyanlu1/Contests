@@ -1,5 +1,3 @@
-package ccc09s4_shop_and_ship;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;

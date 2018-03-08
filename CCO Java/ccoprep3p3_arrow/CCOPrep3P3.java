@@ -1,5 +1,3 @@
-package ccoprep3p3_arrow;
-
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;

@@ -1,5 +1,3 @@
-package ecoo15r2p4_rectangle_roundup;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

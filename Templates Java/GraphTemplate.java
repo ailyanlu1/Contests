@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -14,18 +13,13 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 public class GraphTemplate {
-    private static GraphTemplate o = new GraphTemplate();
-    public class Reader {
+    public static class Reader {
         private BufferedReader in;
         private StringTokenizer st;
 
-        public Reader(InputStream inputStream) {
-            in = new BufferedReader(new InputStreamReader(inputStream));
-        }
+        public Reader(InputStream inputStream) { in = new BufferedReader(new InputStreamReader(inputStream)); }
 
-        public Reader(String fileName) throws FileNotFoundException {
-            in = new BufferedReader(new FileReader(fileName));
-        }
+        public Reader(String fileName) throws FileNotFoundException { in = new BufferedReader(new FileReader(fileName)); }
 
         public String next() throws IOException {
             while (st == null || !st.hasMoreTokens()) {
@@ -40,81 +34,36 @@ public class GraphTemplate {
             }
             return st.nextToken(delim);
         }
-
-        /*
-        public BigInteger nextBigInteger() throws IOException {
-            return new BigInteger(next());
-        }
-        */
-
-        public byte nextByte() throws IOException {
-            return Byte.parseByte(next());
-        }
-
-        public byte nextByte(String delim) throws IOException {
-            return Byte.parseByte(next(delim));
-        }
-
-        public char nextChar() throws IOException {
-            return next().charAt(0);
-        }
-
-        public char nextChar(String delim) throws IOException {
-            return next(delim).charAt(0);
-        }
-
-        public double nextDouble() throws IOException {
-            return Double.parseDouble(next());
-        }
-
-        public double nextDouble(String delim) throws IOException {
-            return Double.parseDouble(next(delim));
-        }
-
-        public float nextFloat() throws IOException {
-            return Float.parseFloat(next());
-        }
-
-        public float nextFloat(String delim) throws IOException {
-            return Float.parseFloat(next(delim));
-        }
-
-        public int nextInt() throws IOException {
-            return Integer.parseInt(next());
-        }
-
-        public int nextInt(String delim) throws IOException {
-            return Integer.parseInt(next(delim));
-        }
-
-        public long nextLong() throws IOException {
-            return Long.parseLong(next());
-        }
-
-        public long nextLong(String delim) throws IOException {
-            return Long.parseLong(next(delim));
-        }
-
-        public short nextShort() throws IOException {
-            return Short.parseShort(next());
-        }
-
-        public short nextShort(String delim) throws IOException {
-            return Short.parseShort(next(delim));
-        }
-
+        
         public String nextLine() throws IOException {
             st = null;
             return in.readLine();
         }
+
+        // public BigInteger nextBigInteger() throws IOException { return new BigInteger(next()); }
+
+        public byte nextByte() throws IOException { return Byte.parseByte(next()); }
+        public byte nextByte(String delim) throws IOException { return Byte.parseByte(next(delim)); }
+        public char nextChar() throws IOException { return next().charAt(0); }
+        public char nextChar(String delim) throws IOException { return next(delim).charAt(0); }
+        public double nextDouble() throws IOException { return Double.parseDouble(next()); }
+        public double nextDouble(String delim) throws IOException { return Double.parseDouble(next(delim)); }
+        public float nextFloat() throws IOException { return Float.parseFloat(next()); }
+        public float nextFloat(String delim) throws IOException { return Float.parseFloat(next(delim)); }
+        public int nextInt() throws IOException { return Integer.parseInt(next()); }
+        public int nextInt(String delim) throws IOException { return Integer.parseInt(next(delim)); }
+        public long nextLong() throws IOException { return Long.parseLong(next()); }
+        public long nextLong(String delim) throws IOException { return Long.parseLong(next(delim)); }
+        public short nextShort() throws IOException { return Short.parseShort(next()); }
+        public short nextShort(String delim) throws IOException { return Short.parseShort(next(delim)); }
     } // Reader class
     
-    public class Stack<Item> implements Iterable<Item> {
+    public static class Stack<Item> implements Iterable<Item> {
         private Node<Item> first;     // top of stack
         private int n;                // size of the stack
 
         // helper linked list class
-        private class Node<Item> {
+        private static class Node<Item> {
             private Item item;
             private Node<Item> next;
         }
@@ -234,13 +183,13 @@ public class GraphTemplate {
     }
 
     
-    public class Queue<Item> implements Iterable<Item> {
+    public static class Queue<Item> implements Iterable<Item> {
         private Node<Item> first;    // beginning of queue
         private Node<Item> last;     // end of queue
         private int n;               // number of elements on queue
 
         // helper linked list class
-        private class Node<Item> {
+        private static class Node<Item> {
             private Item item;
             private Node<Item> next;
         }
@@ -356,8 +305,7 @@ public class GraphTemplate {
         }
     }
     
-    public class UF {
-
+    public static class UF {
         private int[] parent;  // parent[i] = parent of i
         private byte[] rank;   // rank[i] = rank of subtree rooted at i (never more than 31)
         private int count;     // number of components
@@ -454,27 +402,6 @@ public class GraphTemplate {
             count--;
         }
         
-        /**
-         * Unmerges the component containing site {@code p} with the 
-         * the component containing site {@code q}.
-         *
-         * @param  p the integer representing one site
-         * @param  q the integer representing the other site
-         * @throws IndexOutOfBoundsException unless
-         *         both {@code 0 <= p < n} and {@code 0 <= q < n}
-         */
-        public void disjoin(int p, int q) {
-            int rootP = find(p);
-            int rootQ = find(q);
-            if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
-            else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
-            else {
-                parent[rootQ] = rootQ;
-                rank[rootP]--;
-            }
-            count++;
-        }
-
         // validate that p is a valid index
         private void validate(int p) {
             int n = parent.length;
@@ -484,7 +411,7 @@ public class GraphTemplate {
         }
     }
     
-    public class Graph {
+    public static class Graph {
         private final String NEWLINE = System.getProperty("line.separator");
 
         private final int V;
@@ -613,7 +540,7 @@ public class GraphTemplate {
         }
     }
     
-    private static Reader in = o.new Reader(System.in);
+    private static Reader in = new Reader(System.in);
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
     /*

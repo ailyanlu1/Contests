@@ -1,5 +1,3 @@
-package dmpg17b4_bad_sort;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

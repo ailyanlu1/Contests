@@ -1,5 +1,3 @@
-package ecoo17r3p1_baker_brie;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

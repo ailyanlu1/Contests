@@ -1,5 +1,3 @@
-package dmpg16s4_mmorpg_ii;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

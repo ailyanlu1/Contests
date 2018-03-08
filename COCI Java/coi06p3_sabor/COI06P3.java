@@ -1,5 +1,3 @@
-package coi06p3_sabor;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

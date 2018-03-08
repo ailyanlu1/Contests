@@ -1,5 +1,3 @@
-package dmopc14c2p6_selective_cutting;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

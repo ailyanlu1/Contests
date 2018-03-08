@@ -1,4 +1,4 @@
-package gcj2017qra_oversized_pancake_flipper;
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

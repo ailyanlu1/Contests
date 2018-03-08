@@ -1,5 +1,3 @@
-package cco15p2_artskjid;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -64,16 +62,16 @@ public class CCO15P2 {
                 dp[i][j] = -1;
             }
         }
-        System.out.println(dp(1, 0, 0));
+        System.out.println(solve(1, 0, 0));
     }
     
-    private static int dp(int s, int c, int x) {
+    private static int solve(int s, int c, int x) {
         if (dp[s][c] != -1) return dp[s][c];
         else if (c == n-1) return dp[s][c] = 0;
         int ans = -1 << 30;
         for (int i = 0; i < n; i++) {
             if (adj[c][i] == 0 || (s & 1 << i) > 0) continue;
-            ans = Math.max(ans, adj[c][i] + dp(s | 1 << i, i, x+1));
+            ans = Math.max(ans, adj[c][i] + solve(s | 1 << i, i, x+1));
         }
         return dp[s][c] = ans;
     }

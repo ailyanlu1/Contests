@@ -1,5 +1,3 @@
-package dmpg17b6_multiply_and_surrender;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

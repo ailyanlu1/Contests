@@ -1,5 +1,3 @@
-package dmopc14ce1p4_exam_delay;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

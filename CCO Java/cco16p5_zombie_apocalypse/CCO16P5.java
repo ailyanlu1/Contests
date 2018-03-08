@@ -1,5 +1,3 @@
-package cco16p5_zombie_apocalypse;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

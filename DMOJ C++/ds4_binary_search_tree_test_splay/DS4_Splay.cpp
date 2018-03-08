@@ -1,10 +1,3 @@
-/*
- * DS4_Splay.cpp
- *
- *  Created on: Jul 20, 2017
- *      Author: Wesley Leung
- */
-
 #include <bits/stdc++.h>
 
 #define SHORT_INF 0x3f3f
@@ -256,10 +249,14 @@ public:
         root = splay(root, val);
         if (val == root->val) {
             if (root->left == nullptr) {
-                root = root->right;
+                Node *x = root->right;
+                delete root;
+                root = x;
             } else {
                 Node *x = root->right;
-                root = splay(root->left, val);
+                Node *y = root->left;
+                delete root;
+                root = splay(y, val);
                 root->right = x;
             }
             update(root);

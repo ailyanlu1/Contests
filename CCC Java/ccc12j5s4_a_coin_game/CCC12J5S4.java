@@ -1,5 +1,3 @@
-package ccc12j5s4_a_coin_game;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

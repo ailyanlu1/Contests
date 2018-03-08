@@ -1,5 +1,3 @@
-package tree2_tree_cutting;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package dp1p3_longest_increasing_subsequence;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

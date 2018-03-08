@@ -1,5 +1,3 @@
-package ccoprep16c2q2_an_easy_problem;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

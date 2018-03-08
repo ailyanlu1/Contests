@@ -1,5 +1,3 @@
-package ccc15s4_convex_hull;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

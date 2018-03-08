@@ -1,5 +1,3 @@
-package dmpg15s5_black_and_white;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package dmpg17s3_black_and_white_iii;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

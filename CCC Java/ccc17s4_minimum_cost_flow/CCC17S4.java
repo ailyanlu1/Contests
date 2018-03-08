@@ -1,5 +1,3 @@
-package ccc17s4_minimum_cost_flow;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package ecoo17r2p1_wizards_windows;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package ccc10s4_animal_farm;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -182,9 +182,13 @@ private:
      * @param x the subtree
      * @return the updated subtree
      */
-    Node *removeMin(Node *&x) {
-        if (x->left == nullptr) return x->right;
-        x->left = removeMin(x->left);
+    Node *removeMin(Node *&x, bool freeMemory) {
+        if (x->left == nullptr) {
+            Node *y = x->right;
+            if (freeMemory) delete x;
+            return y;
+        }
+        x->left = removeMin(x->left, freeMemory);
         update(x);
         return x;
     }
@@ -195,9 +199,13 @@ private:
      * @param x the subtree
      * @return the updated subtree
      */
-    Node *removeMax(Node *&x) {
-        if (x->right == nullptr) return x->left;
-        x->right = removeMax(x->right);
+    Node *removeMax(Node *&x, bool freeMemory) {
+        if (x->right == nullptr) {
+            Node *y = x->left;
+            if (freeMemory) delete x;
+            return y;
+        }
+        x->right = removeMax(x->right, freeMemory);
         update(x);
         return x;
     }
@@ -236,13 +244,20 @@ private:
         if (val < x->val) x->left = remove(x->left, val);
         else if (val > x->val) x->right = remove(x->right, val);
         else {
-            if (x->left == nullptr) return x->right;
-            else if (x->right == nullptr) return x->left;
-            else {
+            if (x->left == nullptr) {
+                Node *y = x->right;
+                delete x;
+                return y;
+            } else if (x->right == nullptr) {
+                Node *y = x->left;
+                delete x;
+                return y;
+            } else {
                 Node *y = x;
                 x = getMin(y->right);
-                x->right = removeMin(y->right);
+                x->right = removeMin(y->right, false);
                 x->left = y->left;
+                delete y;
             }
         }
         update(x);
@@ -345,7 +360,7 @@ private:
     void print(Node *&x) {
         if (x == nullptr) return;
         print(x->left);
-        printf("%d ", x->val);
+        cout << x->val << ' ';
         print(x->right);
     }
 
@@ -410,7 +425,7 @@ public:
      */
     void removeMin() {
         if (isEmpty()) throw runtime_error("called removeMin() with empty set");
-        root = removeMin(root);
+        root = removeMin(root, true);
     }
 
     /**
@@ -420,7 +435,7 @@ public:
      */
     void removeMax() {
         if (isEmpty()) throw runtime_error("called removeMax() with empty set");
-        root = removeMax(root);
+        root = removeMax(root, true);
     }
 
     /**
@@ -548,19 +563,18 @@ int N, M;
 SBTSet<int> tree;
 
 int main() {
-    ri(N);
-    ri(M);
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> N >> M;
     for (int i = 0; i < N; i++) {
         int x;
-        ri(x);
+        cin >> x;
         tree.add(x);
     }
     int lastAns = 0;
     for (int i = 0; i < M; i++) {
         char op;
         int x;
-        rc(op);
-        ri(x);
+        cin >> op >> x;
         x = x ^ lastAns;
         if (op == 'I') {
             tree.add(x);
@@ -568,10 +582,10 @@ int main() {
             tree.remove(x);
         } else if (op == 'S') {
             lastAns = tree.select(x - 1);
-            printf("%d\n", lastAns);
+            cout << lastAns << '\n';
         } else if (op == 'L') {
             lastAns = tree.contains(x) ? tree.getRank(x) + 1 : -1;
-            printf("%d\n", lastAns);
+            cout << lastAns << '\n';
         } else {
             i--;
         }

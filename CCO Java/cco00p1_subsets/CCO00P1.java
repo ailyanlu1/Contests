@@ -1,5 +1,3 @@
-package cco00p1_subsets;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

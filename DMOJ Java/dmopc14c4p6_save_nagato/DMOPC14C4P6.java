@@ -1,5 +1,3 @@
-package dmopc14c4p6_save_nagato;
-
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;

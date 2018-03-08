@@ -1,5 +1,3 @@
-package rte16s2_fire_evacuation_plan;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

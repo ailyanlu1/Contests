@@ -1,5 +1,3 @@
-package utso15p3_pogo;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

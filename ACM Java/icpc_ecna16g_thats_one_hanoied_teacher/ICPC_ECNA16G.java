@@ -1,5 +1,3 @@
-package icpc_ecna16g_thats_one_hanoied_teacher;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

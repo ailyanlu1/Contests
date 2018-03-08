@@ -1,5 +1,3 @@
-package dmpg17s5_bit_matrix;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

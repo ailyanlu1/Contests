@@ -1,5 +1,3 @@
-package tle16c4p4_christmas_tree_building;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

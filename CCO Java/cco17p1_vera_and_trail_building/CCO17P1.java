@@ -1,5 +1,3 @@
-package cco17p1_vera_and_trail_building;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

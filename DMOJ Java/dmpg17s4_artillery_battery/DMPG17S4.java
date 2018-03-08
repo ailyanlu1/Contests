@@ -1,5 +1,3 @@
-package dmpg17s4_artillery_battery;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

@@ -1,5 +1,3 @@
-package icpc_ecna16d_lost_in_translation;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

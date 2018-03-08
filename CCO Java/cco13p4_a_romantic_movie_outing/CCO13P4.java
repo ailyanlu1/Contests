@@ -1,5 +1,3 @@
-package cco13p4_a_romantic_movie_outing;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

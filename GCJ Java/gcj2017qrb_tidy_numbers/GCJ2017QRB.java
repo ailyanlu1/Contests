@@ -1,5 +1,3 @@
-package gcj2017qrb_tidy_numbers;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

@@ -1,5 +1,3 @@
-package ccc16j1_tournament_selection;
-
 import java.util.Scanner;
 
 public class CCC16J1 {

@@ -1,5 +1,3 @@
-package ccc16s5_circle_of_life;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

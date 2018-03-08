@@ -1,5 +1,3 @@
-package ds4_binary_search_tree_test;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

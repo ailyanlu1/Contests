@@ -1,5 +1,3 @@
-package cco14p5_early_exam_evacuation;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

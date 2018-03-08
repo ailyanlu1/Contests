@@ -1,5 +1,3 @@
-package ccc15s3_gates;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

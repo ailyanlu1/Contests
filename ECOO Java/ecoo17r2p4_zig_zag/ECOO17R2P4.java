@@ -1,5 +1,3 @@
-package ecoo17r2p4_zig_zag;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

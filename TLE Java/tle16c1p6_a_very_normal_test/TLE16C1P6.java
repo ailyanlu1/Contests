@@ -1,5 +1,3 @@
-package tle16c1p6_a_very_normal_test;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

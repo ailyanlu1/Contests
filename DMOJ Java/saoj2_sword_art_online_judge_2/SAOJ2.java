@@ -1,5 +1,3 @@
-package saoj2_sword_art_online_judge_2;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

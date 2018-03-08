@@ -1,5 +1,3 @@
-package dmpg15s1_collecting_dust;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package ioi01p1_mobile_phones;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

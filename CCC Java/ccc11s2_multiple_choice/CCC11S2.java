@@ -1,5 +1,3 @@
-package ccc11s2_multiple_choice;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

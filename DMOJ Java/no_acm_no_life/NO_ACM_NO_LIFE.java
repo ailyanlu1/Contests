@@ -1,5 +1,3 @@
-package no_acm_no_life;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

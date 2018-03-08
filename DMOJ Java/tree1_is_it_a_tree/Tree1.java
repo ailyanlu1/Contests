@@ -1,5 +1,3 @@
-package tree1_is_it_a_tree;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

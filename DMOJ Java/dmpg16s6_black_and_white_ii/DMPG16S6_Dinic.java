@@ -1,5 +1,3 @@
-package dmpg16s6_black_and_white_ii;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

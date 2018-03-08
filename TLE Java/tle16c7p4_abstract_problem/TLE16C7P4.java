@@ -1,5 +1,3 @@
-package tle16c7p4_abstract_problem;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

@@ -1,5 +1,3 @@
-package ecoo16r1p4_kayenne;
-
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -245,7 +243,6 @@ public class ECOO16R1P4 {
     } // main method
     
     public static void run(Scanner f) { // if you change the method of reading input, then the parameter type may have to be changed
-        // TODO insert code for question
         ECOO16R1P4 o = new ECOO16R1P4();
         Point2D c = o.new Point2D(f.nextInt(), f.nextInt(), "");
         Point2D[] a = new Point2D[100];

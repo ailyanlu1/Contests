@@ -1,5 +1,3 @@
-package ecoo17r2p2_treasure_hunt;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

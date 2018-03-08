@@ -1,5 +1,3 @@
-package ecoo16r2p4_hop_skip_and_jump;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

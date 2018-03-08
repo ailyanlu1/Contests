@@ -1,5 +1,3 @@
-package ecoo15r1p1_when_you_eat_your_smarties;
-
 import java.io.BufferedInputStream;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -32,4 +30,4 @@ public class ECOO15R1P1 {
         }
         System.out.println(time);
     } // run method
-} // QuestionOne2015 class
+}

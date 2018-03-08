@@ -1,5 +1,3 @@
-package single_source_shortest_path;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

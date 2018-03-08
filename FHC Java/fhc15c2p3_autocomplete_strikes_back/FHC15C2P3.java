@@ -1,5 +1,3 @@
-package fhc15c2p3_autocomplete_strikes_back;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

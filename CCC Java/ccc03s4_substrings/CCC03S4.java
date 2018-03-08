@@ -1,5 +1,3 @@
-package ccc03s4_substrings;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

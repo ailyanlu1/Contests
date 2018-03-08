@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -15,18 +14,13 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 public class WeightedDigraphTemplate {
-    private static WeightedDigraphTemplate o = new WeightedDigraphTemplate();
-    public class Reader {
+    public static class Reader {
         private BufferedReader in;
         private StringTokenizer st;
 
-        public Reader(InputStream inputStream) {
-            in = new BufferedReader(new InputStreamReader(inputStream));
-        }
+        public Reader(InputStream inputStream) { in = new BufferedReader(new InputStreamReader(inputStream)); }
 
-        public Reader(String fileName) throws FileNotFoundException {
-            in = new BufferedReader(new FileReader(fileName));
-        }
+        public Reader(String fileName) throws FileNotFoundException { in = new BufferedReader(new FileReader(fileName)); }
 
         public String next() throws IOException {
             while (st == null || !st.hasMoreTokens()) {
@@ -41,81 +35,36 @@ public class WeightedDigraphTemplate {
             }
             return st.nextToken(delim);
         }
-
-        /*
-        public BigInteger nextBigInteger() throws IOException {
-            return new BigInteger(next());
-        }
-        */
-
-        public byte nextByte() throws IOException {
-            return Byte.parseByte(next());
-        }
-
-        public byte nextByte(String delim) throws IOException {
-            return Byte.parseByte(next(delim));
-        }
-
-        public char nextChar() throws IOException {
-            return next().charAt(0);
-        }
-
-        public char nextChar(String delim) throws IOException {
-            return next(delim).charAt(0);
-        }
-
-        public double nextDouble() throws IOException {
-            return Double.parseDouble(next());
-        }
-
-        public double nextDouble(String delim) throws IOException {
-            return Double.parseDouble(next(delim));
-        }
-
-        public float nextFloat() throws IOException {
-            return Float.parseFloat(next());
-        }
-
-        public float nextFloat(String delim) throws IOException {
-            return Float.parseFloat(next(delim));
-        }
-
-        public int nextInt() throws IOException {
-            return Integer.parseInt(next());
-        }
-
-        public int nextInt(String delim) throws IOException {
-            return Integer.parseInt(next(delim));
-        }
-
-        public long nextLong() throws IOException {
-            return Long.parseLong(next());
-        }
-
-        public long nextLong(String delim) throws IOException {
-            return Long.parseLong(next(delim));
-        }
-
-        public short nextShort() throws IOException {
-            return Short.parseShort(next());
-        }
-
-        public short nextShort(String delim) throws IOException {
-            return Short.parseShort(next(delim));
-        }
-
+        
         public String nextLine() throws IOException {
             st = null;
             return in.readLine();
         }
+
+        // public BigInteger nextBigInteger() throws IOException { return new BigInteger(next()); }
+
+        public byte nextByte() throws IOException { return Byte.parseByte(next()); }
+        public byte nextByte(String delim) throws IOException { return Byte.parseByte(next(delim)); }
+        public char nextChar() throws IOException { return next().charAt(0); }
+        public char nextChar(String delim) throws IOException { return next(delim).charAt(0); }
+        public double nextDouble() throws IOException { return Double.parseDouble(next()); }
+        public double nextDouble(String delim) throws IOException { return Double.parseDouble(next(delim)); }
+        public float nextFloat() throws IOException { return Float.parseFloat(next()); }
+        public float nextFloat(String delim) throws IOException { return Float.parseFloat(next(delim)); }
+        public int nextInt() throws IOException { return Integer.parseInt(next()); }
+        public int nextInt(String delim) throws IOException { return Integer.parseInt(next(delim)); }
+        public long nextLong() throws IOException { return Long.parseLong(next()); }
+        public long nextLong(String delim) throws IOException { return Long.parseLong(next(delim)); }
+        public short nextShort() throws IOException { return Short.parseShort(next()); }
+        public short nextShort(String delim) throws IOException { return Short.parseShort(next(delim)); }
     } // Reader class
     
-    public class Stack<Item> implements Iterable<Item> {
+    public static class Stack<Item> implements Iterable<Item> {
         private Node<Item> first;     // top of stack
         private int n;                // size of the stack
 
         // helper linked list class
-        private class Node<Item> {
+        private static class Node<Item> {
             private Item item;
             private Node<Item> next;
         }
@@ -234,13 +183,13 @@ public class WeightedDigraphTemplate {
         }
     }
     
-    public class Queue<Item> implements Iterable<Item> {
+    public static class Queue<Item> implements Iterable<Item> {
         private Node<Item> first;    // beginning of queue
         private Node<Item> last;     // end of queue
         private int n;               // number of elements on queue
 
         // helper linked list class
-        private class Node<Item> {
+        private static class Node<Item> {
             private Item item;
             private Node<Item> next;
         }
@@ -356,7 +305,7 @@ public class WeightedDigraphTemplate {
         }
     }
     
-    public class MinPQ<Key> implements Iterable<Key> {
+    public static class MinPQ<Key> implements Iterable<Key> {
         private Key[] pq;                    // store items at indices 1 to n
         private int n;                       // number of items on priority queue
         private Comparator<Key> comparator;  // optional comparator
@@ -578,7 +527,7 @@ public class WeightedDigraphTemplate {
         }
     }
     
-    public class IndexMinPQ<Key extends Comparable<Key>> implements Iterable<Integer> {
+    public static class IndexMinPQ<Key extends Comparable<Key>> implements Iterable<Integer> {
         private int maxN;        // maximum number of elements on PQ
         private int n;           // number of elements on PQ
         private int[] pq;        // binary heap using 1-based indexing
@@ -596,10 +545,10 @@ public class WeightedDigraphTemplate {
             if (maxN < 0) throw new IllegalArgumentException();
             this.maxN = maxN;
             n = 0;
-            keys = (Key[]) new Comparable[maxN + 1];    // make this of length maxN??
+            keys = (Key[]) new Comparable[maxN];
             pq   = new int[maxN + 1];
-            qp   = new int[maxN + 1];                   // make this of length maxN??
-            for (int i = 0; i <= maxN; i++)
+            qp   = new int[maxN];
+            for (int i = 0; i < maxN; i++)
                 qp[i] = -1;
         }
 
@@ -678,6 +627,7 @@ public class WeightedDigraphTemplate {
 
         /**
          * Removes a minimum key and returns its associated index.
+         * 
          * @return an index associated with a minimum key
          * @throws NoSuchElementException if this priority queue is empty
          */
@@ -686,7 +636,7 @@ public class WeightedDigraphTemplate {
             int min = pq[1];
             exch(1, n--);
             sink(1);
-            assert min == pq[n+1];
+            // assert min == pq[n+1];
             qp[min] = -1;        // delete
             keys[min] = null;    // to help with garbage collection
             pq[n+1] = -1;        // not needed
@@ -721,19 +671,6 @@ public class WeightedDigraphTemplate {
             keys[i] = key;
             swim(qp[i]);
             sink(qp[i]);
-        }
-
-        /**
-         * Change the key associated with index {@code i} to the specified value.
-         *
-         * @param  i the index of the key to change
-         * @param  key change the key associated with index {@code i} to this key
-         * @throws IndexOutOfBoundsException unless {@code 0 <= i < maxN}
-         * @deprecated Replaced by {@code changeKey(int, Key)}.
-         */
-        @Deprecated
-        public void change(int i, Key key) {
-            changeKey(i, key);
         }
 
         /**
@@ -827,7 +764,6 @@ public class WeightedDigraphTemplate {
             }
         }
 
-
        /***************************************************************************
         * Iterators.
         ***************************************************************************/
@@ -839,7 +775,9 @@ public class WeightedDigraphTemplate {
          *
          * @return an iterator that iterates over the keys in ascending order
          */
-        public Iterator<Integer> iterator() { return new HeapIterator(); }
+        public Iterator<Integer> iterator() { 
+            return new HeapIterator();
+        }
 
         private class HeapIterator implements Iterator<Integer> {
             // create a new pq
@@ -854,6 +792,7 @@ public class WeightedDigraphTemplate {
             }
 
             public boolean hasNext()  { return !copy.isEmpty();                     }
+            
             public void remove()      { throw new UnsupportedOperationException();  }
 
             public Integer next() {
@@ -863,8 +802,7 @@ public class WeightedDigraphTemplate {
         }
     }
     
-    public class UF {
-
+    public static class UF {
         private int[] parent;  // parent[i] = parent of i
         private byte[] rank;   // rank[i] = rank of subtree rooted at i (never more than 31)
         private int count;     // number of components
@@ -960,27 +898,6 @@ public class WeightedDigraphTemplate {
             }
             count--;
         }
-        
-        /**
-         * Unmerges the component containing site {@code p} with the 
-         * the component containing site {@code q}.
-         *
-         * @param  p the integer representing one site
-         * @param  q the integer representing the other site
-         * @throws IndexOutOfBoundsException unless
-         *         both {@code 0 <= p < n} and {@code 0 <= q < n}
-         */
-        public void disjoin(int p, int q) {
-            int rootP = find(p);
-            int rootQ = find(q);
-            if      (rank[rootP] < rank[rootQ]) parent[rootP] = rootP;
-            else if (rank[rootP] > rank[rootQ]) parent[rootQ] = rootQ;
-            else {
-                parent[rootQ] = rootQ;
-                rank[rootP]--;
-            }
-            count++;
-        }
 
         // validate that p is a valid index
         private void validate(int p) {
@@ -991,7 +908,7 @@ public class WeightedDigraphTemplate {
         }
     }
     
-    public class DirectedWeightedEdge implements Comparable<DirectedWeightedEdge> { 
+    public static class DirectedWeightedEdge implements Comparable<DirectedWeightedEdge> { 
         private final int v;
         private final int w;
         private final double weight;
@@ -1075,7 +992,7 @@ public class WeightedDigraphTemplate {
         }
     }
     
-    public class WeightedDigraph {
+    public static class WeightedDigraph {
         private final String NEWLINE = System.getProperty("line.separator");
 
         private final int V;                // number of vertices in this digraph
@@ -1238,7 +1155,7 @@ public class WeightedDigraphTemplate {
         }
     }
     
-    private static Reader in = o.new Reader(System.in);
+    private static Reader in = new Reader(System.in);
     private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
     
     /*

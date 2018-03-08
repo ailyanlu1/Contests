@@ -1,5 +1,3 @@
-package gfssoc1s3_hide_n_seek;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

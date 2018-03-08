@@ -1,5 +1,3 @@
-package ccoprep3p2_packing_up;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

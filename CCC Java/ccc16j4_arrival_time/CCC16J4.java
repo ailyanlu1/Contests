@@ -1,5 +1,3 @@
-package ccc16j4_arrival_time;
-
 import java.text.DecimalFormat;
 import java.util.Scanner;
 

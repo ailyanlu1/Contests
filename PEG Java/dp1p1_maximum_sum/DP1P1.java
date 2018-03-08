@@ -1,5 +1,3 @@
-package dp1p1_maximum_sum;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

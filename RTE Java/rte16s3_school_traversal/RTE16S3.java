@@ -1,5 +1,3 @@
-package rte16s3_school_traversal;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

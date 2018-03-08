@@ -1,5 +1,3 @@
-package coci14c2p4_bob;
-
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;

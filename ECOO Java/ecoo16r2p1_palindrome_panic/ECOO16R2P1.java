@@ -1,5 +1,3 @@
-package ecoo16r2p1_palindrome_panic;
-
 import java.io.BufferedInputStream;
 import java.util.Scanner;
 

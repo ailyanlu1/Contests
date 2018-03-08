@@ -1,5 +1,3 @@
-package dmpg17g2_holy_grail_war;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

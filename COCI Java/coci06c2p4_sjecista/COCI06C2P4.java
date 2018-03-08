@@ -1,5 +1,3 @@
-package coci06c2p4_sjecista;
-
 import java.util.Scanner;
 
 public class COCI06C2P4 {

@@ -1,5 +1,3 @@
-package coci07c2p4_turbo;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

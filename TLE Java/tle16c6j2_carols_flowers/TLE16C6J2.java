@@ -1,5 +1,3 @@
-package tle16c6j2_carols_flowers;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

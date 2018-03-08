@@ -1,5 +1,3 @@
-package coci07c5p4_avogadro;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

@@ -1,5 +1,3 @@
-package ecoo16r3p4_cuthberts_calculator;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -266,8 +264,8 @@ public class ECOO16R3P4 {
     private static final String INPUT_FILE_NAME = "DATA41.txt";
     private static final String OUTPUT_FILE_NAME = "OUTPUT41.txt";
     
-    private static boolean stdIn = false;
-    private static boolean stdOut = false;
+    private static boolean stdIn = true;
+    private static boolean stdOut = true;
     
     private static final int MAXN = 1000;
     

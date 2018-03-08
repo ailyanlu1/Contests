@@ -1,5 +1,3 @@
-package dmopc16c1p3_shoe_shopping;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

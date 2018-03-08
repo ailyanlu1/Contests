@@ -1,5 +1,3 @@
-package coci14c3p5_stogovi;
-
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;

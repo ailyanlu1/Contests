@@ -1,5 +1,3 @@
-package rgpc17p2_cubes_are_life;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

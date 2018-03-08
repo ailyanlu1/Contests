@@ -1,5 +1,3 @@
-package year2015p5_message_to_mars;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

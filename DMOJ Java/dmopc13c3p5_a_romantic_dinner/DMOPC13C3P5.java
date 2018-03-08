@@ -1,5 +1,3 @@
-package dmopc13c3p5_a_romantic_dinner;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

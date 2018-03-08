@@ -1,5 +1,3 @@
-package ecoo17r1p4_almost_sorted;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;

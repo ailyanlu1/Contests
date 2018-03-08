@@ -1,5 +1,3 @@
-package ccoqr16p2_through_a_maze_darkly;
-
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;

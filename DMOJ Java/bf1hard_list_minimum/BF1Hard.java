@@ -1,5 +1,3 @@
-package bf1hard_list_minimum;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

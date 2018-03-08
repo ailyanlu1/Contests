@@ -1,5 +1,3 @@
-package coci14c2p2_utrka;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;

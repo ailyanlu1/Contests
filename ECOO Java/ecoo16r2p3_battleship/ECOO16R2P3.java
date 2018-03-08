@@ -1,5 +1,3 @@
-package ecoo16r2p3_battleship;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
