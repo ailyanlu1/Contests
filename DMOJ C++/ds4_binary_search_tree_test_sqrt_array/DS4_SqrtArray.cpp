@@ -39,6 +39,7 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 
 int N, M, A[MAXN];
 vector<vector<int>> a;
+vector<int> prefixSZ;
 int n;
 
 void init() {
@@ -46,52 +47,105 @@ void init() {
     int sqrtn = (int) sqrt(n);
     for (int i = n; i > 0; i -= sqrtn) {
         a.push_back(vector<int>(A + i - min(i, sqrtn), A + i));
+        prefixSZ.push_back(0);
     }
     reverse(a.begin(), a.end());
+    for (int j = 1; j < (int) a.size(); j++) {
+        prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
+    }
 }
 
 void insert(int k, int val) {
-    if (n++ == 0) a.push_back({});
-    int i;
-    for (i = 0; i < (int) a.size() && k >= (int) a[i].size(); k -= (int) a[i++].size());
-    if (i == (int) a.size()) a[--i].push_back(val);
+    if (n++ == 0) {
+        a.push_back({});
+        prefixSZ.push_back(0);
+    }
+    int lo = 0, hi = (int) (a.size()) - 1, mid;
+    while (lo <= hi) {
+        mid = lo + (hi - lo) / 2;
+        if (k < prefixSZ[mid]) hi = mid - 1;
+        else lo = mid + 1;
+    }
+    int i = hi;
+    k -= prefixSZ[hi];
+    if (i == -1) a[i += (int) a.size()].push_back(val);
     else a[i].insert(a[i].begin() + k, val);
     int sqrtn = (int) sqrt(n);
     if ((int) a[i].size() > 2 * sqrtn) {
         vector<int> y(a[i].begin() + sqrtn, a[i].end());
         a[i].resize(sqrtn);
         a.insert(a.begin() + i + 1, y);
+        prefixSZ.push_back(0);
+    }
+    for (int j = 1; j < (int) a.size(); j++) {
+        prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
     }
 }
 
 void erase(int k) {
     --n;
-    int i;
-    for (i = 0; k >= (int) a[i].size(); k -= (int) a[i++].size());
+    int lo = 0, hi = (int) (a.size()) - 1, mid;
+    while (lo <= hi) {
+        mid = lo + (hi - lo) / 2;
+        if (k < prefixSZ[mid]) hi = mid - 1;
+        else lo = mid + 1;
+    }
+    int i = hi;
+    k -= prefixSZ[hi];
     a[i].erase(a[i].begin() + k);
-    if (a[i].empty()) a.erase(a.begin() + i);
+    if (a[i].empty()) {
+        a.erase(a.begin() + i);
+        prefixSZ.pop_back();
+    }
+    for (int j = 1; j < (int) a.size(); j++) {
+        prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
+    }
 }
 
 int at(int k) {
-    int i;
-    for (i = 0; k >= (int) a[i].size(); k -= (int) a[i++].size());
-    return a[i][k];
+    int lo = 0, hi = (int) (a.size()) - 1, mid;
+    while (lo <= hi) {
+        mid = lo + (hi - lo) / 2;
+        if (k < prefixSZ[mid]) hi = mid - 1;
+        else lo = mid + 1;
+    }
+    return a[hi][k - prefixSZ[hi]];
 }
 
 pair<int, int> lower_bound(int val) {
-    int i, j, k;
-    for (i = 0, k = 0; i < (int) a.size() && a[i].back() < val; k += a[i++].size());
-    if (i == (int) a.size()) return {n, 0};
-    for (j = 0; a[i][j] < val; j++, k++);
-    return {k, a[i][j]};
+    int lo = 0, hi = (int) a.size(), mid;
+    while (lo < hi) {
+        mid = lo + (hi - lo) / 2;
+        if (a[mid].back() < val) lo = mid + 1;
+        else hi = mid;
+    }
+    if (lo == (int) a.size()) return {n, 0};
+    int i = lo;
+    lo = 0, hi = (int) a[i].size();
+    while (lo < hi) {
+        mid = lo + (hi - lo) / 2;
+        if (a[i][mid] < val) lo = mid + 1;
+        else hi = mid;
+    }
+    return {prefixSZ[i] + lo, a[i][lo]};
 }
 
 pair<int, int> upper_bound(int val) {
-    int i, j, k;
-    for (i = 0, k = 0; i < (int) a.size() && a[i].back() <= val; k += a[i++].size());
-    if (i == (int) a.size()) return {n, 0};
-    for (j = 0; a[i][j] <= val; j++, k++);
-    return {k, a[i][j]};
+    int lo = 0, hi = (int) a.size(), mid;
+    while (lo < hi) {
+        mid = lo + (hi - lo) / 2;
+        if (val < a[mid].back()) hi = mid;
+        else lo = mid + 1;
+    }
+    if (lo == (int) a.size()) return {n, 0};
+    int i = lo;
+    lo = 0, hi = (int) a[i].size();
+    while (lo < hi) {
+        mid = lo + (hi - lo) / 2;
+        if (val < a[i][mid]) hi = mid;
+        else lo = mid + 1;
+    }
+    return {prefixSZ[i] + lo, a[i][lo]};
 }
 
 void print() {
