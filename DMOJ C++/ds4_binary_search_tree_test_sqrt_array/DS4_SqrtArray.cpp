@@ -55,25 +55,33 @@ void init() {
     }
 }
 
-void insert(int k, int val) {
+void insert(int val) {
+    int lo = 0, hi = (int) a.size(), mid;
+    while (lo < hi) {
+        mid = lo + (hi - lo) / 2;
+        if (val < a[mid].back()) hi = mid;
+        else lo = mid + 1;
+    }
+    int i = lo;
+    if (lo != (int) a.size()) {
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[i][mid]) hi = mid;
+            else lo = mid + 1;
+        }
+    }
     if (n++ == 0) {
         a.push_back({});
         prefixSZ.push_back(0);
     }
-    int lo = 0, hi = (int) (a.size()) - 1, mid;
-    while (lo <= hi) {
-        mid = lo + (hi - lo) / 2;
-        if (k < prefixSZ[mid]) hi = mid - 1;
-        else lo = mid + 1;
-    }
-    k -= prefixSZ[hi];
-    if (hi == -1) a[hi += (int) a.size()].push_back(val);
-    else a[hi].insert(a[hi].begin() + k, val);
+    if (i == (int) a.size()) a[--i].push_back(val);
+    else a[i].insert(a[i].begin() + lo, val);
     int sqrtn = (int) sqrt(n);
-    if ((int) a[hi].size() > 2 * sqrtn) {
-        vector<int> y(a[hi].begin() + sqrtn, a[hi].end());
-        a[hi].resize(sqrtn);
-        a.insert(a.begin() + hi + 1, y);
+    if ((int) a[i].size() > 2 * sqrtn) {
+        vector<int> y(a[i].begin() + sqrtn, a[i].end());
+        a[i].resize(sqrtn);
+        a.insert(a.begin() + i + 1, y);
         prefixSZ.push_back(0);
     }
     for (int i = 1; i < (int) a.size(); i++) {
@@ -81,18 +89,26 @@ void insert(int k, int val) {
     }
 }
 
-void erase(int k) {
-    --n;
-    int lo = 0, hi = (int) (a.size()) - 1, mid;
-    while (lo <= hi) {
+void erase(int val) {
+    int lo = 0, hi = (int) a.size(), mid;
+    while (lo < hi) {
         mid = lo + (hi - lo) / 2;
-        if (k < prefixSZ[mid]) hi = mid - 1;
-        else lo = mid + 1;
+        if (a[mid].back() < val) lo = mid + 1;
+        else hi = mid;
     }
-    k -= prefixSZ[hi];
-    a[hi].erase(a[hi].begin() + k);
-    if (a[hi].empty()) {
-        a.erase(a.begin() + hi);
+    if (lo == (int) a.size()) return;
+    int i = lo;
+    lo = 0, hi = (int) a[i].size();
+    while (lo < hi) {
+        mid = lo + (hi - lo) / 2;
+        if (a[i][mid] < val) lo = mid + 1;
+        else hi = mid;
+    }
+    if (a[i][lo] != val) return;
+    --n;
+    a[i].erase(a[i].begin() + lo);
+    if (a[i].empty()) {
+        a.erase(a.begin() + i);
         prefixSZ.pop_back();
     }
     for (int i = 1; i < (int) a.size(); i++) {
@@ -110,14 +126,14 @@ int at(int k) {
     return a[hi][k - prefixSZ[hi]];
 }
 
-pair<int, int> lower_bound(int val) {
+int getRank(int val) {
     int lo = 0, hi = (int) a.size(), mid;
     while (lo < hi) {
         mid = lo + (hi - lo) / 2;
         if (a[mid].back() < val) lo = mid + 1;
         else hi = mid;
     }
-    if (lo == (int) a.size()) return {n, 0};
+    if (lo == (int) a.size()) return -1;
     int i = lo;
     lo = 0, hi = (int) a[i].size();
     while (lo < hi) {
@@ -125,25 +141,7 @@ pair<int, int> lower_bound(int val) {
         if (a[i][mid] < val) lo = mid + 1;
         else hi = mid;
     }
-    return {prefixSZ[i] + lo, a[i][lo]};
-}
-
-pair<int, int> upper_bound(int val) {
-    int lo = 0, hi = (int) a.size(), mid;
-    while (lo < hi) {
-        mid = lo + (hi - lo) / 2;
-        if (val < a[mid].back()) hi = mid;
-        else lo = mid + 1;
-    }
-    if (lo == (int) a.size()) return {n, 0};
-    int i = lo;
-    lo = 0, hi = (int) a[i].size();
-    while (lo < hi) {
-        mid = lo + (hi - lo) / 2;
-        if (val < a[i][mid]) hi = mid;
-        else lo = mid + 1;
-    }
-    return {prefixSZ[i] + lo, a[i][lo]};
+    return a[i][lo] == val ? prefixSZ[i] + lo : -1;
 }
 
 void print() {
@@ -168,16 +166,15 @@ int main() {
         cin >> op >> x;
         x = x ^ lastAns;
         if (op == 'I') {
-            insert(upper_bound(x).f, x);
+            insert(x);
         } else if (op == 'R') {
-            pair<int, int> k = lower_bound(x);
-            if (k.s == x) erase(k.f);
+            erase(x);
         } else if (op == 'S') {
             lastAns = at(x - 1);
             cout << lastAns << nl;
         } else if (op == 'L') {
-            pair<int, int> k = lower_bound(x);
-            lastAns = k.s == x ? k.f + 1 : -1;
+            int k = getRank(x);
+            lastAns = k == -1 ? -1 : k + 1;
             cout << lastAns << nl;
         } else {
             i--;
