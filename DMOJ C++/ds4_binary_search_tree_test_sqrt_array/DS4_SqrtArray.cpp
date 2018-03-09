@@ -84,8 +84,8 @@ void insert(int val) {
         a.insert(a.begin() + i + 1, y);
         prefixSZ.push_back(0);
     }
-    for (int i = 1; i < (int) a.size(); i++) {
-        prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+    for (int j = i + 1; j < (int) a.size(); j++) {
+        prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
     }
 }
 
@@ -111,8 +111,8 @@ void erase(int val) {
         a.erase(a.begin() + i);
         prefixSZ.pop_back();
     }
-    for (int i = 1; i < (int) a.size(); i++) {
-        prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+    for (int j = i + 1; j < (int) a.size(); j++) {
+        prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
     }
 }
 
