@@ -428,27 +428,26 @@ template <typename It> void tim_sort(It st, It en) {
     delete[] (runLen);
 }
 
-#define MAXN 100005
-#define SQRTN 320
-
-int N, small[SQRTN], large[MAXN], smallSZ = 0, largeSZ = 0;
+int N;
 ll sum = 0;
+vector<int> small, large;
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> N;
+    int sqrtN = (int) sqrt(N);
     int r;
     FOR(i, N) {
         cin >> r;
-        small[smallSZ++] = r;
-        sum += largeSZ - (upper_bound(large, large + largeSZ, r) - large) + 1;
-        for (int j = 0; j < smallSZ; j++) sum += small[j] > r;
-        if (smallSZ >= SQRTN) {
-            for (int j = 0; j < smallSZ; j++) large[largeSZ++] = small[j];
-            smallSZ = 0;
-            tim_sort(large, large + largeSZ);
+        small.pb(r);
+        sum += sz(large) - (upper_bound(all(large), r) - large.begin()) + 1;
+        for (int x : small) sum += x > r;
+        if (sz(small) > sqrtN) {
+            for (int x : small) large.pb(x);
+            small.clear();
+            tim_sort(large.data(), large.data() + sz(large));
         }
     }
     cout << fixed << setprecision(2) << ((double) sum) / ((double) N) << nl;
