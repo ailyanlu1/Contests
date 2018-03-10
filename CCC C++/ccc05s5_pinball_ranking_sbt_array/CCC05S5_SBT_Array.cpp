@@ -1,40 +1,39 @@
 #include <bits/stdc++.h>
+using namespace std;
 
 #define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
+#define D_INF numeric_limits<double>::infinity()
+#define MIN(a, b) ((a) = min((a), (b)))
+#define MAX(a, b) ((a) = max((a), (b)))
 #define pb push_back
 #define mp make_pair
-#define l(x) x << 1
-#define r(x) x << 1 | 1
-#define mid(x, y) x + (y - x) / 2
 #define f first
 #define s second
-#define ri(x) scanf("%d", &x)
-#define rll(x) scanf("%lld", &x)
-#define rllu(x) scanf("%llu", &x)
-#define rf(x) scanf("%f", &x)
-#define rd(x) scanf("%lf", &x)
-#define rc(x) scanf(" %c", &x)
-#define rs(x) scanf("%s", x)
-#define Fill(a, x) memset(a, x, sizeof(a))
-#define randi(a, b) rand() % (b - a + 1) + a
+#define all(a) (a).begin(), (a).end()
+#define For(i, a, b) for (auto i = (a); i < (b); i++)
+#define FOR(i, b) For(i, 0, b)
+#define Rev(i, a, b) for (auto i = (a); i > (b); i--)
+#define REV(i, a) Rev(i, a, -1)
+#define sz(a) ((int) (a).size())
+#define nl '\n'
+#define sp ' '
 
-using namespace std;
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define pill pair<int, ll>
+#define plli pair<ll, int>
+#define pdd pair<double, double>
+#define uset unordered_set
+#define umap unordered_map
+#define pq priority_queue
+template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
+template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
-typedef long long ll;
-typedef unsigned long long llu;
-typedef pair<int, int> pii;
-typedef pair<float, float> pff;
-typedef pair<double, double> pdd;
-typedef pair<ll, ll> pll;
-typedef pair<llu, llu> pllu;
-typedef map<int, int> mii;
-typedef map<int, ll> mill;
-typedef map<ll, int> mlli;
-typedef unordered_map<int, int> umii;
-typedef unordered_map<int, ll> umill;
-typedef unordered_map<ll, int> umlli;
+template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
 class no_such_element_exception: public runtime_error {
 public:
@@ -42,10 +41,10 @@ public:
     no_such_element_exception(string message): runtime_error(message){}
 };
 
-template <typename Value>
+template <typename Value, typename Comparator = less<Value>>
 struct SBTArraySet {
-
 private:
+    Comparator cmp;
     Value *VAL; // values
     int *SZ; // size of subtree
     int *L; // index of left child
@@ -158,14 +157,13 @@ private:
     // auxiliary function for contains
     bool contains(int x, Value val) {
         if (x == 0) return false;
-        else if (val < VAL[x]) return contains(L[x], val);
-        else if (val > VAL[x]) return contains(R[x], val);
+        else if (cmp(val, VAL[x])) return contains(L[x], val);
+        else if (cmp(VAL[x], val)) return contains(R[x], val);
         return true;
     }
 
     /**
      * Inserts the specified value into the symbol table, allowing for duplicates.
-     * Deletes the specified value from this symbol table if the specified value is {@code null}.
      *
      * @param x the subtree
      * @param val the value
@@ -180,7 +178,7 @@ private:
             R[ind] = 0;
             return ind++;
         }
-        if (val < VAL[x]) {
+        if (cmp(val, VAL[x])) {
             int l = add(L[x], val);
             L[x] = l;
         } else {
@@ -188,7 +186,7 @@ private:
             R[x] = r;
         }
         update(x);
-        return maintain(x, val >= VAL[x]);
+        return maintain(x, !cmp(val, VAL[x]));
     }
 
     /**
@@ -248,8 +246,8 @@ private:
      * @return the updated subtree
      */
     int remove(int x, Value val) {
-        if (val < VAL[x]) L[x] = remove(L[x], val);
-        else if (val > VAL[x]) R[x] = remove(R[x], val);
+        if (cmp(val, VAL[x])) L[x] = remove(L[x], val);
+        else if (cmp(VAL[x], val)) R[x] = remove(R[x], val);
         else {
             if (L[x] == 0) return R[x];
             else if (R[x] == 0) return L[x];
@@ -275,8 +273,8 @@ private:
      */
     int floor(int x, Value val) {
         if (x == 0) return 0;
-        if (val == VAL[x]) return x;
-        if (val < VAL[x]) return floor(L[x], val);
+        if (!cmp(val, VAL[x]) && !cmp(VAL[x], val)) return x;
+        if (cmp(val, VAL[x])) return floor(L[x], val);
         int y = floor(R[x], val);
         if (y != 0) return y;
         else return x;
@@ -293,8 +291,8 @@ private:
      */
     int ceiling(int x, Value val) {
         if (x == 0) return 0;
-        if (val == VAL[x]) return x;
-        if (val > VAL[x]) return ceiling(R[x], val);
+        if (!cmp(val, VAL[x]) && !cmp(VAL[x], val)) return x;
+        if (cmp(VAL[x], val)) return ceiling(R[x], val);
         int y = ceiling(L[x], val);
         if (y != 0) return y;
         else return x;
@@ -324,7 +322,7 @@ private:
      */
     int getRank(int x, Value val) {
         if (x == 0) return 0;
-        if (val <= VAL[x]) return getRank(L[x], val);
+        if (!cmp(VAL[x], val)) return getRank(L[x], val);
         else return 1 + SZ[L[x]] + getRank(R[x], val);
     }
 
@@ -334,10 +332,10 @@ private:
      * @param x the subtree
      * @param queue the queue
      */
-    void valuesInOrder(int x, vector<Value> *queue) {
+    void valuesInOrder(int x, vector<Value> &queue) {
         if (x == 0) return;
         valuesInOrder(L[x], queue);
-        queue->push_back(VAL[x]);
+        queue.push_back(VAL[x]);
         valuesInOrder(R[x], queue);
     }
 
@@ -350,18 +348,11 @@ private:
      * @param lo the lowest value
      * @param hi the highest value
      */
-    void values(int x, vector<Value> *queue, Value lo, Value hi) {
+    void values(int x, vector<Value> &queue, Value lo, Value hi) {
         if (x == 0) return;
-        if (lo < VAL[x]) values(L[x], queue, lo, hi);
-        if (lo <= VAL[x] && hi >= VAL[x]) queue->push_back(VAL[x]);
-        if (hi > VAL[x]) values(R[x], queue, lo, hi);
-    }
-
-    void print(int x) {
-        if (x == 0) return;
-        print(L[x]);
-        printf("%d ", VAL[x]);
-        print(R[x]);
+        if (cmp(lo, VAL[x])) values(L[x], queue, lo, hi);
+        if (!cmp(VAL[x], lo) && !cmp(hi, VAL[x])) queue.push_back(VAL[x]);
+        if (cmp(VAL[x], hi)) values(R[x], queue, lo, hi);
     }
 
 public:
@@ -387,6 +378,7 @@ public:
      * @param N the initial capacity of the symbol table
      */
     SBTArraySet(int N) {
+        assert(N >= 0);
         N++; // zero node is never used
         VAL = new Value[N];
         SZ = new int[N];
@@ -398,6 +390,32 @@ public:
         R[root] = 0;
         ind = 1;
         capacity = N;
+    }
+
+    /**
+     * Deletes the symbol table.
+     */
+    ~SBTArraySet() {
+        delete[](VAL);
+        delete[](SZ);
+        delete[](L);
+        delete[](R);
+    }
+
+    /**
+     * Clears the symbol table.
+     */
+    void clear() {
+        for (int i = 0; i < capacity; i++) {
+            L[i] = 0;
+            R[i] = 0;
+            SZ[i] = 0;
+        }
+        root = 0;
+        SZ[root] = 0;
+        L[root] = 0;
+        R[root] = 0;
+        ind = 1;
     }
 
     /**
@@ -552,7 +570,7 @@ public:
      */
     vector<Value> values() {
         vector<Value> queue;
-        valuesInOrder(root, &queue);
+        valuesInOrder(root, queue);
         return queue;
     }
 
@@ -566,12 +584,8 @@ public:
      */
     vector<Value> values(Value lo, Value hi) {
         vector<Value> queue;
-        values(root, &queue, lo, hi);
+        values(root, queue, lo, hi);
         return queue;
-    }
-
-    void print() {
-        print(root);
     }
 
     /**
@@ -583,45 +597,27 @@ public:
      *         (inclusive) and {@code hi} (exclusive)
      */
     int size(Value lo, Value hi) {
-        if (lo > hi) return 0;
+        if (cmp(hi, lo)) return 0;
         if (contains(hi)) return getRank(hi) - getRank(lo) + 1;
         else return getRank(hi) - getRank(lo);
     }
 };
 
-int N, M;
-SBTArraySet<int> *tree;
+int N;
+ll sum = 0;
+SBTArraySet<int, greater<int>> tree;
 
 int main() {
-    ri(N);
-    ri(M);
-    tree = new SBTArraySet<int>(N + M);
-    for (int i = 0; i < N; i++) {
-        int x;
-        ri(x);
-        tree->add(x);
+//    freopen("in.txt", "r", stdin);
+//    freopen("out.txt", "w", stdout);
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> N;
+    int r;
+    FOR(i, N) {
+        cin >> r;
+        tree.add(r);
+        sum += tree.getRank(r) + 1;
     }
-    int lastAns = 0;
-    for (int i = 0; i < M; i++) {
-        char op;
-        int x;
-        rc(op);
-        ri(x);
-        x = x ^ lastAns;
-        if (op == 'I') {
-            tree->add(x);
-        } else if (op == 'R') {
-            tree->remove(x);
-        } else if (op == 'S') {
-            lastAns = tree->select(x - 1);
-            printf("%d\n", lastAns);
-        } else if (op == 'L') {
-            lastAns = tree->contains(x) ? tree->getRank(x) + 1 : -1;
-            printf("%d\n", lastAns);
-        } else {
-            i--;
-        }
-    }
-    tree->print();
+    cout << fixed << setprecision(2) << ((double) sum) / ((double) N) << nl;
     return 0;
 }

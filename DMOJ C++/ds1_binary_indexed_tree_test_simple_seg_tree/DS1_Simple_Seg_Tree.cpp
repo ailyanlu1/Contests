@@ -36,104 +36,69 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
 template <typename T>
-struct FenwickTree {
+struct SegmentTree {
 private:
-    int size;
-    T *array;
+    int N;
+    T *A;
 
 public:
-    FenwickTree(int size) {
-        this->size = size;
-        array = new T[size + 1];
-        for (int i = 0; i <= size; i++) {
-            array[i] = 0;
+    SegmentTree(int size, T *arr) {
+        N = size;
+        A = new T[2 * N];
+        for (int i = 0; i < N; i++) A[N + i] = arr[i + 1];
+        for (int i = N - 1; i > 0; i--) A[i] = A[i << 1] + A[i << 1 | 1];
+    }
+
+    void update(int i, T v) {
+        for (A[i += (N - 1)] = v; i >>= 1;) A[i] = A[i << 1] + A[i << 1 | 1];
+    }
+
+    T query(int l, int r) {
+        T q = 0;
+        for (l += (N - 1), r += (N - 1); l <= r; l >>= 1, r >>= 1) {
+            if (l & 1) q += A[l++];
+            if (!(r & 1)) q += A[r--];
         }
-    }
-
-    /**
-     * Range Sum query from 1 to ind
-     * ind is 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  ind index
-     * @return sum
-     */
-    T rsq(int ind) {
-        T sum = 0;
-        for (int x = ind; x > 0; x -= (x & -x)) {
-            sum += array[x];
-        }
-        return sum;
-    }
-
-    /**
-     * Range Sum Query from a to b.
-     * Search for the sum from array index from a to b
-     * a and b are 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  a left index
-     * @param  b right index
-     * @return sum
-     */
-    T rsq(int a, int b) {
-        return rsq(b) - rsq(a - 1);
-    }
-
-    /**
-     * Update the array at ind and all the affected regions above ind.
-     * ind is 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  ind   index
-     * @param  value value
-     */
-    void update(int ind, T value) {
-        for (int x = ind; x <= size; x += (x & -x)) {
-            array[x] += value;
-        }
-    }
-
-    int getSize() {
-        return size;
+        return q;
     }
 };
 
 #define MAXNV 100005
 
-int N, M, x, y, A[MAXNV];
-ll v, oldV;
+int N, M, x, y, *freq;
+ll *A, v, oldV;
 char op;
-FenwickTree<ll> *sum;
-FenwickTree<int> *cnt;
+SegmentTree<ll> *sum;
+SegmentTree<int> *cnt;
 
 int main() {
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> N >> M;
-    sum = new FenwickTree<ll>(N);
-    cnt = new FenwickTree<int>(MAXNV);
+    A = new ll[N + 1];
+    freq = new int[MAXNV + 1];
+    FOR(i, MAXNV) freq[i] = 0;
     For(i, 1, N + 1) {
         cin >> A[i];
-        sum->update(i, A[i]);
-        cnt->update(A[i], 1);
+        freq[A[i]]++;
     }
+    sum = new SegmentTree<ll>(N, A);
+    cnt = new SegmentTree<int>(MAXNV, freq);
     FOR(i, M) {
         cin >> op;
         if (op == 'C') {
             cin >> x >> v;
-            sum->update(x, v - A[x]);
-            cnt->update(A[x], -1);
-            cnt->update(v, 1);
+            sum->update(x, v);
+            freq[A[x]]--;
+            cnt->update(A[x], freq[A[x]]);
             A[x] = v;
+            freq[v]++;
+            cnt->update(v, freq[v]);
         } else if (op == 'S') {
             cin >> x >> y;
-            cout << sum->rsq(x, y) << nl;
+            cout << sum->query(x, y) << nl;
         } else if (op == 'Q') {
             cin >> x;
-            cout << cnt->rsq(x) << nl;
+            cout << cnt->query(1, x) << nl;
         } else {
             i--;
         }

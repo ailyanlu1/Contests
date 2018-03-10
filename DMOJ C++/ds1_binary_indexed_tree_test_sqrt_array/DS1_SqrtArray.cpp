@@ -36,69 +36,42 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
 template <typename T>
-struct FenwickTree {
+struct SqrtArray {
 private:
-    int size;
-    T *array;
+    int n;
+    int blockSZ;
+    vector<vector<T>> a;
+    vector<T> sum;
 
 public:
-    FenwickTree(int size) {
-        this->size = size;
-        array = new T[size + 1];
-        for (int i = 0; i <= size; i++) {
-            array[i] = 0;
+    SqrtArray(const int n) : n(n) {
+        blockSZ = (int) sqrt(n);
+        for (int i = n; i > 0; i -= blockSZ) {
+            a.push_back(vector<T>(min(i, blockSZ)));
+            sum.push_back(0);
         }
     }
 
-    /**
-     * Range Sum query from 1 to ind
-     * ind is 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  ind index
-     * @return sum
-     */
-    T rsq(int ind) {
-        T sum = 0;
-        for (int x = ind; x > 0; x -= (x & -x)) {
-            sum += array[x];
+    void update(int k, T val) {
+        a[k / blockSZ][k % blockSZ] += val;
+        sum[k / blockSZ] += val;
+    }
+
+    T query(int l, int r) const {
+        T ans = 0;
+        while (l % blockSZ != 0 && l <= r) {
+            ans += a[l / blockSZ][l % blockSZ];
+            l++;
         }
-        return sum;
-    }
-
-    /**
-     * Range Sum Query from a to b.
-     * Search for the sum from array index from a to b
-     * a and b are 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  a left index
-     * @param  b right index
-     * @return sum
-     */
-    T rsq(int a, int b) {
-        return rsq(b) - rsq(a - 1);
-    }
-
-    /**
-     * Update the array at ind and all the affected regions above ind.
-     * ind is 1-indexed
-     * <p>
-     * Time-Complexity:    O(log(n))
-     *
-     * @param  ind   index
-     * @param  value value
-     */
-    void update(int ind, T value) {
-        for (int x = ind; x <= size; x += (x & -x)) {
-            array[x] += value;
+        while (l / blockSZ < r / blockSZ) {
+            ans += sum[l / blockSZ];
+            l += blockSZ;
         }
-    }
-
-    int getSize() {
-        return size;
+        while (l <= r) {
+            ans += a[l / blockSZ][l % blockSZ];
+            l++;
+        }
+        return ans;
     }
 };
 
@@ -107,14 +80,14 @@ public:
 int N, M, x, y, A[MAXNV];
 ll v, oldV;
 char op;
-FenwickTree<ll> *sum;
-FenwickTree<int> *cnt;
+SqrtArray<ll> *sum;
+SqrtArray<int> *cnt;
 
 int main() {
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> N >> M;
-    sum = new FenwickTree<ll>(N);
-    cnt = new FenwickTree<int>(MAXNV);
+    sum = new SqrtArray<ll>(N + 1);
+    cnt = new SqrtArray<int>(MAXNV);
     For(i, 1, N + 1) {
         cin >> A[i];
         sum->update(i, A[i]);
@@ -130,10 +103,10 @@ int main() {
             A[x] = v;
         } else if (op == 'S') {
             cin >> x >> y;
-            cout << sum->rsq(x, y) << nl;
+            cout << sum->query(x, y) << nl;
         } else if (op == 'Q') {
             cin >> x;
-            cout << cnt->rsq(x) << nl;
+            cout << cnt->query(1, x) << nl;
         } else {
             i--;
         }
