@@ -66,13 +66,13 @@ int main() {
             T.insert({x, N + i});
         } else if (op == 'R') {
             auto r = T.lower_bound({x, 0});
-            if (r->f == x) T.erase(r);
+            if (r != T.end() && r->f == x) T.erase(r);
         } else if (op == 'S') {
             lastAns = T.find_by_order(x - 1)->f;
             printf("%d\n", lastAns);
         } else if (op == 'L') {
             auto k = T.lower_bound({x, 0});
-            lastAns = k->f == x ? T.order_of_key(*k) + 1 : -1;
+            lastAns = k != T.end() && k->f == x ? T.order_of_key(*k) + 1 : -1;
             printf("%d\n", lastAns);
         } else {
             i--;
