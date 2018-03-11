@@ -46,7 +46,7 @@ void init() {
     n = N;
     int sqrtn = (int) sqrt(n);
     for (int i = n; i > 0; i -= sqrtn) {
-        a.push_back(vector<int>(A + i - min(i, sqrtn), A + i));
+        a.emplace_back(A + i - min(i, sqrtn), A + i);
         prefixSZ.push_back(0);
     }
     reverse(a.begin(), a.end());
@@ -72,16 +72,15 @@ void insert(int val) {
         }
     }
     if (n++ == 0) {
-        a.push_back({});
+        a.emplace_back();
         prefixSZ.push_back(0);
     }
     if (i == (int) a.size()) a[--i].push_back(val);
     else a[i].insert(a[i].begin() + lo, val);
     int sqrtn = (int) sqrt(n);
     if ((int) a[i].size() > 2 * sqrtn) {
-        vector<int> y(a[i].begin() + sqrtn, a[i].end());
+        a.emplace(a.begin() + i + 1, a[i].begin() + sqrtn, a[i].end());
         a[i].resize(sqrtn);
-        a.insert(a.begin() + i + 1, y);
         prefixSZ.push_back(0);
     }
     for (int j = i + 1; j < (int) a.size(); j++) {
