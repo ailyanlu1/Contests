@@ -111,7 +111,7 @@ void dijkstraSmall() {
     }
 }
 
-void buildProv() {
+void buildLarge() {
     FOR(v, N) {
         for (pill e : G[v]) {
             if (id[v] != id[e.f]) {
@@ -137,7 +137,7 @@ void bfsLarge() {
         while (!q.empty()) {
             pair<int, pii> v = q.front();
             q.pop();
-            for (provEdge e : prov[v.f]) {
+            for (provEdge &e : prov[v.f]) {
                 if (marked[e.toID]) continue;
                 largeDist[s][e.toID] = largeDist[s][v.f] + e.weight + (v.s.f == -1 ? 0 : smallDist[v.f][ind[v.s.f]][ind[e.from]]);
                 in[s][e.toID] = e.to;
@@ -169,7 +169,7 @@ int main() {
     scc();
     buildSmall();
     dijkstraSmall();
-    buildProv();
+    buildLarge();
     bfsLarge();
     FOR(i, Q) {
         cin >> a >> b;
