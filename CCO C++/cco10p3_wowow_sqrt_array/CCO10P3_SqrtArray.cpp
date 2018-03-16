@@ -199,23 +199,6 @@ public:
     }
 
     /**
-     * Accessor operator.
-     *
-     * @param k the 0-based index
-     * @return a reference to the kth element in the structure
-     */
-    Value &operator [](int k) {
-        assert(0 <= k && k < n);
-        int lo = 0, hi = ((int) a.size()) - 1, mid;
-        while (lo <= hi) {
-            mid = lo + (hi - lo) / 2;
-            if (k < prefixSZ[mid]) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        return a[hi][k - prefixSZ[hi]];
-    }
-
-    /**
      * Returns the kth value in the structure.
      *
      * @param k the 0-based index
@@ -233,7 +216,7 @@ public:
     }
 
     /**
-     * Modification operator.
+     * Accessor operator.
      * Returns the kth value in the structure.
      *
      * @param k the 0-based index
@@ -354,9 +337,8 @@ public:
 
 #define MAXN 1000005
 
-int N;
-ll rating[MAXN];
-OrderedSqrtArray<pair<ll, int>, greater<pair<ll, int>>> arr;
+int N, rating[MAXN];
+OrderedSqrtArray<pii, greater<pii>> arr;
 
 int main() {
 //    freopen("in.txt", "r", stdin);
@@ -364,8 +346,7 @@ int main() {
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> N;
     char op;
-    int x;
-    ll r;
+    int x, r;
     FOR(i, N) {
         cin >> op;
         if (op == 'N') {
