@@ -8,6 +8,7 @@ using namespace std;
 #define MIN(a, b) ((a) = min((a), (b)))
 #define MAX(a, b) ((a) = max((a), (b)))
 #define pb push_back
+#define eb emplace_back
 #define mp make_pair
 #define f first
 #define s second
