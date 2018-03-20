@@ -563,7 +563,7 @@ public class GENESIS_PushRelabel {
                                 q.enqueue(w);
                             }
                         } else {
-                            tempHeight = Math.min(height[v], tempHeight);
+                            tempHeight = Math.min(height[w], tempHeight);
                         }
                     }
                 }

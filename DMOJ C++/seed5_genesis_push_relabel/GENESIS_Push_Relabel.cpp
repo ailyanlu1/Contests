@@ -262,7 +262,7 @@ public:
     }
 
     // return list of all edges - excludes self loops
-    vector<FlowEdge*> &edges() {
+    vector<FlowEdge*> edges() {
         vector<FlowEdge*> list;
         for (int v = 0; v < V; v++)
             for (FlowEdge *e : adj(v)) {
@@ -335,7 +335,7 @@ public:
                             q.push(w);
                         }
                     } else {
-                        tempHeight = min(height[v], tempHeight);
+                        tempHeight = min(height[w], tempHeight);
                     }
                 }
             }
