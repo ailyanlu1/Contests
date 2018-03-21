@@ -46,11 +46,10 @@ int n;
 void init() {
     n = N;
     int sqrtn = (int) sqrt(n) * FACTOR;
-    for (int i = n; i > 0; i -= sqrtn) {
-        a.emplace_back(A + i - min(i, sqrtn), A + i);
+    for (int i = 0; i < n; i += sqrtn) {
+        a.emplace_back(A + i, A + min(i + sqrtn, n));
         prefixSZ.push_back(0);
     }
-    reverse(a.begin(), a.end());
     for (int i = 1; i < (int) a.size(); i++) {
         prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
     }
