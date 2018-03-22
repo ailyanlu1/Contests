@@ -391,7 +391,7 @@ public:
 
 /**
  * Ordered Sqrt Array:
- * Decomposes the array into blocks of size sqrt(n) multiplied by a factor.
+ * Decomposes the array into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a factor.
  * The factor should be between 1 and 10, and should be smaller for large N.
  *
  * Usage:
@@ -484,7 +484,7 @@ public:
     /**
      * Deletes the structure and all nested containers.
      */
-    ~OrderedRootArray() {
+    virtual ~OrderedRootArray() {
         for (int i = 0; i < (int) a.size(); i++) {
             delete a[i];
         }
