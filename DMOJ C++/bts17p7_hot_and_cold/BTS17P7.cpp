@@ -5,68 +5,41 @@ using namespace std;
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
-#define pb push_back
-#define mp make_pair
-#define l(x) ((x) << 1)
-#define r(x) ((x) << 1 | 1)
-#define m(x, y) ((x) + ((y) - (x)) / 2)
 #define MIN(a, b) ((a) = min((a), (b)))
 #define MAX(a, b) ((a) = max((a), (b)))
+#define pb push_back
+#define eb emplace_back
+#define mp make_pair
 #define f first
 #define s second
-#define ri(x) scanf("%d", &x)
-#define rll(x) scanf("%lld", &x)
-#define rllu(x) scanf("%llu", &x)
-#define rf(x) scanf("%f", &x)
-#define rd(x) scanf("%lf", &x)
-#define rld(x) scanf("%Lf", &x)
-#define rc(x) scanf(" %c", &x)
-#define sc(x) do { scanf("%c", &x); } while (isspace(x))
-#define rs(x) scanf("%s", x)
-#define For(i, a, b) for (int i = (a); i < (b); i++)
+#define all(a) (a).begin(), (a).end()
+#define For(i, a, b) for (auto i = (a); i < (b); i++)
 #define FOR(i, b) For(i, 0, b)
-#define Forit(i, c) for (auto i = (c).begin(); i != (c).end(); i++)
-#define Rev(i, a, b) for (int i = (a); i > (b); i--)
+#define Rev(i, a, b) for (auto i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
-#define Revit(i, c) for (auto i = (c).rbegin(); i != (c).rend(); i++)
-#define set0(a) memset((a), 0, sizeof(a))
-#define Fill(a, x, n) FOR(_, n) (a)[_] = (x)
-#define Fill2(a, x, n, m) FOR(_, n) FOR(__, m) (a)[_][__] = (x)
-#define Fill3(a, x, n, m, p) FOR(_, n) FOR(__, m) FOR(___, p) (a)[_][__][___] = (x)
-#define randi(a, b) (rand() % ((b) - (a) + 1) + (a))
 #define sz(a) ((int) (a).size())
-#define len(a) ((int) (a).length())
+#define nl '\n'
+#define sp ' '
 
-typedef long long ll;
-typedef unsigned long long llu;
-typedef long double ld;
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define pill pair<int, ll>
+#define plli pair<ll, int>
+#define pdd pair<double, double>
 #define uset unordered_set
 #define umap unordered_map
 #define pq priority_queue
-typedef pair<int, int> pii;
-typedef pair<double, double> pdd;
-typedef pair<ll, ll> pll;
-typedef pair<int, ll> pill;
-typedef pair<ll, int> plli;
-typedef map<int, int> mii;
-typedef map<int, ll> mill;
-typedef map<ll, int> mlli;
-typedef map<ll, ll> mll;
-typedef umap<int, int> umii;
-typedef umap<int, ll> umill;
-typedef umap<ll, int> umlli;
-typedef umap<ll, ll> umll;
 template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
 template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
-#define debug(fmt, x) fprintf(stderr, "%d::%s = " fmt, __LINE__, #x, (x)); fflush(stderr)
-#define debug2(x) cerr << __LINE__ << "::" << #x << " = " << (x) << '\n' << flush
-#define debugva(fmt, ...) fprintf(stderr, "%d::%s = " fmt, __LINE__, #__VA_ARGS__, __VA_ARGS__); fflush(stderr)
-#define debugarr(fmt, x, a, b) fprintf(stderr, "%d::%s = {", __LINE__, #x); For(_, a, b) { if (_ != (a)) { fprintf(stderr, ", "); } fprintf(stderr, fmt, (x)[_]); } fprintf(stderr, "}\n"); fflush(stderr)
-#define debugarr2(x, a, b) cerr << __LINE__ << "::" << #x << " = {"; For(_, a, b) { if (_ != (a)) { cerr << ", "; } cerr << (x)[_]; } cerr << "}\n" << flush
-
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
+/**
+ * FenwickTree supporting range updates and range queries.
+ * Memory usage:  O(2n)
+ */
 template <typename T>
 struct FenwickTreeRange {
 private:
@@ -131,11 +104,10 @@ public:
      * @param  value value
      */
     void update(int a, int b, T value) {
-        if (a > b) return;
         update(array1, a, value);
         update(array1, b + 1, -value);
-        update(array2, a, value * (a - 1));
-        update(array2, b + 1, -value * b);
+        update(array2, a, value * ((T) a - 1));
+        update(array2, b + 1, -value * (T) b);
     }
 
     int getSize() {
@@ -143,6 +115,11 @@ public:
     }
 };
 
+/**
+ * FenwickTree supporting range updates with updates in the form of
+ * adding v, 2v, 3v, ... to the interval [l, r], and range queries.
+ * Memory usage:  O(3n)
+ */
 template <typename T>
 struct FenwickTreeQuadratic {
 private:
@@ -179,7 +156,7 @@ public:
      * @return sum
      */
     T rsq(int ind) {
-        return (rsq(quad, ind) * ind * ind + rsq(lin, ind) * ind + rsq(con, ind)) / 2;
+        return (rsq(quad, ind) * (T) ind * (T) ind + rsq(lin, ind) * (T) ind + rsq(con, ind)) / (T) 2;
     }
 
     /**
@@ -208,15 +185,14 @@ public:
      * @param  value value
      */
     void update(int a, int b, T value) {
-        if (a > b) return;
         int s = a - 1, len = b - a + 1;
         update(quad, a, value);
         update(quad, b + 1, -value);
-        update(lin, a, value * (1 - 2 * s));
-        update(lin, b + 1, -value * (1 - 2 * s));
-        update(con, a, value * (s * s - s));
-        update(con, b + 1, -value * (s * s - s));
-        update(con, b + 1, value * len * (len + 1));
+        update(lin, a, value * ((T) 1 - (T) 2 * (T) s));
+        update(lin, b + 1, -value * ((T) 1 - (T) 2 * (T) s));
+        update(con, a, value * ((T) s * (T) s - (T) s));
+        update(con, b + 1, -value * (((T) s * (T) s - (T) s)));
+        update(con, b + 1, value * ((T) len * (T) (len + 1)));
     }
 
     int getSize() {
@@ -226,7 +202,7 @@ public:
 
 #define MAXN 100010
 
-int N, S, x, y, t, depth[MAXN], parent[MAXN], chain[MAXN], size[MAXN], head[MAXN], index[MAXN], vertex[MAXN], distTo[MAXN], chainNum, baseNum;
+int N, S, x, y, t, depth[MAXN], parent[MAXN], chain[MAXN], size[MAXN], head[MAXN], ind[MAXN], vertex[MAXN], distTo[MAXN], chainNum, baseNum;
 vector<int> adj[MAXN];
 FenwickTreeRange<ll> *ft1;
 FenwickTreeQuadratic<ll> *ft2;
@@ -270,7 +246,7 @@ void dfs(int v, int d, int prev) {
 void hld(int v, int prev) {
     if (head[chainNum] == -1) head[chainNum] = v;
     chain[v] = chainNum;
-    index[v] = baseNum;
+    ind[v] = baseNum;
     vertex[baseNum++] = v;
     int maxIndex = -1;
     for (int w: adj[v]) {
@@ -308,57 +284,54 @@ int dist(int s, int t) {
     return distTo[s] + distTo[t] - 2 * distTo[lca(s, t)];
 }
 
-void updateUp(int a, int b, int t, bool includeB, int mult) {
-    int curDist = mult == 1 ? dist(a, t) : 0;
+void updateUp(int a, int b, bool includeB, int con, int lin) {
     while (chain[a] != chain[b]) {
-        curDist -= mult * (index[a] - index[head[chain[a]]]);
-        printf("w %d %d %d\n", head[chain[a]], a, curDist);
-        ft1->update(index[head[chain[a]]], index[a], curDist);
-        ft2->update(index[head[chain[a]]] + 1, index[a], mult);
+        con += lin * (ind[a] - ind[head[chain[a]]] + 1);
+        ft1->update(ind[head[chain[a]]], ind[a], con);
+        ft2->update(ind[head[chain[a]]], ind[a], -lin);
         a = parent[head[chain[a]]];
-        curDist--;
     }
     if (includeB || a != b) {
-        curDist -= mult * (index[a] - index[b]);
-        printf("e %d %d %d\n", b, a, curDist);
-        ft1->update(index[b] + !includeB, index[a], curDist);
-        ft2->update(index[b] + 1, index[a], mult);
+        con += lin * (ind[a] - (ind[b] + !includeB) + 1);
+        ft1->update(ind[b] + !includeB, ind[a], con);
+        ft2->update(ind[b] + !includeB, ind[a], -lin);
     }
 }
 
 void updatePath(int a, int b, int t) {
     int lcaAB = lca(a, b);
-    int lcaAT = lca(a, t);
-    int lcaBT = lca(b, t);
-    updateUp(a, lcaAT, t, false, 1);
-    FOR(j, N) printf("%lld ", ft1->rsq(index[j], index[j]) + ft2->rsq(index[j], index[j]));
-    printf("\n");
-    updateUp(t, lcaAT, t, true, -1);
-    FOR(j, N) printf("%lld ", ft1->rsq(index[j], index[j]) + ft2->rsq(index[j], index[j]));
-    printf("\n");
-    updateUp(b, lcaBT, t, false, 1);
-    FOR(j, N) printf("%lld ", ft1->rsq(index[j], index[j]) + ft2->rsq(index[j], index[j]));
-    printf("\n");
-    updateUp(t, lcaBT, t, true, -1);
-    FOR(j, N) printf("%lld ", ft1->rsq(index[j], index[j]) + ft2->rsq(index[j], index[j]));
-    printf("\n");
-    if (dist(lcaAT, t) < dist(lcaBT, t)) {
-        updateUp(t, lcaAT, t, false, 2);
-        updateUp(lcaAT, lcaAT, t, true, 1);
+    if (a == b) {
+        updateUp(a, a, true, dist(a, t), 1);
+    } else if (lcaAB == a || lcaAB == b) {
+        if (lcaAB == b) swap(a, b);
+        if (lca(a, t) != a) {
+            updateUp(b, a, true, dist(b, t), -1);
+        } else {
+            int lcaBT = lca(b, t);
+            updateUp(b, lcaBT, false, dist(b, t), -1);
+            updateUp(lcaBT, a, true, dist(lcaBT, t), 1);
+        }
+    } else if (lca(lcaAB, t) != lcaAB) {
+        updateUp(a, lcaAB, true, dist(a, t), -1);
+        updateUp(b, lcaAB, false, dist(b, t), -1);
+    } else if (lca(a, t) == lcaAB) {
+        updateUp(a, lcaAB, true, dist(a, t), -1);
+        int lcaBT = lca(b, t);
+        updateUp(b, lcaBT, false, dist(b, t), -1);
+        updateUp(lcaBT, lcaAB, false, dist(lcaBT, t), 1);
     } else {
-        updateUp(t, lcaBT, t, false, 2);
-        updateUp(lcaBT, lcaBT, t, true, 1);
+        updateUp(b, lcaAB, true, dist(b, t), -1);
+        int lcaAT = lca(a, t);
+        updateUp(a, lcaAT, false, dist(a, t), -1);
+        updateUp(lcaAT, lcaAB, false, dist(lcaAT, t), 1);
     }
-    FOR(j, N) printf("%lld ", ft1->rsq(index[j], index[j]) + ft2->rsq(index[j], index[j]));
-    printf("\n");
 }
 
 int main() {
-    ri(N);
-    ri(S);
+    cin >> N >> S;
     FOR(i, N - 1) {
-        ri(x); x--;
-        ri(y); y--;
+        cin >> x >> y;
+        x--; y--;
         adj[x].pb(y);
         adj[y].pb(x);
     }
@@ -368,15 +341,13 @@ int main() {
     bfs(0);
     int a, b, t;
     FOR(i, S) {
-        ri(a); a--;
-        ri(b); b--;
-        ri(t); t--;
+        cin >> a >> b >> t;
+        a--; b--; t--;
         updatePath(a, b, t);
-        printf("---\n");
     }
     FOR(i, N) {
-        printf("%lld ", ft1->rsq(index[i], index[i]) + ft2->rsq(index[i], index[i]));
+        cout << ft1->rsq(ind[i], ind[i]) + ft2->rsq(ind[i], ind[i]) << sp;
     }
-    printf("\n");
+    cout << nl;
     return 0;
 }
