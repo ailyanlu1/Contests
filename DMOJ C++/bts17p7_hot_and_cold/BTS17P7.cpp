@@ -280,7 +280,7 @@ int lca(int v, int w) {
     return w;
 }
 
-int dist(int s, int t) {
+inline int dist(int s, int t) {
     return distTo[s] + distTo[t] - 2 * distTo[lca(s, t)];
 }
 
@@ -300,18 +300,7 @@ void updateUp(int a, int b, bool includeB, int con, int lin) {
 
 void updatePath(int a, int b, int t) {
     int lcaAB = lca(a, b);
-    if (a == b) {
-        updateUp(a, a, true, dist(a, t), 1);
-    } else if (lcaAB == a || lcaAB == b) {
-        if (lcaAB == b) swap(a, b);
-        if (lca(a, t) != a) {
-            updateUp(b, a, true, dist(b, t), -1);
-        } else {
-            int lcaBT = lca(b, t);
-            updateUp(b, lcaBT, false, dist(b, t), -1);
-            updateUp(lcaBT, a, true, dist(lcaBT, t), 1);
-        }
-    } else if (lca(lcaAB, t) != lcaAB) {
+    if (lca(lcaAB, t) != lcaAB) {
         updateUp(a, lcaAB, true, dist(a, t), -1);
         updateUp(b, lcaAB, false, dist(b, t), -1);
     } else if (lca(a, t) == lcaAB) {
@@ -345,9 +334,6 @@ int main() {
         a--; b--; t--;
         updatePath(a, b, t);
     }
-    FOR(i, N) {
-        cout << ft1->rsq(ind[i], ind[i]) + ft2->rsq(ind[i], ind[i]) << sp;
-    }
-    cout << nl;
+    FOR(i, N) cout << ft1->rsq(ind[i], ind[i]) + ft2->rsq(ind[i], ind[i]) << " \n"[i == N - 1];
     return 0;
 }
