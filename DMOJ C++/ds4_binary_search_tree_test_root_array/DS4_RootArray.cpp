@@ -390,17 +390,18 @@ public:
 };
 
 /**
- * Ordered Sqrt Array:
+ * Ordered Root Array:
  * Decomposes the array into N ^ (1 / R) containers of size N ^ ((R - 1) / R) multiplied by a factor.
  * The factor should be between 1 and 10, and should be smaller for large N.
  *
  * Usage:
- * OrderedSqrtArray<int> arr;
- * OrderedSqrtArray<int, greater<int>> arr;
+ * OrderedRootArray<3, int, OrderedSqrtArray<int>> arr;
+ * OrderedRootArray<3, int, OrderedSqrtArray<int, greater<int>>, greater<int>> arr;
+ * OrderedRootArray<4, int, OrderedRootArray<3, int, OrderedSqrtArray<int>>> arr;
  *
- * Insert: O(sqrt(N) + log(N))
- * Erase: O(sqrt(N) + log(N))
- * Pop Front: O(sqrt(N))
+ * Insert: O(N ^ (1 / R) + log(N))
+ * Erase: O(N ^ (1 / R) + log(N))
+ * Pop Front: O(N ^ (1 / R))
  * Pop Back: O(1) ammortized
  * At, Accessor: O(log(N))
  * Front, Back: O(1)
@@ -445,7 +446,7 @@ private:
         int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
-            if (cmp(a[mid]->front(), val)) hi = mid - 1;
+            if (cmp(val, a[mid]->front())) hi = mid - 1;
             else lo = mid + 1;
         }
         return hi;
@@ -695,7 +696,7 @@ public:
      */
     pair<int, Value> floor(const Value val) const {
         int i = floor_ind(val);
-        if (i == (int) a.size()) throw no_such_element_exception("call to floor() resulted in no such value");
+        if (i == -1) throw no_such_element_exception("call to floor() resulted in no such value");
         pair<int, Value> j = a[i]->floor(val);
         return {prefixSZ[i] + j.first, j.second};
     }
