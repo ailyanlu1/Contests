@@ -1,4 +1,3 @@
-// 10/100 TLE
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -39,15 +38,17 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 
 #define MAXN 100005
 #define MAXQ 50005
-#define MAXB 400
+#define MAXB 100
 
 int N, Q, A[MAXN], ans[MAXQ];
 bool isQuery[MAXQ];
 pii queries[MAXQ];
 vector<int> q[MAXB][MAXB];
-umap<int, int> cnt;
+int cnt[MAXN + MAXQ];
 stack<pii> revert;
 int res;
+vector<int> values;
+umap<int, int> vmap;
 
 inline void add(int a) {
     cnt[a]++;
@@ -67,7 +68,7 @@ inline void update(int i, int a) {
 
 void solve() {
     res = 0;
-    int sz = (int) cbrt(N); sz *= sz;
+    int sz = (int) cbrt(N); sz *= sz * 2;
     for (int i = 0; i < Q; i++) {
         if (isQuery[i]) q[queries[i].f / sz][queries[i].s / sz].pb(i);
         else {
@@ -127,7 +128,10 @@ int main() {
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> N >> Q;
-    FOR(i, N) cin >> A[i];
+    FOR(i, N) {
+        cin >> A[i];
+        values.push_back(A[i]);
+    }
     int t;
     FOR(i, Q) {
         cin >> t;
@@ -135,8 +139,14 @@ int main() {
         cin >> queries[i].f >> queries[i].s;
         queries[i].f--;
         if (t == 2) queries[i].s--;
+        else values.push_back(queries[i].s);
         ans[i] = -1;
     }
+    sort(all(values));
+    values.resize(unique(all(values)) - values.begin());
+    FOR(i, sz(values)) vmap[values[i]] = i;
+    FOR(i, N) A[i] = vmap[A[i]];
+    FOR(i, Q) if (!isQuery[i]) queries[i].s = vmap[queries[i].s];
     solve();
     FOR(i, Q) if (ans[i] != -1) cout << ans[i] << nl;
     return 0;
