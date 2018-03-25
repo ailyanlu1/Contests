@@ -148,35 +148,26 @@ int main() {
     int a, b;
     FOR(i, Q) {
         cin >> a >> b;
-        if (b - a <= 1) {
-            cout << 0 << nl;
-        } else if (b - a == 2) {
-            int ans1 = max(abs(X[a] - X[b]), abs(Y[a] - Y[b]));
-            int ans2 = max(abs(X[a] - X[a + 1]), abs(Y[a] - Y[a + 1]));
-            int ans3 = max(abs(X[a + 1] - X[b]), abs(Y[a + 1] - Y[b]));
-            cout << min(min(ans1, ans2), ans3) << nl;
-        } else {
-            pair<pii, pii> xAns = x->query(a, b);
-            pair<pii, pii> yAns = y->query(a, b);
-            int ans = INT_MAX;
-            if (p.count({xAns.f.f, yAns.f.f}) && inRange(a, b, p[{xAns.f.f, yAns.f.f}])) {
-                MIN(ans, max(xAns.f.s - xAns.s.f, yAns.f.s - yAns.s.f));
-            }
-            if (p.count({xAns.f.f, yAns.s.f}) && inRange(a, b, p[{xAns.f.f, yAns.s.f}])) {
-                MIN(ans, max(xAns.f.s - xAns.s.f, yAns.f.f - yAns.s.s));
-            }
-            if (p.count({xAns.s.f, yAns.f.f}) && inRange(a, b, p[{xAns.s.f, yAns.f.f}])) {
-                MIN(ans, max(xAns.f.f - xAns.s.s, yAns.f.s - yAns.s.f));
-            }
-            if (p.count({xAns.s.f, yAns.s.f}) && inRange(a, b, p[{xAns.s.f, yAns.s.f}])) {
-                MIN(ans, max(xAns.f.f - xAns.s.s, yAns.f.f - yAns.s.s));
-            }
-            MIN(ans, max(xAns.f.f - xAns.s.s, yAns.f.f - yAns.s.f));
-            MIN(ans, max(xAns.f.s - xAns.s.f, yAns.f.f - yAns.s.f));
-            MIN(ans, max(xAns.f.f - xAns.s.f, yAns.f.f - yAns.s.s));
-            MIN(ans, max(xAns.f.f - xAns.s.f, yAns.f.s - yAns.s.f));
-            cout << ans << nl;
+        pair<pii, pii> xAns = x->query(a, b);
+        pair<pii, pii> yAns = y->query(a, b);
+        int ans = INT_MAX;
+        if (p.count({xAns.f.f, yAns.f.f}) && inRange(a, b, p[{xAns.f.f, yAns.f.f}])) {
+            MIN(ans, max(xAns.f.s - xAns.s.f, yAns.f.s - yAns.s.f));
         }
+        if (p.count({xAns.f.f, yAns.s.f}) && inRange(a, b, p[{xAns.f.f, yAns.s.f}])) {
+            MIN(ans, max(xAns.f.s - xAns.s.f, yAns.f.f - yAns.s.s));
+        }
+        if (p.count({xAns.s.f, yAns.f.f}) && inRange(a, b, p[{xAns.s.f, yAns.f.f}])) {
+            MIN(ans, max(xAns.f.f - xAns.s.s, yAns.f.s - yAns.s.f));
+        }
+        if (p.count({xAns.s.f, yAns.s.f}) && inRange(a, b, p[{xAns.s.f, yAns.s.f}])) {
+            MIN(ans, max(xAns.f.f - xAns.s.s, yAns.f.f - yAns.s.s));
+        }
+        MIN(ans, max(xAns.f.f - xAns.s.s, yAns.f.f - yAns.s.f));
+        MIN(ans, max(xAns.f.s - xAns.s.f, yAns.f.f - yAns.s.f));
+        MIN(ans, max(xAns.f.f - xAns.s.f, yAns.f.f - yAns.s.s));
+        MIN(ans, max(xAns.f.f - xAns.s.f, yAns.f.s - yAns.s.f));
+        cout << ans << nl;
     }
     return 0;
 }
