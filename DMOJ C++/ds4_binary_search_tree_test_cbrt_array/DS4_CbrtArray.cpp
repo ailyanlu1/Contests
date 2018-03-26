@@ -172,7 +172,7 @@ struct Sqrt {
 
 int N, M, A[MAXN];
 
-vector<Sqrt*> a;
+vector<Sqrt> a;
 vector<int> prefixSZ;
 int n;
 
@@ -180,11 +180,11 @@ void init() {
     n = N;
     int cbrtnsq = (int) cbrt(n) * cbrt(n) * FACTOR;
     for (int i = 0; i < n; i += cbrtnsq) {
-        a.emplace_back(new Sqrt(A + i, A + min(i + cbrtnsq, n)));
+        a.emplace_back(A + i, A + min(i + cbrtnsq, n));
         prefixSZ.push_back(0);
     }
     for (int i = 1; i < (int) a.size(); i++) {
-        prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1]->n;
+        prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].n;
     }
 }
 
@@ -192,28 +192,28 @@ void insert(int val) {
     int lo = 0, hi = (int) a.size(), mid;
     while (lo < hi) {
         mid = lo + (hi - lo) / 2;
-        if (val < a[mid]->back()) hi = mid;
+        if (val < a[mid].back()) hi = mid;
         else lo = mid + 1;
     }
     if (n++ == 0) {
-        a.push_back(new Sqrt());
+        a.emplace_back();
         prefixSZ.push_back(0);
     }
-    if (lo == (int) a.size()) a[--lo]->insert(val);
-    else a[lo]->insert(val);
+    if (lo == (int) a.size()) a[--lo].insert(val);
+    else a[lo].insert(val);
     int cbrtnsq = (int) cbrt(n) * cbrt(n) * FACTOR;
-    if (a[lo]->n > 2 * cbrtnsq) {
+    if (a[lo].n > 2 * cbrtnsq) {
         vector<int> b;
-        while (a[lo]->n > cbrtnsq) {
-            b.push_back(a[lo]->back());
-            a[lo]->pop_back();
+        while (a[lo].n > cbrtnsq) {
+            b.push_back(a[lo].back());
+            a[lo].pop_back();
         }
         reverse(b.begin(), b.end());
-        a.insert(a.begin() + lo + 1, new Sqrt(b.begin(), b.end()));
+        a.emplace(a.begin() + lo + 1, b.begin(), b.end());
         prefixSZ.push_back(0);
     }
     for (int j = lo + 1; j < (int) a.size(); j++) {
-        prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1]->n;
+        prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].n;
     }
 }
 
@@ -221,19 +221,18 @@ void erase(int val) {
     int lo = 0, hi = (int) a.size(), mid;
     while (lo < hi) {
         mid = lo + (hi - lo) / 2;
-        if (a[mid]->back() < val) lo = mid + 1;
+        if (a[mid].back() < val) lo = mid + 1;
         else hi = mid;
     }
     if (lo == (int) a.size()) return;
-    if (!a[lo]->erase(val)) return;
+    if (!a[lo].erase(val)) return;
     --n;
-    if (a[lo]->n == 0) {
-        delete a[lo];
+    if (a[lo].n == 0) {
         a.erase(a.begin() + lo);
         prefixSZ.pop_back();
     }
     for (int j = lo + 1; j < (int) a.size(); j++) {
-        prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1]->n;
+        prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].n;
     }
 }
 
@@ -244,24 +243,24 @@ int at(int k) {
         if (k < prefixSZ[mid]) hi = mid - 1;
         else lo = mid + 1;
     }
-    return a[hi]->at(k - prefixSZ[hi]);
+    return a[hi].at(k - prefixSZ[hi]);
 }
 
 int getRank(int val) {
     int lo = 0, hi = (int) a.size(), mid;
     while (lo < hi) {
         mid = lo + (hi - lo) / 2;
-        if (a[mid]->back() < val) lo = mid + 1;
+        if (a[mid].back() < val) lo = mid + 1;
         else hi = mid;
     }
     if (lo == (int) a.size()) return -1;
-    int r = a[lo]->getRank(val);
+    int r = a[lo].getRank(val);
     return r == -1 ? -1 : prefixSZ[lo] + r;
 }
 
 void print() {
     for (int i = 0; i < (int) a.size(); i++) {
-        a[i]->print();
+        a[i].print();
     }
     cout << nl;
 }
