@@ -1,3 +1,4 @@
+// http://www.spoj.com/problems/OTOCI/
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -36,45 +37,28 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-int N, D, Q;
-
 struct LinkCutTree {
 private:
-    static const int ddef = -1, vdef = -1, qdef = 0;
+    static const int vdef = 0, qdef = 0;
 
     struct Node {
     public:
-        int vertex, val, subtreeVal, delta, size;
+        int vertex, val, subtreeVal, size;
         bool revert;
         Node *left = nullptr, *right = nullptr, *parent = nullptr;
 
-        Node (int vertex, int val) : vertex(vertex), val(val), subtreeVal(val), delta(LinkCutTree::ddef), size(1), revert(false) {};
+        Node (int vertex, int val) : vertex(vertex), val(val), subtreeVal(val), size(1), revert(false) {};
     };
 
     int V;
     vector<Node*> nodes;
 
     int apply(int a, int b) {
-        return min(a, b);
+        return b;
     }
 
     int merge(int l, int r) {
-        return max(l, r);
-    }
-
-    int getSegmentVal(int delta, int len) {
-        return delta;
-    }
-
-    int applyDelta(int val, int delta) {
-        if (ddef == delta) return val;
-        return apply(val, delta);
-    }
-
-    int joinDeltas(int delta1, int delta2) {
-        if (ddef == delta1) return delta2;
-        if (ddef == delta2) return delta1;
-        return apply(delta1, delta2);
+        return l + r;
     }
 
     bool isRoot(Node *x) {
@@ -86,7 +70,7 @@ private:
     }
 
     int getSubtreeVal(Node *x) {
-        return nullptr == x ? vdef : applyDelta(x->subtreeVal, getSegmentVal(x->delta, x->size));
+        return nullptr == x ? vdef : x->subtreeVal;
     }
 
     void propagate(Node *x) {
@@ -98,15 +82,10 @@ private:
             if (nullptr != x->left) x->left->revert = !x->left->revert;
             if (nullptr != x->right) x->right->revert = !x->right->revert;
         }
-        x->val = applyDelta(x->val, x->delta);
-        x->subtreeVal = applyDelta(x->subtreeVal, getSegmentVal(x->delta, x->size));
-        if (nullptr != x->left) x->left->delta = joinDeltas(x->left->delta, x->delta);
-        if (nullptr != x->right) x->right->delta = joinDeltas(x->right->delta, x->delta);
-        x->delta = ddef;
     }
 
     void update(Node *x) {
-        x->subtreeVal = merge(merge(getSubtreeVal(x->left), applyDelta(x->val, x->delta)), getSubtreeVal(x->right));
+        x->subtreeVal = merge(merge(getSubtreeVal(x->left), x->val), getSubtreeVal(x->right));
         x->size = 1 + getSize(x->left) + getSize(x->right);
     }
 
@@ -182,11 +161,9 @@ private:
         return true;
     }
 
-    bool modify(Node *from, Node *to, int delta) {
-        if (!connected(from, to)) return false;
-        makeRoot(from);
-        expose(to);
-        to->delta = joinDeltas(to->delta, delta);
+    bool modify(Node *x, int delta) {
+        makeRoot(x);
+        x->val = apply(x->val, delta);
         return true;
     }
 
@@ -222,8 +199,8 @@ public:
         return cut(nodes[v], nodes[w]);
     }
 
-    bool modify(int v, int w, int delta) {
-        return modify(nodes[v], nodes[w], delta);
+    bool modify(int v, int delta) {
+        return modify(nodes[v], delta);
     }
 
     int query(int v, int w) {
@@ -239,36 +216,38 @@ public:
     }
 } *lct;
 
+#define MAXN 30005
+
+int N, Q, P[MAXN];
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> N >> D >> Q;
-    lct = new LinkCutTree(N);
-    int a, b, cur;
-    FOR(i, D) {
-        cin >> a >> b;
-        if (a == b) {
-            continue;
-        } else if (lct->connected(a, b)) {
-            lct->modify(a, b, i);
-        } else {
-            cur = lct->getV();
-            lct->addNode(INT_INF);
-            lct->link(a, cur);
-            lct->link(b, cur);
-        }
-    }
+    cin >> N;
+    FOR(i, N) cin >> P[i];
+    lct = new LinkCutTree(N, P);
+    cin >> Q;
+    string cmd;
+    int a, b;
     FOR(i, Q) {
-        cin >> a >> b;
-        if (a == b) {
-            cout << 0 << nl;
-        } else if (lct->connected(a, b)) {
-            int ans = lct->query(a, b);
-            if (ans == INT_INF) cout << -1 << nl;
-            else cout << ans << nl;
+        cin >> cmd;
+        if (cmd == "bridge") {
+            cin >> a >> b;
+            a--; b--;
+            if (lct->link(a, b)) cout << "yes" << endl;
+            else cout << "no" << endl;
+        } else if (cmd == "penguins") {
+            cin >> a >> b;
+            a--;
+            lct->modify(a, b);
+        } else if (cmd == "excursion") {
+            cin >> a >> b;
+            a--; b--;
+            if (!lct->connected(a, b)) cout << "impossible" << endl;
+            else cout << lct->query(a, b) << endl;
         } else {
-            cout << -1 << nl;
+            i--;
         }
     }
     return 0;

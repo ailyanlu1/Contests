@@ -1,3 +1,4 @@
+// http://www.spoj.com/problems/DYNACON1/
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -36,11 +37,9 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-int N, D, Q;
-
 struct LinkCutTree {
 private:
-    static const int ddef = -1, vdef = -1, qdef = 0;
+    static const int ddef = 0, vdef = 0, qdef = 0;
 
     struct Node {
     public:
@@ -55,15 +54,15 @@ private:
     vector<Node*> nodes;
 
     int apply(int a, int b) {
-        return min(a, b);
+        return a + b;
     }
 
     int merge(int l, int r) {
-        return max(l, r);
+        return l + r;
     }
 
     int getSegmentVal(int delta, int len) {
-        return delta;
+        return delta * len;
     }
 
     int applyDelta(int val, int delta) {
@@ -239,37 +238,23 @@ public:
     }
 } *lct;
 
+int N, M;
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> N >> D >> Q;
+    cin >> N >> M;
     lct = new LinkCutTree(N);
-    int a, b, cur;
-    FOR(i, D) {
-        cin >> a >> b;
-        if (a == b) {
-            continue;
-        } else if (lct->connected(a, b)) {
-            lct->modify(a, b, i);
-        } else {
-            cur = lct->getV();
-            lct->addNode(INT_INF);
-            lct->link(a, cur);
-            lct->link(b, cur);
-        }
-    }
-    FOR(i, Q) {
-        cin >> a >> b;
-        if (a == b) {
-            cout << 0 << nl;
-        } else if (lct->connected(a, b)) {
-            int ans = lct->query(a, b);
-            if (ans == INT_INF) cout << -1 << nl;
-            else cout << ans << nl;
-        } else {
-            cout << -1 << nl;
-        }
+    string cmd;
+    int a, b;
+    FOR(i, M) {
+        cin >> cmd >> a >> b;
+        a--; b--;
+        if (cmd == "add") lct->link(a, b);
+        else if (cmd == "rem") lct->cut(a, b);
+        else if (cmd == "conn") cout << (lct->connected(a, b) ? "YES" : "NO") << nl;
+        else i--;
     }
     return 0;
 }
