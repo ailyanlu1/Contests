@@ -208,9 +208,8 @@ public:
         }
     }
 
-    void addNode(int v, int value) {
-        nodes.push_back(new Node(v, value));
-        V++;
+    void addNode(int value) {
+        nodes.push_back(new Node(V++, value));
     }
 
     bool link(int v, int w) {
@@ -254,7 +253,7 @@ int main() {
         cin >> x >> y >> z;
         x--; y--;
         cur = lct->getV();
-        lct->addNode(cur, z);
+        lct->addNode(z);
         lct->link(x, cur);
         lct->link(y, cur);
         edges[{min(x, y), max(x, y)}] = cur;
@@ -266,7 +265,7 @@ int main() {
             cin >> x >> y >> z;
             x--; y--;
             cur = lct->getV();
-            lct->addNode(cur, z);
+            lct->addNode(z);
             lct->link(x, cur);
             lct->link(y, cur);
             edges[{min(x, y), max(x, y)}] = cur;
