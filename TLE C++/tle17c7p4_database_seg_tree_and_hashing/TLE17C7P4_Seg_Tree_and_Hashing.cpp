@@ -39,51 +39,55 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 struct Node {
     Node *left = nullptr, *right = nullptr;
     char c = 0;
-    ll hash = 0;
+    ll hash1 = 0, hash2 = 0;
 
     Node() {}
     Node(Node *left, Node *right) : left(left), right(right) {}
 };
 
 #define MAXNS 200005
-#define BASE ((ll) 10007)
-#define MOD ((ll) 1e9 + 7)
+#define BASE1 ((ll) 10007)
+#define MOD1 ((ll) 1e9 + 7)
+#define BASE2 ((ll) 137)
+#define MOD2 ((ll) 1e9 + 9)
 
 vector<Node*> roots;
 int N, Q;
-ll POW[MAXNS];
+ll POW1[MAXNS], POW2[MAXNS];
 string S;
 
 Node *build(int cL, int cR) {
     if (cL == cR) {
         Node *n = new Node();
-        n->c = n->hash = S[cL];
+        n->c = n->hash1 = n->hash2 = S[cL];
         return n;
     }
     int m = cL + (cR - cL) / 2;
     Node *n = new Node(build(cL, m), build(m + 1, cR));
-    n->hash = (n->left->hash * POW[cR - m] + n->right->hash) % MOD;
+    n->hash1 = (n->left->hash1 * POW1[cR - m] + n->right->hash1) % MOD1;
+    n->hash2 = (n->left->hash2 * POW2[cR - m] + n->right->hash2) % MOD2;
     return n;
 }
 
 Node *update(Node *cur, int cL, int cR, int ind, char val) {
     if (cL == cR) {
         Node *n = new Node();
-        n->c = n->hash = val;
+        n->c = n->hash1 = n->hash2 = val;
         return n;
     }
     int m = cL + (cR - cL) / 2;
     Node *n = new Node(cur->left, cur->right);
     if (ind <= m) n->left = update(cur->left, cL, m, ind, val);
     else n->right = update(cur->right, m + 1, cR, ind, val);
-    n->hash = (n->left->hash * POW[cR - m] + n->right->hash) % MOD;
+    n->hash1 = (n->left->hash1 * POW1[cR - m] + n->right->hash1) % MOD1;
+    n->hash2 = (n->left->hash2 * POW2[cR - m] + n->right->hash2) % MOD2;
     return n;
 }
 
 bool query(const Node *cur, const Node *cur2, int cL, int cR) {
     if (cL == cR) return cur->c < cur2->c;
     int m = cL + (cR - cL) / 2;
-    if (cur->left->hash != cur2->left->hash) return query(cur->left, cur2->left, cL, m);
+    if (cur->left->hash1 != cur2->left->hash1 || cur->left->hash2 != cur2->left->hash2) return query(cur->left, cur2->left, cL, m);
     else return query(cur->right, cur2->right, m + 1, cR);
 }
 
@@ -103,8 +107,11 @@ int main() {
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> S >> N;
-    POW[0] = 1;
-    For(i, 1, sz(S)) POW[i] = POW[i - 1] * BASE % MOD;
+    POW1[0] = POW2[0] = 1;
+    For(i, 1, sz(S)) {
+        POW1[i] = POW1[i - 1] * BASE1 % MOD1;
+        POW2[i] = POW2[i - 1] * BASE2 % MOD2;
+    }
     roots.pb(build(0, sz(S) - 1));
     int x, y;
     char c;

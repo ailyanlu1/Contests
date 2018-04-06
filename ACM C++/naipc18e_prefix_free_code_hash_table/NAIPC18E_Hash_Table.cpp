@@ -131,7 +131,7 @@ int main() {
     FOR(i, sz(ord)) ft->update(ord[i] + 1, -1);
     ll ind = 1LL, fact = 1LL;
     REV(i, sz(ord) - 1) {
-        ll r = (ll) ft->rsq(1, ord[i]);
+        ll r = ft->rsq(1, ord[i]);
         ft->update(ord[i] + 1, 1);
         ind = (ind + r * fact) % MOD;
         fact = fact * (N - i) % MOD;
