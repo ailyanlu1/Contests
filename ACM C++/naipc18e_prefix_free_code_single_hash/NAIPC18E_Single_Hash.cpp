@@ -79,17 +79,14 @@ public:
 };
 
 int N, K;
-umap<ll, int> h1, h2;
-uset<ll> h1dup, h2dup;
+umap<ll, int> h;
 string S[MAXN];
 string T;
 vector<int> ord;
 FenwickTree<int> *ft;
 
-#define BASE1 ((ll) 10007)
-#define MOD1 ((ll) 1e9 + 7)
-#define BASE2 ((ll) 137)
-#define MOD2 ((ll) 1e9 + 9)
+#define BASE 10007LL
+#define MOD 1000000007LL
 
 int main() {
 //    freopen("in.txt", "r", stdin);
@@ -99,25 +96,21 @@ int main() {
     FOR(i, N) cin >> S[i];
     sort(S, S + N);
     FOR(i, N) {
-        ll hsh1 = 0, hsh2 = 0;
+        ll hsh = 0;
         FOR(j, sz(S[i])) {
-            hsh1 = (hsh1 * BASE1 + (S[i][j] - 'a' + 1)) % MOD1;
-            hsh2 = (hsh2 * BASE2 + (S[i][j] - 'a' + 1)) % MOD2;
+            hsh = (hsh * BASE + (S[i][j] - 'a' + 1));
         }
-        if (h1.count(hsh1)) h1dup.insert(hsh1);
-        else h1[hsh1] = i;
-        if (h2.count(hsh2)) h2dup.insert(hsh2);
-        else h2[hsh2] = i;
+        assert(!h.count(hsh));
+        h[hsh] = i;
     }
     cin >> T;
-    ll hsh1 = 0, hsh2 = 0;
+    ll hsh = 0;
     FOR(i, sz(T)) {
-        hsh1 = (hsh1 * BASE1 + (T[i] - 'a' + 1)) % MOD1;
-        hsh2 = (hsh2 * BASE2 + (T[i] - 'a' + 1)) % MOD2;
-        if (h1.count(hsh1) && h2.count(hsh2)) {
-            if (h2dup.count(hsh2)) ord.pb(h1[hsh1]);
-            else ord.pb(h2[hsh2]);
-            hsh1 = hsh2 = 0;
+        hsh = (hsh * BASE + (T[i] - 'a' + 1));
+        if (h.count(hsh)) {
+            ord.pb(h[hsh]);
+            h.erase(hsh);
+            hsh = 0;
         }
     }
     ft = new FenwickTree<int>(N);
@@ -127,8 +120,8 @@ int main() {
     REV(i, sz(ord) - 1) {
         ll r = ft->rsq(1, ord[i]);
         ft->update(ord[i] + 1, 1);
-        ind = (ind + r * fact) % MOD1;
-        fact = fact * (N - i) % MOD1;
+        ind = (ind + r * fact) % MOD;
+        fact = fact * (N - i) % MOD;
     }
     cout << ind << nl;
     return 0;
