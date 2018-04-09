@@ -1,13 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
 #define MIN(a, b) ((a) = min((a), (b)))
 #define MAX(a, b) ((a) = max((a), (b)))
 #define pb push_back
+#define eb emplace_back
 #define mp make_pair
 #define f first
 #define s second

@@ -1,10 +1,3 @@
-/*
- * DMPG17G4_AVL.cpp
- *
- *  Created on: Jul 4, 2017
- *      Author: Wesley Leung
- */
-
 #include <bits/stdc++.h>
 
 #define SHORT_INF 0x3f3f

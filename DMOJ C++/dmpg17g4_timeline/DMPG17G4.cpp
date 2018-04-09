@@ -1,47 +1,39 @@
-/*
- * DMPG17G4.cpp
- *
- *  Created on: Jul 4, 2017
- *      Author: Wesley Leung
- */
-
 #include <bits/stdc++.h>
+using namespace std;
 
 #define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
+#define D_INF numeric_limits<double>::infinity()
+#define MIN(a, b) ((a) = min((a), (b)))
+#define MAX(a, b) ((a) = max((a), (b)))
 #define pb push_back
 #define mp make_pair
-#define l(x) x << 1
-#define r(x) x << 1 | 1
-#define mid(x, y) x + (y - x) / 2
 #define f first
 #define s second
-#define ri(x) scanf("%d", &x)
-#define rll(x) scanf("%lld", &x)
-#define rllu(x) scanf("%llu", &x)
-#define rf(x) scanf("%f", &x)
-#define rd(x) scanf("%lf", &x)
-#define rc(x) scanf(" %c", &x)
-#define rs(x) scanf("%s", x)
-#define Fill(a, x) memset(a, x, sizeof(a))
-#define randi(a, b) rand() % (b - a + 1) + a
+#define all(a) (a).begin(), (a).end()
+#define For(i, a, b) for (auto i = (a); i < (b); i++)
+#define FOR(i, b) For(i, 0, b)
+#define Rev(i, a, b) for (auto i = (a); i > (b); i--)
+#define REV(i, a) Rev(i, a, -1)
+#define sz(a) ((int) (a).size())
+#define nl '\n'
+#define sp ' '
 
-using namespace std;
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define pill pair<int, ll>
+#define plli pair<ll, int>
+#define pdd pair<double, double>
+#define uset unordered_set
+#define umap unordered_map
+#define pq priority_queue
+template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
+template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
-typedef long long ll;
-typedef unsigned long long llu;
-typedef pair<int, int> pii;
-typedef pair<float, float> pff;
-typedef pair<double, double> pdd;
-typedef pair<ll, ll> pll;
-typedef pair<llu, llu> pllu;
-typedef map<int, int> mii;
-typedef map<int, ll> mill;
-typedef map<ll, int> mlli;
-typedef unordered_map<int, int> umii;
-typedef unordered_map<int, ll> umill;
-typedef unordered_map<ll, int> umlli;
+template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
 struct DynamicSegmentTree {
     struct Node {
@@ -113,43 +105,39 @@ struct Query {
 } queries[MAXN];
 
 int T[MAXN], L[MAXN], N, Q, filter, a, b, v, l, ans, numLabels, labels[MAXN * 2];
-umii tToL;
-umii lToInd;
+umap<int, int> tToL, lToInd;
 char c, s;
 
 int main() {
-    ri(N);
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> N;
     for (int i = 0; i < N; i++) {
-        ri(a);
-        ri(b);
+        cin >> a >> b;
         T[i] = a;
         L[i] = b;
         labels[i] = b;
     }
     numLabels = N;
-    ri(Q);
+    cin >> Q;
     for (int i = 0; i < Q; i++) {
-        rc(c);
+        cin >> c;
         queries[i].c = c;
         if (c == 'T') {
-            ri(a);
-            ri(b);
+            cin >> a >> b;
             queries[i].a = a;
             queries[i].b = b;
         } else if (c == 'L') {
-            ri(a);
-            ri(b);
+            cin >> a >> b;
             labels[numLabels++] = b;
             queries[i].a = a;
             queries[i].b = b;
         } else if (c == 'F') {
-            rc(s);
-            ri(filter);
+            cin >> s >> filter;
             queries[i].s = s;
             queries[i].filter = filter;
             labels[numLabels++] = filter;
         } else if (c == 'S') {
-            ri(v);
+            cin >> v;
             queries[i].v = v;
         } else {
             i--;
@@ -189,8 +177,8 @@ int main() {
             if (s == '<') ans = st->query(1, lToInd[filter] - 1, v);
             else if (s == '>') ans = st->query(lToInd[filter] + 1, numLabels, v);
             else ans = st->query(1, numLabels, v);
-            if (ans != INT_MIN) printf("%d\n", ans);
-            else printf("-1\n");
+            if (ans != INT_MIN) cout << ans << nl;
+            else cout << -1 << nl;
         } else {
             i--;
         }

@@ -1,10 +1,3 @@
-/*
- * DS4_SBT_Array.cpp
- *
- *  Created on: Jul 21, 2017
- *      Author: Wesley Leung
- */
-
 #include <bits/stdc++.h>
 
 #define SHORT_INF 0x3f3f
@@ -67,7 +60,7 @@ private:
      * Resizes the arrays and copies all the values
      */
     void resize() {
-        Value *NEW_VAL = new int[capacity * 2];
+        Value *NEW_VAL = new Value[capacity * 2];
         int *NEW_SZ = new int[capacity * 2];
         int *NEW_L = new int[capacity * 2];
         int *NEW_R = new int[capacity * 2];
@@ -187,8 +180,13 @@ private:
             R[ind] = 0;
             return ind++;
         }
-        if (val < VAL[x]) L[x] = add(L[x], val);
-        else R[x] = add(R[x], val);
+        if (val < VAL[x]) {
+            int l = add(L[x], val);
+            L[x] = l;
+        } else {
+            int r = add(R[x], val);
+            R[x] = r;
+        }
         update(x);
         return maintain(x, val >= VAL[x]);
     }

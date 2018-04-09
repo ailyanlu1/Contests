@@ -10,7 +10,6 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-#define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
