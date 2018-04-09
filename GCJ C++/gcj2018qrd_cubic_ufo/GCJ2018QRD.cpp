@@ -40,8 +40,8 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 
 struct Vector {
 private:
-    int d;               // dimension of the vector
-    double *data = nullptr;        // array of vector's components
+    int d;                          // dimension of the vector
+    double *data = nullptr;         // array of vector's components
 
 public:
     Vector() {}
