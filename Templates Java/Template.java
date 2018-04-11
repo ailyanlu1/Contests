@@ -140,7 +140,7 @@ public class Template {
     private static boolean stdIn = true;
     private static boolean stdOut = true;
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         String packageName = "";
         if (!stdIn || !stdOut) {
             try {
@@ -153,13 +153,18 @@ public class Template {
         else out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + OUTPUT_FILE_NAME)));
         
         for (int i = 1; i <= NUM_OF_TEST_CASES; i++) {
-            run(i);
+            try {
+                run(i);
+            } catch (Exception e) {
+                out.println("Exception thrown on test case " + i);
+                e.printStackTrace(out);
+            }
         }
         out.close();
     }
     
     // TODO CODE GOES IN THIS METHOD
-    public static void run(int testCaseNum) throws IOException {
+    public static void run(int testCaseNum) throws Exception {
         
     }
 }
