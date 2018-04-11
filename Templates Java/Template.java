@@ -130,7 +130,7 @@ public class Template {
     private static Reader in;
     private static PrintWriter out;
     
-    private static final int NUM_OF_TEST_CASES = 1; // TODO CHANGE NUMBER OF TEST CASES
+    private static int NUM_OF_TEST_CASES = 1; // TODO CHANGE NUMBER OF TEST CASES
     
     // TODO CHANGE FILE NAMES
     private static final String INPUT_FILE_NAME = "input.txt";
@@ -157,7 +157,8 @@ public class Template {
         out.close();
     }
     
+    // TODO CODE GOES IN THIS METHOD
     public static void run(int testCaseNum) throws IOException {
-        // TODO INSERT CODE HERE
+        
     }
 }
