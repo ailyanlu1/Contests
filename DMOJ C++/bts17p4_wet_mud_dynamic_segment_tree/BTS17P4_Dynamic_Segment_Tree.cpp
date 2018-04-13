@@ -1,58 +1,37 @@
 #include <bits/stdc++.h>
+using namespace std;
 
-#define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
-#define pb push_back
-#define mp make_pair
-#define l(x) ((x) << 1)
-#define r(x) ((x) << 1 | 1)
-#define m(x, y) ((x) + ((y) - (x)) / 2)
 #define MIN(a, b) ((a) = min((a), (b)))
 #define MAX(a, b) ((a) = max((a), (b)))
+#define pb push_back
+#define eb emplace_back
+#define mp make_pair
 #define f first
 #define s second
-#define ri(x) scanf("%d", &x)
-#define rll(x) scanf("%lld", &x)
-#define rllu(x) scanf("%llu", &x)
-#define rf(x) scanf("%f", &x)
-#define rd(x) scanf("%lf", &x)
-#define rc(x) scanf(" %c", &x)
-#define rs(x) scanf("%s", x)
-#define For(i, a, b) for (int i = (a); i < (b); i++)
+#define all(a) (a).begin(), (a).end()
+#define For(i, a, b) for (auto i = (a); i < (b); i++)
 #define FOR(i, b) For(i, 0, b)
-#define Forit(i, c) for (auto i = (c).begin(); i != (c).end(); i++)
-#define Rev(i, a, b) for (int i = (a); i > (b); i--)
+#define Rev(i, a, b) for (auto i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
-#define Revit(i, c) for (auto i = (c).rbegin(); i != (c).rend(); i++)
-#define FILL(a, x) memset((a), (x), sizeof(a))
-#define Fill(a, x, n) FOR(_, n) (a)[_] = (x);
-#define randi(a, b) (rand() % ((b) - (a) + 1) + (a))
+#define sz(a) ((int) (a).size())
+#define nl '\n'
+#define sp ' '
 
-using namespace std;
-
-typedef long long ll;
-typedef unsigned long long llu;
-typedef pair<int, int> pii;
-typedef pair<float, float> pff;
-typedef pair<int, float> pif;
-typedef pair<float, int> pfi;
-typedef pair<double, double> pdd;
-typedef pair<int, double> pid;
-typedef pair<double, int> pdi;
-typedef pair<ll, ll> pll;
-typedef pair<int, ll> pill;
-typedef pair<ll, int> plli;
-typedef pair<llu, llu> pllu;
-typedef pair<int, llu> pillu;
-typedef pair<llu, int> pllui;
-typedef map<int, int> mii;
-typedef map<int, ll> mill;
-typedef map<ll, int> mlli;
-typedef unordered_map<int, int> umii;
-typedef unordered_map<int, ll> umill;
-typedef unordered_map<ll, int> umlli;
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define pill pair<int, ll>
+#define plli pair<ll, int>
+#define pdd pair<double, double>
+#define uset unordered_set
+#define umap unordered_map
+#define pq priority_queue
+template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
+template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
@@ -108,20 +87,18 @@ public:
     }
 };
 
-int N, M, J, p, t;
-umii tToP;
-umii pToT;
+#define MAXN 100005
+#define MAXT 1000005
+
+int N, M, J, p, t, tToP[MAXT], pToT[MAXN];
 set<int> times;
 DynamicSegmentTree *st;
 
 int main() {
-    ri(N);
-    ri(M);
-    ri(J);
+    cin >> N >> M >> J;
     st = new DynamicSegmentTree(N);
     FOR(i, M) {
-        ri(p);
-        ri(t);
+        cin >> p >> t;
         st->update(p, t);
         tToP[t] = p;
         pToT[p] = t;
@@ -133,7 +110,7 @@ int main() {
     while (curPos + J <= N) {
         q = st->query(curPos + 1, min(curPos + J, N));
         if (q.f == INT_MAX) {
-            printf("-1\n");
+            cout << -1 << nl;
             return 0;
         }
         MAX(curTime, q.f);
@@ -142,6 +119,6 @@ int main() {
             st->update(pToT[*(iter++)], 0);
         }
     }
-    printf("%d\n", curTime);
+    cout << curTime << nl;
     return 0;
 }
