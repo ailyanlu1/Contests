@@ -38,9 +38,9 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 #define MAXR 2010
 #define MAXC 210
 
-int R, C, D, grid[MAXR][MAXC], pre[MAXR][MAXC], dist[MAXR * 2][MAXR * 2];;
+int R, C, D, grid[MAXR][MAXC], dist[MAXR * 2][MAXR * 2];
 bool marked[MAXR * 2];
-vector<pill> adj[MAXR * 2];
+vector<pii> adj[MAXR * 2];
 
 void spfa() {
     For(s, 2, (R + 1) * 2) {
@@ -57,7 +57,7 @@ void spfa() {
             int v = q.front();
             q.pop_front();
             marked[v] = false;
-            for (pill &e : adj[v]) {
+            for (pii &e : adj[v]) {
                 if (dist[s][e.first] > dist[s][v] + e.second) {
                     dist[s][e.first] = dist[s][v] + e.second;
                     if (!marked[e.first]) {
@@ -77,19 +77,19 @@ int main() {
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> R >> C;
     For(i, 1, R + 1) {
-        pre[i][0] = 0;
+        grid[i][0] = 0;
         For(j, 1, C + 1) {
             cin >> grid[i][j];
-            pre[i][j] = pre[i][j - 1] + grid[i][j];
+            grid[i][j] = grid[i][j - 1] + grid[i][j];
         }
         if (i > 1) {
             adj[2 * i].pb({2 * (i - 1), grid[i - 1][1]});
-            adj[2 * i + 1].pb({2 * (i - 1) + 1, grid[i - 1][C]});
+            adj[2 * i + 1].pb({2 * (i - 1) + 1, grid[i - 1][C] - grid[i - 1][C - 1]});
             adj[2 * (i - 1)].pb({2 * i, grid[i][1]});
-            adj[2 * (i - 1) + 1].pb({2 * i + 1, grid[i][C]});
+            adj[2 * (i - 1) + 1].pb({2 * i + 1, grid[i][C] - grid[i][C - 1]});
         }
-        adj[2 * i].pb({2 * i + 1, pre[i][C] - pre[i][1]});
-        adj[2 * i + 1].pb({2 * i, pre[i][C - 1]});
+        adj[2 * i].pb({2 * i + 1, grid[i][C] - grid[i][1]});
+        adj[2 * i + 1].pb({2 * i, grid[i][C - 1]});
     }
     spfa();
     cin >> D;
@@ -100,13 +100,13 @@ int main() {
         cin >> r >> c;
         ll d0 = LL_INF;
         if (r == cur.f) {
-            if (c > cur.s) d0 = pre[r][c] - pre[r][cur.s];
-            else if (c < cur.s) d0 = pre[r][cur.s - 1] - pre[r][c - 1];
+            if (c > cur.s) d0 = grid[r][c] - grid[r][cur.s];
+            else if (c < cur.s) d0 = grid[r][cur.s - 1] - grid[r][c - 1];
         }
-        ll d1 = pre[cur.f][cur.s - 1] + dist[cur.f * 2][r * 2] + pre[r][c] - pre[r][1];
-        ll d2 = pre[cur.f][cur.s - 1] + dist[cur.f * 2][r * 2 + 1] + pre[r][C - 1] - pre[r][c - 1];
-        ll d3 = pre[cur.f][C] - pre[cur.f][cur.s] + dist[cur.f * 2 + 1][r * 2] + pre[r][c] - pre[r][1];
-        ll d4 = pre[cur.f][C] - pre[cur.f][cur.s] + dist[cur.f * 2 + 1][r * 2 + 1] + pre[r][C - 1] - pre[r][c - 1];
+        ll d1 = grid[cur.f][cur.s - 1] + dist[cur.f * 2][r * 2] + grid[r][c] - grid[r][1];
+        ll d2 = grid[cur.f][cur.s - 1] + dist[cur.f * 2][r * 2 + 1] + grid[r][C - 1] - grid[r][c - 1];
+        ll d3 = grid[cur.f][C] - grid[cur.f][cur.s] + dist[cur.f * 2 + 1][r * 2] + grid[r][c] - grid[r][1];
+        ll d4 = grid[cur.f][C] - grid[cur.f][cur.s] + dist[cur.f * 2 + 1][r * 2 + 1] + grid[r][C - 1] - grid[r][c - 1];
         ans += min(d0, min(min(d1, d2), min(d3, d4)));
         cur = {r, c};
     }
