@@ -50,28 +50,30 @@ public:
  * OrderedSqrtArray<int> arr;
  * OrderedSqrtArray<int, greater<int>> arr;
  *
+ * Initializing: O(N)
  * Insert: O(sqrt(N) + log(N))
  * Erase: O(sqrt(N) + log(N))
  * Pop Front: O(sqrt(N))
- * Pop Back: O(1) ammortized
+ * Pop Back: O(1) amortized
  * At, Accessor: O(log(N))
  * Front, Back: O(1)
  * Rank, Contains: O(log(N))
- * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
+ * Lower Bound, Upper Bound, Floor, Ceiling, Above, Below: O(log(N))
  * Empty, Size: O(1)
  * Values: O(N)
  */
-template <typename Value, typename Comparator = less<Value>>
+template <typename Value, typename Comparator = less<Value>, typename SmallAlloc = allocator<Value>,
+        typename LargeAlloc = allocator<vector<Value>>, typename IntAlloc = allocator<int>>
 struct OrderedSqrtArray {
 private:
     Comparator cmp; // the comparator
     int n; // the size of the array
-    const int SCALE_FACTOR; // the scale factor of sqrt(n)
-    vector<vector<Value>> a; // the array
-    vector<int> prefixSZ; // the prefix array of the sizes of the blocks
+    int SCALE_FACTOR; // the scale factor of sqrt(n)
+    vector<vector<Value, SmallAlloc>, LargeAlloc> a; // the array
+    vector<int, IntAlloc> prefixSZ; // the prefix array of the sizes of the blocks
 
     // returns the 2D index of the smallest value greater than or equal to val
-    pair<int, int> lower_bound_ind(const Value val) const {
+    pair<int, int> ceiling_ind(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
@@ -85,25 +87,6 @@ private:
             mid = lo + (hi - lo) / 2;
             if (cmp(a[i][mid], val)) lo = mid + 1;
             else hi = mid;
-        }
-        return {i, lo};
-    }
-
-    // returns the 2D index of the smallest value greater than val
-    pair<int, int> upper_bound_ind(const Value val) const {
-        int lo = 0, hi = (int) a.size(), mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[mid].back())) hi = mid;
-            else lo = mid + 1;
-        }
-        if (lo == (int) a.size()) return {(int) a.size(), 0};
-        int i = lo;
-        lo = 0, hi = (int) a[i].size();
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[i][mid])) hi = mid;
-            else lo = mid + 1;
         }
         return {i, lo};
     }
@@ -123,6 +106,44 @@ private:
             mid = lo + (hi - lo) / 2;
             if (cmp(val, a[i][mid])) hi = mid - 1;
             else lo = mid + 1;
+        }
+        return {i, hi};
+    }
+
+    // returns the 2D index of the smallest value greater than val
+    pair<int, int> above_ind(const Value val) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[mid].back())) hi = mid;
+            else lo = mid + 1;
+        }
+        if (lo == (int) a.size()) return {(int) a.size(), 0};
+        int i = lo;
+        lo = 0, hi = (int) a[i].size();
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[i][mid])) hi = mid;
+            else lo = mid + 1;
+        }
+        return {i, lo};
+    }
+
+    // returns the 2D index of the largest value less than val
+    pair<int, int> below_ind(const Value val) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[mid].front(), val)) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        if (hi == -1) return {-1, 0};
+        int i = hi;
+        lo = 0, hi = ((int) a[i].size()) - 1;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[i][mid], val)) lo = mid + 1;
+            else hi = mid - 1;
         }
         return {i, hi};
     }
@@ -158,12 +179,31 @@ public:
     }
 
     /**
+     * Initializes the structures with an initializer list. The elements must be sorted.
+     *
+     * @param il the initializer list
+     * @param SCALE_FACTOR scales the value of sqrt(n) by this value
+     */
+    OrderedSqrtArray(initializer_list<Value> il, const int SCALE_FACTOR = 1) : n(il.end() - il.begin()), SCALE_FACTOR(SCALE_FACTOR) {
+        assert(n >= 0);
+        assert(is_sorted(il.begin(), il.end(), cmp));
+        int sqrtn = (int) sqrt(n) * SCALE_FACTOR;
+        for (auto i = il.begin(); i < il.end(); i += sqrtn) {
+            a.emplace_back(i, min(i + sqrtn, il.end()));
+            prefixSZ.push_back(0);
+        }
+        for (int i = 1; i < (int) a.size(); i++) {
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+        }
+    }
+
+    /**
      * Inserts a value into the structure, allowing for duplicates.
      *
      * @param val the value to be inserted
      */
     void insert(const Value val) {
-        pair<int, int> i = upper_bound_ind(val);
+        pair<int, int> i = above_ind(val);
         if (n++ == 0) {
             a.emplace_back();
             prefixSZ.push_back(0);
@@ -189,7 +229,7 @@ public:
      * @return true if the value was in the structure and removed, false otherwise
      */
     bool erase(const Value val) {
-        pair<int, int> i = lower_bound_ind(val);
+        pair<int, int> i = ceiling_ind(val);
         if (i.first == (int) a.size() || a[i.first][i.second] != val) return false;
         --n;
         a[i.first].erase(a[i.first].begin() + i.second);
@@ -304,7 +344,7 @@ public:
      * @return true if the structure contains val, false otherwise
      */
     bool contains(const Value val) const {
-        pair<int, int> i = lower_bound_ind(val);
+        pair<int, int> i = ceiling_ind(val);
         return i.first != (int) a.size() && a[i.first][i.second] == val;
     }
 
@@ -319,14 +359,14 @@ public:
      * in the structure
      */
     pair<int, Value> lower_bound(const Value val) const {
-        pair<int, int> i = lower_bound_ind(val);
+        pair<int, int> i = ceiling_ind(val);
         if (i.first == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
         return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
     }
 
     /**
      * Returns a pair containing the index and value of the smallest value
-     * greater than to val.
+     * greater than to val. Identical to above.
      *
      * @param val the value
      * @return a pair containing the index and value of the smallest value
@@ -335,7 +375,7 @@ public:
      * the largest value in the structure
      */
     pair<int, Value> upper_bound(const Value val) const {
-        pair<int, int> i = upper_bound_ind(val);
+        pair<int, int> i = above_ind(val);
         if (i.first == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
         return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
     }
@@ -367,8 +407,40 @@ public:
      * in the structure
      */
     pair<int, Value> ceiling(const Value val) const {
-        pair<int, int> i = lower_bound_ind(val);
+        pair<int, int> i = ceiling_ind(val);
         if (i.first == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
+        return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * greater than to val. Identical to upper_bound.
+     *
+     * @param val the value
+     * @return a pair containing the index and value of the smallest value
+     * less than or equal to val
+     * @throws no_such_element_exception if val is greater than or equal to
+     * the largest value in the structure
+     */
+    pair<int, Value> above(const Value val) const {
+        pair<int, int> i = above_ind(val);
+        if (i.first == (int) a.size()) throw no_such_element_exception("call to above() resulted in no such value");
+        return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the largest value
+     * less than val.
+     *
+     * @param val the value
+     * @return a pair containing the index and value of the largest value
+     * less than val
+     * @throws no_such_element_exception if val is less than or equal to the smallest value
+     * in the structure
+     */
+    pair<int, Value> below(const Value val) const {
+        pair<int, int> i = below_ind(val);
+        if (i.first == -1) throw no_such_element_exception("call to below() resulted in no such value");
         return {prefixSZ[i.first] + i.second, a[i.first][i.second]};
     }
 
@@ -377,8 +449,8 @@ public:
      *
      * @return a vector containing all values in the structure
      */
-    vector<Value> values() const {
-        vector<Value> ret;
+    vector<Value, SmallAlloc> values() const {
+        vector<Value, SmallAlloc> ret;
         for (int i = 0; i < (int) a.size(); i++) {
             for (int j = 0; j < (int) a[i].size(); j++) {
                 ret.push_back(a[i][j]);
@@ -398,44 +470,35 @@ public:
  * OrderedRootArray<3, int, OrderedSqrtArray<int, greater<int>>, greater<int>> arr;
  * OrderedRootArray<4, int, OrderedRootArray<3, int, OrderedSqrtArray<int>>> arr;
  *
+ * Initializing: O(N)
  * Insert: O(N ^ (1 / R) + log(N))
  * Erase: O(N ^ (1 / R) + log(N))
  * Pop Front: O(N ^ (1 / R))
- * Pop Back: O(1) ammortized
+ * Pop Back: O(1) amortized
  * At, Accessor: O(log(N))
  * Front, Back: O(1)
  * Rank, Contains: O(log(N))
- * Lower Bound, Upper Bound, Floor, Ceiling: O(log(N))
+ * Lower Bound, Upper Bound, Floor, Ceiling, Above, Below: O(log(N))
  * Empty, Size: O(1)
  * Values: O(N)
  */
-template <const int R, typename Value, typename Container, typename Comparator = less<Value>>
+template <const int R, typename Value, typename Container, typename Comparator = less<Value>,
+        typename SmallAlloc = allocator<Value>, typename LargeAlloc = allocator<Container>, typename IntAlloc = allocator<int>>
 struct OrderedRootArray {
 private:
     Comparator cmp; // the comparator
     int n; // the size of the array
-    const int SCALE_FACTOR; // the scale factor
-    vector<Container*> a; // the array
-    vector<int> prefixSZ; // the prefix array of the sizes of the blocks
+    int SCALE_FACTOR; // the scale factor
+    vector<Container, LargeAlloc> a; // the array
+    vector<int, IntAlloc> prefixSZ; // the prefix array of the sizes of the blocks
 
     // returns the index of the container with the smallest value greater than or equal to val
-    int lower_bound_ind(const Value val) const {
+    int ceiling_ind(const Value val) const {
         int lo = 0, hi = (int) a.size(), mid;
         while (lo < hi) {
             mid = lo + (hi - lo) / 2;
-            if (cmp(a[mid]->back(), val)) lo = mid + 1;
+            if (cmp(a[mid].back(), val)) lo = mid + 1;
             else hi = mid;
-        }
-        return lo;
-    }
-
-    // returns the index of the container with the smallest value greater than val
-    int upper_bound_ind(const Value val) const {
-        int lo = 0, hi = (int) a.size(), mid;
-        while (lo < hi) {
-            mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[mid]->back())) hi = mid;
-            else lo = mid + 1;
         }
         return lo;
     }
@@ -445,8 +508,30 @@ private:
         int lo = 0, hi = ((int) a.size()) - 1, mid;
         while (lo <= hi) {
             mid = lo + (hi - lo) / 2;
-            if (cmp(val, a[mid]->front())) hi = mid - 1;
+            if (cmp(val, a[mid].front())) hi = mid - 1;
             else lo = mid + 1;
+        }
+        return hi;
+    }
+
+    // returns the index of the container with the smallest value greater than val
+    int above_ind(const Value val) const {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(val, a[mid].back())) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
+    }
+
+    // returns the index of the container with largest value less than val
+    int below_ind(const Value val) const {
+        int lo = 0, hi = ((int) a.size()) - 1, mid;
+        while (lo <= hi) {
+            mid = lo + (hi - lo) / 2;
+            if (cmp(a[mid].front(), val)) lo = mid + 1;
+            else hi = mid - 1;
         }
         return hi;
     }
@@ -473,23 +558,33 @@ public:
         assert(is_sorted(st, en, cmp));
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
         for (It i = st; i < en; i += rootn) {
-            a.push_back(new Container(i, min(i + rootn, st + n), SCALE_FACTOR));
+            a.emplace_back(i, min(i + rootn, en), SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
         for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1]->size();
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
         }
     }
 
-    /**
-     * Deletes the structure and all nested containers.
-     */
-    virtual ~OrderedRootArray() {
-        for (int i = 0; i < (int) a.size(); i++) {
-            delete a[i];
-        }
-        a.clear();
-    }
+   /**
+    * Initializes the structures with an initializer list. The elements must be sorted.
+    *
+    * @param il the initializer list
+    * @param SCALE_FACTOR scales the value of N ^ (1 / R) by this value
+    */
+   OrderedRootArray(initializer_list<Value> il, const int SCALE_FACTOR = 1) : n(il.end() - il.begin()), SCALE_FACTOR(SCALE_FACTOR) {
+       assert(n >= 0);
+       assert(is_sorted(il.begin(), il.end(), cmp));
+       int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
+       for (auto i = il.begin(); i < il.end(); i += rootn) {
+           a.emplace_back(i, min(i + rootn, il.end()), SCALE_FACTOR);
+           prefixSZ.push_back(0);
+       }
+       for (int i = 1; i < (int) a.size(); i++) {
+           prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
+       }
+   }
+
 
     /**
      * Inserts a value into the structure, allowing for duplicates.
@@ -497,26 +592,26 @@ public:
      * @param val the value to be inserted
      */
     void insert(const Value val) {
-        int i = upper_bound_ind(val);
+        int i = above_ind(val);
         if (n++ == 0) {
-            a.push_back(new Container());
+            a.emplace_back(SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
-        if (i == (int) a.size()) a[--i]->insert(val);
-        else a[i]->insert(val);
+        if (i == (int) a.size()) a[--i].insert(val);
+        else a[i].insert(val);
         int rootn = (int) pow(n, (double) (R - 1) / R) * SCALE_FACTOR;
-        if ((int) a[i]->size() > 2 * rootn) {
-            vector<Value> b;
-            while (a[i]->size() > rootn) {
-                b.push_back(a[i]->back());
-                a[i]->pop_back();
+        if ((int) a[i].size() > 2 * rootn) {
+            vector<Value, SmallAlloc> b;
+            while (a[i].size() > rootn) {
+                b.push_back(a[i].back());
+                a[i].pop_back();
             }
             reverse(b.begin(), b.end());
-            a.insert(a.begin() + i + 1, new Container(b.begin(), b.end()));
+            a.emplace(a.begin() + i + 1, b.begin(), b.end(), SCALE_FACTOR);
             prefixSZ.push_back(0);
         }
         for (int j = i + 1; j < (int) a.size(); j++) {
-            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1]->size();
+            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
         }
     }
 
@@ -528,17 +623,16 @@ public:
      * @return true if the value was in the structure and removed, false otherwise
      */
     bool erase(const Value val) {
-        int i = lower_bound_ind(val);
+        int i = ceiling_ind(val);
         if (i == (int) a.size()) return false;
-        if (!a[i]->erase(val)) return false;
+        if (!a[i].erase(val)) return false;
         --n;
-        if (a[i]->empty()) {
-            delete a[i];
+        if (a[i].empty()) {
             a.erase(a.begin() + i);
             prefixSZ.pop_back();
         }
         for (int j = i + 1; j < (int) a.size(); j++) {
-            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1]->size();
+            prefixSZ[j] = prefixSZ[j - 1] + (int) a[j - 1].size();
         }
         return true;
     }
@@ -549,14 +643,13 @@ public:
     void pop_front() {
         assert(n > 0);
         --n;
-        a.front()->pop_front();
-        if (a.front()->empty()) {
-            delete a.front();
+        a.front().pop_front();
+        if (a.front().empty()) {
             a.erase(a.begin());
             prefixSZ.pop_back();
         }
         for (int i = 1; i < (int) a.size(); i++) {
-            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1]->size();
+            prefixSZ[i] = prefixSZ[i - 1] + (int) a[i - 1].size();
         }
     }
 
@@ -566,9 +659,8 @@ public:
     void pop_back() {
         assert(n > 0);
         --n;
-        a.back()->pop_back();
-        if (a.back()->empty()) {
-            delete a.back();
+        a.back().pop_back();
+        if (a.back().empty()) {
             a.pop_back();
             prefixSZ.pop_back();
         }
@@ -588,7 +680,7 @@ public:
             if (k < prefixSZ[mid]) hi = mid - 1;
             else lo = mid + 1;
         }
-        return a[hi]->at(k - prefixSZ[hi]);
+        return a[hi].at(k - prefixSZ[hi]);
     }
 
     /**
@@ -608,7 +700,7 @@ public:
      */
     const Value &front() const {
         assert(n > 0);
-        return a.front()->front();
+        return a.front().front();
     }
 
     /**
@@ -617,7 +709,7 @@ public:
      */
     const Value &back() const {
         assert(n > 0);
-        return a.back()->back();
+        return a.back().back();
     }
 
     /**
@@ -645,8 +737,8 @@ public:
      * @return true if the structure contains val, false otherwise
      */
     bool contains(const Value val) const {
-        int i = lower_bound_ind(val);
-        return i != (int) a.size() && a[i]->contains(val);
+        int i = ceiling_ind(val);
+        return i != (int) a.size() && a[i].contains(val);
     }
 
     /**
@@ -660,15 +752,15 @@ public:
      * in the structure
      */
     pair<int, Value> lower_bound(const Value val) const {
-        int i = lower_bound_ind(val);
+        int i = ceiling_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to lower_bound() resulted in no such value");
-        pair<int, Value> j = a[i]->lower_bound(val);
+        pair<int, Value> j = a[i].lower_bound(val);
         return {prefixSZ[i] + j.first, j.second};
     }
 
     /**
      * Returns a pair containing the index and value of the smallest value
-     * greater than to val.
+     * greater than to val. Identical to above.
      *
      * @param val the value
      * @return a pair containing the index and value of the smallest value
@@ -677,9 +769,9 @@ public:
      * the largest value in the structure
      */
     pair<int, Value> upper_bound(const Value val) const {
-        int i = upper_bound_ind(val);
+        int i = above_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to upper_bound() resulted in no such value");
-        pair<int, Value> j = a[i]->upper_bound(val);
+        pair<int, Value> j = a[i].upper_bound(val);
         return {prefixSZ[i] + j.first, j.second};
     }
 
@@ -696,7 +788,41 @@ public:
     pair<int, Value> floor(const Value val) const {
         int i = floor_ind(val);
         if (i == -1) throw no_such_element_exception("call to floor() resulted in no such value");
-        pair<int, Value> j = a[i]->floor(val);
+        pair<int, Value> j = a[i].floor(val);
+        return {prefixSZ[i] + j.first, j.second};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the smallest value
+     * greater than to val. Identical to upper_bound.
+     *
+     * @param val the value
+     * @return a pair containing the index and value of the smallest value
+     * less than or equal to val
+     * @throws no_such_element_exception if val is greater than or equal to
+     * the largest value in the structure
+     */
+    pair<int, Value> above(const Value val) const {
+        int i = above_ind(val);
+        if (i == (int) a.size()) throw no_such_element_exception("call to above() resulted in no such value");
+        pair<int, Value> j = a[i].above(val);
+        return {prefixSZ[i] + j.first, j.second};
+    }
+
+    /**
+     * Returns a pair containing the index and value of the largest value
+     * less than val.
+     *
+     * @param val the value
+     * @return a pair containing the index and value of the largest value
+     * less than val
+     * @throws no_such_element_exception if val is less than or equal to the smallest value
+     * in the structure
+     */
+    pair<int, Value> below(const Value val) const {
+        int i = below_ind(val);
+        if (i == -1) throw no_such_element_exception("call to below() resulted in no such value");
+        pair<int, Value> j = a[i].below(val);
         return {prefixSZ[i] + j.first, j.second};
     }
 
@@ -711,9 +837,9 @@ public:
      * in the structure
      */
     pair<int, Value> ceiling(const Value val) const {
-        int i = lower_bound_ind(val);
+        int i = ceiling_ind(val);
         if (i == (int) a.size()) throw no_such_element_exception("call to ceiling() resulted in no such value");
-        pair<int, Value> j = a[i]->ceiling(val);
+        pair<int, Value> j = a[i].ceiling(val);
         return {prefixSZ[i] + j.first, j.second};
     }
 
@@ -722,10 +848,10 @@ public:
      *
      * @return a vector containing all values in the structure
      */
-    vector<Value> values() const {
-        vector<Value> ret;
+    vector<Value, SmallAlloc> values() const {
+        vector<Value, SmallAlloc> ret;
         for (int i = 0; i < (int) a.size(); i++) {
-            for (Value x : a[i]->values()) {
+            for (Value x : a[i].values()) {
                 ret.push_back(x);
             }
         }
