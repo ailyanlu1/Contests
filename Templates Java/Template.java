@@ -159,6 +159,7 @@ public class Template {
                 out.println("Exception thrown on test case " + i);
                 e.printStackTrace(out);
             }
+            out.flush();
         }
         out.close();
     }
