@@ -47,7 +47,7 @@ struct DynamicLazySegmentTree {
         Node *right = nullptr;
         int val = 0, lazy = 0;
 
-        void propogate() {
+        void propagate() {
             if (this->lazy != 0) {
                 if (left == nullptr) left = new Node();
                 left->val += this->lazy;
@@ -65,7 +65,7 @@ private:
     int N;
 
     void update(Node *cur, int cL, int cR, int l, int r, int val) {
-        if (cL != cR) cur->propogate();
+        if (cL != cR) cur->propagate();
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             cur->val += val;
@@ -82,7 +82,7 @@ private:
 
     int rMaxQ(Node *cur, int cL, int cR, int l, int r) {
         if (cur == nullptr || cL > r || cR < l) return 0;
-        if (cL != cR) cur->propogate();
+        if (cL != cR) cur->propagate();
         if (cL >= l && cR <= r) return cur->val;
         int m = cL + (cR - cL) / 2;
         int left = rMaxQ(cur->left, cL, m, l, r);

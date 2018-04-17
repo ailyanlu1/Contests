@@ -93,7 +93,7 @@ private:
     vector<Node> tree;
     int N;
 
-    void propogate(int cur) {
+    void propagate(int cur) {
         if (tree[cur].lazyLen != 0) {
             tree[cur * 2].setLen(tree[cur].lazyLen);
             tree[cur * 2 + 1].setLen(tree[cur].lazyLen);
@@ -130,7 +130,7 @@ private:
     }
 
     void update(int cur, int cL, int cR, int l, int r, int val, int type) {
-        if (cL != cR) propogate(cur);
+        if (cL != cR) propagate(cur);
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             if (type == 0) tree[cur].setLen(val);

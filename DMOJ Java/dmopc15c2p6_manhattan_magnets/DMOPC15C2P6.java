@@ -125,7 +125,7 @@ public class DMOPC15C2P6 {
                 this.max = Math.max(l.max, r.max);
             }
             
-            public void propogate() {
+            public void propagate() {
                 if (lazy != 0) {
                     max += lazy;
                     if (left != null) {
@@ -159,11 +159,11 @@ public class DMOPC15C2P6 {
         }
         
         private Node update(Node cur, int cL, int cR, int l, int r, int val) {
-            cur.propogate();
+            cur.propagate();
             if (cL > r || cR < l) return cur;
             if (cL >= l && cR <= r) {
                 cur.lazy += val;
-                cur.propogate();
+                cur.propagate();
                 return cur;
             }
             int m = (cL + cR) >> 1;

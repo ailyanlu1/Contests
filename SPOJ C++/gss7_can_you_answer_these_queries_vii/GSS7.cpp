@@ -90,7 +90,7 @@ private:
     int *array;
     int N;
 
-    void propogate(int cur, int cL, int cR) {
+    void propagate(int cur, int cL, int cR) {
         if (tree[cur].lazy != LL_INF) {
             int m = cL + (cR - cL) / 2;
             tree[cur * 2].sum = tree[cur].lazy * (m - cL + 1);
@@ -115,7 +115,7 @@ private:
     }
 
     void update(int cur, int cL, int cR, int l, int r, long long val) {
-        if (cL != cR) propogate(cur, cL, cR);
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             tree[cur].sum = val * (cR - cL + 1);
@@ -130,7 +130,7 @@ private:
     }
 
     Node query(int cur, int cL, int cR, int l, int r) {
-        if (cL != cR) propogate(cur, cL, cR);
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL > r || cR < l) return Node();
         if (cL >= l && cR <= r) return tree[cur];
         int m = cL + (cR - cL) / 2;

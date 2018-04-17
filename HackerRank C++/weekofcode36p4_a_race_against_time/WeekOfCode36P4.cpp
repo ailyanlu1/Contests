@@ -95,7 +95,7 @@ private:
     vector<Node> tree;
     int N;
 
-    void propogate(int cur) {
+    void propagate(int cur) {
         if (tree[cur].lazy != 0) {
             tree[cur * 2].val += tree[cur].lazy;
             tree[cur * 2].lazy += tree[cur].lazy;
@@ -106,7 +106,7 @@ private:
     }
 
     void update(int cur, int cL, int cR, int l, int r, ll val) {
-        if (cL != cR) propogate(cur);
+        if (cL != cR) propagate(cur);
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             tree[cur].val += val;
@@ -120,7 +120,7 @@ private:
     }
 
     ll query(int cur, int cL, int cR, int l, int r) {
-        if (cL != cR) propogate(cur);
+        if (cL != cR) propagate(cur);
         if (cL > r || cR < l) return LL_INF;
         if (cL >= l && cR <= r) return tree[cur].val;
         int m = cL + (cR - cL) / 2;

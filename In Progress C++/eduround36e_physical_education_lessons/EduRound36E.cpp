@@ -83,7 +83,7 @@ private:
     int N;
     int *array;
 
-    void propogate(int cur, int cL, int cR) {
+    void propagate(int cur, int cL, int cR) {
         if (tree[cur].lazy != -1) {
             int m = cL + (cR - cL) / 2;
             tree[cur * 2].l = tree[cur].l;
@@ -99,7 +99,7 @@ private:
     }
 
     void update(int cur, int cL, int cR, int l, int r, int val) {
-        if (cL != cR) propogate(cur, cL, cR);
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             bool ext = cL == l;
@@ -116,7 +116,7 @@ private:
     }
 
     int query(int cur, int cL, int cR, int l, int r) {
-        if (cL != cR) propogate(cur, cL, cR);
+        if (cL != cR) propagate(cur, cL, cR);
         if (cL > r || cR < l) return 0;
         if (cL >= l && cR <= r) return tree[cur].val;
         int m = cL + (cR - cL) / 2;

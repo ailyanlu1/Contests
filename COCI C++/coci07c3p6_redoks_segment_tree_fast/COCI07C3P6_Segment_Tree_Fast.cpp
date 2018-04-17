@@ -68,7 +68,7 @@ struct SegmentTree {
             lazy = mod10(lazy + x);
         }
 
-        void propogate() {
+        void propagate() {
             left->rotate(lazy);
             right->rotate(lazy);
             lazy = 0;
@@ -108,7 +108,7 @@ private:
             }
             cur->rotate(1);
         } else {
-            cur->propogate();
+            cur->propagate();
             int m = cL + (cR - cL) / 2;
             ans += updateQuery(cur->left, cL, m, l, r);
             ans += updateQuery(cur->right, m + 1, cR, l, r);
