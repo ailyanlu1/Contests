@@ -45,9 +45,9 @@ int main() {
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> N >> M >> C;
-    FOR(i, N) cin >> A[i];
     deque<int> mindq, maxdq;
     FOR(i, N) {
+        cin >> A[i];
         while (!mindq.empty() && mindq.front() <= i - M) mindq.pop_front();
         while (!maxdq.empty() && maxdq.front() <= i - M) maxdq.pop_front();
         while (!mindq.empty() && A[mindq.back()] >= A[i]) mindq.pop_back();
