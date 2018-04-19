@@ -112,7 +112,7 @@ public:
 
 const int radius = 100;
 int N, W, L;
-pdd P[MAXN];
+pll P[MAXN];
 
 int main() {
 //    freopen("in.txt", "r", stdin);
