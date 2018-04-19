@@ -35,20 +35,21 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-#define MAXN 1000005
-
-int N, A[MAXN];
-stack<int> s;
+int N;
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     cin >> N;
-    A[0] = A[N + 1] = INT_INF;
-    For(i, 1, N + 1) cin >> A[i];
+    int prev, cur;
     ll ans = 0;
-    For(i, 1, N + 1) ans += ((A[i] >= A[i - 1]) + (A[i] > A[i + 1])) * A[i];
+    cin >> prev;
+    FOR(i, N - 1) {
+        cin >> cur;
+        ans += max(prev, cur);
+        prev = cur;
+    }
     cout << ans << nl;
     return 0;
 }
