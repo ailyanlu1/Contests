@@ -107,28 +107,6 @@ int main() {
     ft = new FenwickTreeRangePoint<int>(MAXXY);
     int ans = 0;
     FOR(x, MAXXY) {
-//        sort(all(LL[x][0]), cmpy1lt);
-//        sort(all(LL[x][1]), cmpy1lt);
-//        for (Line &l : LL[x][0]) {
-//            ft->update(l.y1, l.y2, 1);
-//            ans += ft->getValue(l.y1) == 1;
-//        }
-//        for (Line &l : LL[x][1]) {
-//            ans += ft->getValue(l.y2) == 1;
-//            ft->update(l.y1, l.y2, -1);
-//        }
-//        for (Line &l : LL[x][0]) ft->update(l.y1, l.y2, -1);
-//        for (Line &l : LL[x][1]) ft->update(l.y1, l.y2, 1);
-//        sort(all(LL[x][0]), cmpy2gt);
-//        sort(all(LL[x][1]), cmpy2gt);
-//        for (Line &l : LL[x][0]) {
-//            ft->update(l.y1, l.y2, 1);
-//            ans += ft->getValue(l.y2) == 1;
-//        }
-//        for (Line &l : LL[x][1]) {
-//            ans += ft->getValue(l.y2) == 1;
-//            ft->update(l.y1, l.y2, -1);
-//        }
         umap<int, pair<int, pair<bool, bool>>> left, right;
         for (Line &l : LL[x][0]) {
             ft->update(l.y1, l.y2, 1);
