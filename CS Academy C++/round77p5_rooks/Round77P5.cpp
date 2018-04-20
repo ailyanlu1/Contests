@@ -1,3 +1,4 @@
+// https://csacademy.com/contest/round-77/task/rooks/
 #include <bits/stdc++.h>
 using namespace std;
 

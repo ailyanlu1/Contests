@@ -1,4 +1,4 @@
-// https://csacademy.com/contest/round-77/task/two-rows/
+// https://csacademy.com/contest/round-77/task/expected-lcp/
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -36,25 +36,31 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-#define MAXM 100005
-
-int M;
-ll A[2][MAXM], dp[2][MAXM][2];
+int N;
+const ll BASE1 = 10007;
+const ll BASE2 = 137;
+const ll MOD1 = 1e9 + 7;
+const ll MOD2 = 1e9 + 9;
+umap<ll, ll> cnt1, cnt2;
+ll ans = 0;
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> M;
-    FOR(i, 2) FOR(j, M) cin >> A[i][j];
-    dp[0][M - 1][0] = dp[0][M - 1][1] = A[0][M - 1] + A[1][M - 1];
-    dp[1][M - 1][0] = dp[1][M - 1][1] = A[1][M - 1];
-    REV(j, M - 2) {
-        FOR(i, 2) {
-            dp[i][j][0] = min(dp[i ^ 1][j + 1][0] + A[0][j] + A[1][j], dp[i][j + 1][1] + A[i][j]);
-            dp[i][j][1] = max(dp[i ^ 1][j + 1][1] + A[0][j] + A[1][j], dp[i][j + 1][0] + A[i][j]);
+    cin >> N;
+    string s;
+    FOR(i, N) {
+        cin >> s;
+        ll h1 = 0, h2 = 0;
+        FOR(j, sz(s)) {
+            h1 = (h1 * BASE1 + (s[j] - 'a' + 1)) % MOD1;
+            h2 = (h2 * BASE2 + (s[j] - 'a' + 1)) % MOD2;
+            ans += min(cnt1[h1], cnt2[h2]);
+            cnt1[h1]++;
+            cnt2[h2]++;
         }
     }
-    cout << dp[0][0][0] << nl;
+    cout << fixed << setprecision(9) << (double) ans / ((ll) N * (N - 1) / 2) << nl;
     return 0;
 }

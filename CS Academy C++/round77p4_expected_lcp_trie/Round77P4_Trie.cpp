@@ -1,3 +1,4 @@
+// https://csacademy.com/contest/round-77/task/expected-lcp/
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -36,12 +37,29 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
 int N;
-const ll BASE1 = 10007;
-const ll BASE2 = 137;
-const ll MOD1 = 1e9 + 7;
-const ll MOD2 = 1e9 + 9;
-umap<ll, ll> cnt1, cnt2;
 ll ans = 0;
+
+struct Node {
+    unordered_map<char, Node*> child;
+    int cnt = 0;
+};
+
+void insert(Node *root, string &s) {
+    Node *cur = root;
+    for (char c : s) {
+        if (cur->child.count(c)) cur = cur->child[c];
+        else cur = cur->child[c] = new Node();
+        cur->cnt++;
+    }
+}
+
+double dfs(Node *cur) {
+    double ret = cur->cnt * (cur->cnt - 1);
+    for (pair<char, Node*> p : cur->child) ret += dfs(p.s);
+    return ret;
+}
+
+Node *root = new Node();
 
 int main() {
 //    freopen("in.txt", "r", stdin);
@@ -51,15 +69,8 @@ int main() {
     string s;
     FOR(i, N) {
         cin >> s;
-        ll h1 = 0, h2 = 0;
-        FOR(j, sz(s)) {
-            h1 = (h1 * BASE1 + (s[j] - 'a' + 1)) % MOD1;
-            h2 = (h2 * BASE2 + (s[j] - 'a' + 1)) % MOD2;
-            ans += min(cnt1[h1], cnt2[h2]);
-            cnt1[h1]++;
-            cnt2[h2]++;
-        }
+        insert(root, s);
     }
-    cout << fixed << setprecision(9) << (double) ans / ((ll) N * (N - 1) / 2) << nl;
+    cout << fixed << setprecision(9) << dfs(root) / ((ll) N * (N - 1)) << nl;
     return 0;
 }
