@@ -39,9 +39,9 @@ template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pa
 
 int N, M, A[MAXN];
 
+template <int blockSize>
 struct Sqrt {
     int n;
-    int blockSize = 4096;
     deque<deque<int>> a;
 
     Sqrt() : n(0) {}
@@ -204,101 +204,145 @@ struct Sqrt {
     }
 };
 
-int n;
-int blockSize = 32768;
-deque<Sqrt> a;
+template <int blockSize, typename Container>
+struct Root {
+    int n;
+    deque<Container> a;
 
-void init() {
-    n = N;
-    for (int i = 0; i < n; i += blockSize) {
-        a.emplace_back(A + i, A + min(i + blockSize, n));
-    }
-}
+    Root() : n(0) {}
 
-void insert(int val) {
-    int lo = 0, hi = (int) a.size(), mid;
-    while (lo < hi) {
-        mid = lo + (hi - lo) / 2;
-        if (val < a[mid].back()) hi = mid;
-        else lo = mid + 1;
-    }
-    if (n++ == 0) a.emplace_back();
-    if (lo == (int) a.size()) a[--lo].insert(val);
-    else a[lo].insert(val);
-    if (lo < (int) a.size() / 2) {
-        for (int j = lo - 1; j >= 0; j--) {
-            a[j].push_back(a[j + 1].front());
-            a[j + 1].pop_front();
+    template <typename It>
+    Root(It st, It en) : n(en - st) {
+        for (It i = st; i < en; i += blockSize) {
+            a.emplace_back(i, min(i + blockSize, en));
         }
+    }
+
+    void insert(int val) {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (val < a[mid].back()) hi = mid;
+            else lo = mid + 1;
+        }
+        if (n++ == 0) a.emplace_back();
+        if (lo == (int) a.size()) a[--lo].insert(val);
+        else a[lo].insert(val);
+        if (lo < (int) a.size() / 2) {
+            for (int j = lo - 1; j >= 0; j--) {
+                a[j].push_back(a[j + 1].front());
+                a[j + 1].pop_front();
+            }
+            if (a.front().n > blockSize) {
+                a.emplace_front();
+                a.front().push_back(a[1].front());
+                a[1].pop_front();
+            }
+        } else {
+            for (int j = lo + 1; j < (int) a.size(); j++) {
+                a[j].push_front(a[j - 1].back());
+                a[j - 1].pop_back();
+            }
+            if (a.back().n > blockSize) {
+                a.emplace_back();
+                a.back().push_front(a[((int) a.size()) - 2].back());
+                a[((int) a.size()) - 2].pop_back();
+            }
+        }
+    }
+
+    bool erase(int val) {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[mid].back() < val) lo = mid + 1;
+            else hi = mid;
+        }
+        if (lo == (int) a.size()) return false;
+        if (!a[lo].erase(val)) return false;
+        --n;
+        if (lo < (int) a.size() / 2) {
+            for (int j = lo - 1; j >= 0; j--) {
+                a[j + 1].push_front(a[j].back());
+                a[j].pop_back();
+            }
+            if (a.front().n == 0) a.pop_front();
+        } else {
+            for (int j = lo + 1; j < (int) a.size(); j++) {
+                a[j - 1].push_back(a[j].front());
+                a[j].pop_front();
+            }
+            if (a.back().n == 0) a.pop_back();
+        }
+        return true;
+    }
+
+    int at(int k) {
+        if (k < a[0].n) return a[0].at(k);
+        k -= a[0].n;
+        return a[1 + k / blockSize].at(k % blockSize);
+    }
+
+    void push_front(int val) {
+        if (n++ == 0) a.emplace_front();
+        a.front().push_front(val);
         if (a.front().n > blockSize) {
             a.emplace_front();
             a.front().push_back(a[1].front());
             a[1].pop_front();
         }
-    } else {
-        for (int j = lo + 1; j < (int) a.size(); j++) {
-            a[j].push_front(a[j - 1].back());
-            a[j - 1].pop_back();
-        }
+    }
+
+    void pop_front() {
+        --n;
+        a.front().pop_front();
+        if (a.front().n == 0) a.pop_front();
+    }
+
+    int front() {
+        return a.front().front();
+    }
+
+    void push_back(int val) {
+        if (n++ == 0) a.emplace_back();
+        a.back().push_back(val);
         if (a.back().n > blockSize) {
             a.emplace_back();
             a.back().push_front(a[((int) a.size()) - 2].back());
             a[((int) a.size()) - 2].pop_back();
         }
     }
-}
 
-void erase(int val) {
-    int lo = 0, hi = (int) a.size(), mid;
-    while (lo < hi) {
-        mid = lo + (hi - lo) / 2;
-        if (a[mid].back() < val) lo = mid + 1;
-        else hi = mid;
-    }
-    if (lo == (int) a.size()) return;
-    if (!a[lo].erase(val)) return;
-    --n;
-    if (lo < (int) a.size() / 2) {
-        for (int j = lo - 1; j >= 0; j--) {
-            a[j + 1].push_front(a[j].back());
-            a[j].pop_back();
-        }
-        if (a.front().n == 0) a.pop_front();
-    } else {
-        for (int j = lo + 1; j < (int) a.size(); j++) {
-            a[j - 1].push_back(a[j].front());
-            a[j].pop_front();
-        }
+    void pop_back() {
+        --n;
+        a.back().pop_back();
         if (a.back().n == 0) a.pop_back();
     }
-}
 
-int at(int k) {
-    if (k < a[0].n) return a[0].at(k);
-    k -= a[0].n;
-    return a[1 + k / blockSize].at(k % blockSize);
-}
-
-int getRank(int val) {
-    int lo = 0, hi = (int) a.size(), mid;
-    while (lo < hi) {
-        mid = lo + (hi - lo) / 2;
-        if (a[mid].back() < val) lo = mid + 1;
-        else hi = mid;
+    int back() {
+        return a.back().back();
     }
-    if (lo == (int) a.size()) return -1;
-    int r = a[lo].getRank(val);
-    if (r == -1) return -1;
-    if (lo == 0) return r;
-    return a[0].n + (lo - 1) * blockSize + r;
-}
 
-void print() {
-    for (int i = 0; i < (int) a.size(); i++) {
-        a[i].print();
+    int getRank(int val) {
+        int lo = 0, hi = (int) a.size(), mid;
+        while (lo < hi) {
+            mid = lo + (hi - lo) / 2;
+            if (a[mid].back() < val) lo = mid + 1;
+            else hi = mid;
+        }
+        if (lo == (int) a.size()) return -1;
+        int r = a[lo].getRank(val);
+        if (r == -1) return -1;
+        if (lo == 0) return r;
+        return a[0].n + (lo - 1) * blockSize + r;
     }
-    cout << nl;
-}
+
+    void print() {
+        for (int i = 0; i < (int) a.size(); i++) {
+            a[i].print();
+        }
+    }
+};
 
 int main() {
 //    freopen("in.txt", "r", stdin);
@@ -307,7 +351,7 @@ int main() {
     cin >> N >> M;
     FOR(i, N) cin >> A[i];
     sort(A, A + N);
-    init();
+    Root<65536, Root<16384, Sqrt<4096>>> T(A, A + N);
     int lastAns = 0;
     FOR(i, M) {
         char op;
@@ -315,20 +359,21 @@ int main() {
         cin >> op >> x;
         x = x ^ lastAns;
         if (op == 'I') {
-            insert(x);
+            T.insert(x);
         } else if (op == 'R') {
-            erase(x);
+            T.erase(x);
         } else if (op == 'S') {
-            lastAns = at(x - 1);
+            lastAns = T.at(x - 1);
             cout << lastAns << nl;
         } else if (op == 'L') {
-            int k = getRank(x);
+            int k = T.getRank(x);
             lastAns = k == -1 ? -1 : k + 1;
             cout << lastAns << nl;
         } else {
             i--;
         }
     }
-    print();
+    T.print();
+    cout << nl;
     return 0;
 }
