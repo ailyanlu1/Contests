@@ -202,34 +202,10 @@ public:
 
 #define MAXN 100010
 
-int N, S, x, y, t, depth[MAXN], parent[MAXN], chain[MAXN], size[MAXN], head[MAXN], ind[MAXN], vertex[MAXN], distTo[MAXN], chainNum, baseNum;
+int N, S, x, y, t, depth[MAXN], parent[MAXN], chain[MAXN], size[MAXN], head[MAXN], ind[MAXN], vertex[MAXN], chainNum, baseNum;
 vector<int> adj[MAXN];
 FenwickTreeRange<ll> *ft1;
 FenwickTreeQuadratic<ll> *ft2;
-
-void bfs(int s) {
-    queue<int> q;
-    bool marked[N];
-    for (int v = 0; v < N; v++) {
-        marked[v] = false;
-        distTo[v] = INT_MAX;
-    }
-    distTo[s] = 0;
-    marked[s] = true;
-    q.push(s);
-
-    while (!q.empty()) {
-        int v = q.front();
-        q.pop();
-        for (int w : adj[v]) {
-            if (!marked[w]) {
-                distTo[w] = distTo[v] + 1;
-                marked[w] = true;
-                q.push(w);
-            }
-        }
-    }
-}
 
 void dfs(int v, int d, int prev) {
     depth[v] = d;
@@ -281,7 +257,7 @@ int lca(int v, int w) {
 }
 
 inline int dist(int s, int t) {
-    return distTo[s] + distTo[t] - 2 * distTo[lca(s, t)];
+    return depth[s] + depth[t] - 2 * depth[lca(s, t)];
 }
 
 void updateUp(int a, int b, bool includeB, int con, int lin) {
@@ -327,7 +303,6 @@ int main() {
     ft1 = new FenwickTreeRange<ll>(N);
     ft2 = new FenwickTreeQuadratic<ll>(N);
     lcaInit();
-    bfs(0);
     int a, b, t;
     FOR(i, S) {
         cin >> a >> b >> t;
