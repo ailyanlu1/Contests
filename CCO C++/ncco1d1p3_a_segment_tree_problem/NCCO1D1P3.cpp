@@ -35,30 +35,28 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
 template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
 
-#define MAXN 1000005
-
-int N, M, C, A[MAXN];
-bool ans = false;
-
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
-    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> N >> M >> C;
-    deque<int> mindq, maxdq;
+//    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    int N, M, C;
+    bool ans = false;
+    scanf("%d %d %d", &N, &M, &C);
+    deque<pii> mindq, maxdq;
+    int a;
     FOR(i, N) {
-        cin >> A[i];
-        while (!mindq.empty() && mindq.front() <= i - M) mindq.pop_front();
-        while (!maxdq.empty() && maxdq.front() <= i - M) maxdq.pop_front();
-        while (!mindq.empty() && A[mindq.back()] >= A[i]) mindq.pop_back();
-        while (!maxdq.empty() && A[maxdq.back()] <= A[i]) maxdq.pop_back();
-        mindq.push_back(i);
-        maxdq.push_back(i);
-        if (i >= M - 1 && A[maxdq.front()] - A[mindq.front()] <= C) {
+        scanf("%d", &a);
+        while (!mindq.empty() && mindq.front().f <= i - M) mindq.pop_front();
+        while (!maxdq.empty() && maxdq.front().f <= i - M) maxdq.pop_front();
+        while (!mindq.empty() && mindq.back().s >= a) mindq.pop_back();
+        while (!maxdq.empty() && maxdq.back().s <= a) maxdq.pop_back();
+        mindq.push_back({i, a});
+        maxdq.push_back({i, a});
+        if (i >= M - 1 && maxdq.front().s - mindq.front().s <= C) {
             ans = true;
-            cout << i - M + 2 << nl;
+            printf("%d\n", i - M + 2);
         }
     }
-    if (!ans) cout << "NONE" << nl;
+    if (!ans) printf("NONE\n");
     return 0;
 }
