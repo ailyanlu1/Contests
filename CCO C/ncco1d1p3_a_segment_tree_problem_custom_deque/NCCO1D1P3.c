@@ -101,7 +101,7 @@ int main() {
         else maxLast++;
         minA[minLast] = maxA[maxLast] = i;
         minB[minLast] = maxB[maxLast] = a;
-        if (i >= M - 1 && maxB[maxFirst] - minB[minFirst] <= C) {
+        if (maxB[maxFirst] - minB[minFirst] <= C) {
             ans = true;
             printf("%d\n", i - M + 2);
         }
