@@ -50,7 +50,28 @@ int main() {
     minFirst = minLast = maxFirst = maxLast = -1;
     bool ans = false;
     int a;
-    FOR(i, N) {
+    FOR(i, M - 1) {
+        scan(a);
+        while (minFirst != -1 && minB[minLast] >= a) {
+            if (minFirst == minLast) minFirst = minLast = -1;
+            else if (minLast == 0) minLast = M - 1;
+            else minLast--;
+        }
+        while (maxFirst != -1 && maxB[maxLast] <= a) {
+            if (maxFirst == maxLast) maxFirst = maxLast = -1;
+            else if (maxLast == 0) maxLast = M - 1;
+            else maxLast--;
+        }
+        if (minFirst == -1) minFirst = minLast = 0;
+        else if (minLast == M - 1) minLast = 0;
+        else minLast++;
+        if (maxFirst == -1) maxFirst = maxLast = 0;
+        else if (maxLast == M - 1) maxLast = 0;
+        else maxLast++;
+        minA[minLast] = maxA[maxLast] = i;
+        minB[minLast] = maxB[maxLast] = a;
+    }
+    For(i, M - 1, N) {
         scan(a);
         while (minFirst != -1 && minA[minFirst] <= i - M) {
             if (minFirst == minLast) minFirst = minLast = -1;
