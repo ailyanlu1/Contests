@@ -11,7 +11,7 @@ char _;
 int N, M, C, TMAX[2 * MAXM], TMIN[2 * MAXM];
 
 void update(int i, int v) {
-    i += M - 1;
+    i += M;
     for (TMAX[i] = TMIN[i] = v; i >>= 1;) {
         TMAX[i] = max(TMAX[i << 1], TMAX[i << 1 | 1]);
         TMIN[i] = min(TMIN[i << 1], TMIN[i << 1 | 1]);
@@ -32,7 +32,7 @@ int main() {
     }
     for (int i = 0; i < N; i++) {
         scan(a);
-        update(i % M + 1, a);
+        update(i % M, a);
         if (i >= M - 1 && TMAX[1] - TMIN[1] <= C) {
             ans = 1;
             printf("%d\n", i - M + 2);
