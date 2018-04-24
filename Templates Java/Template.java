@@ -167,6 +167,7 @@ public class Template {
     
     private static boolean stdIn = true;
     private static boolean stdOut = true;
+    private static boolean crash = true;
     
     public static void main(String[] args) throws Exception {
         String packageName = "";
@@ -186,6 +187,7 @@ public class Template {
             } catch (Exception e) {
                 out.println("Exception thrown on test case " + i);
                 e.printStackTrace(out);
+                if (crash) throw new Exception();
             }
             out.flush();
         }
