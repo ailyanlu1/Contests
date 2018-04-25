@@ -45,7 +45,7 @@ pll P[MAXN];
 vector<pll> hull;
 
 ll area2(pll a, pll b, pll c) {
-    return (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x);
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 }
 
 int ccw(pll a, pll b, pll c) {
