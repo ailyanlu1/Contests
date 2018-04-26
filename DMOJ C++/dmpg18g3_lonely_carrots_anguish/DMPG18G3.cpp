@@ -81,7 +81,11 @@ public:
     }
 };
 
-FenwickTree<ll> *small, *large;
+FenwickTree<ll> *small, *include, *exclude, *large;
+
+bool maxDepCmp(const int &a, const int &b) {
+    return maxDep[a] < maxDep[b];
+}
 
 void preDfs(int v, int prev, int dep) {
     maxDep[v] = dep;
@@ -94,18 +98,16 @@ void preDfs(int v, int prev, int dep) {
     }
 }
 
-void addSmall(int v, int prev, int dep, int delta) {
-    small->update(dep, delta);
-    for (int w : adj[v]) if (w != prev && !heavy[w]) addSmall(w, v, dep + 1, delta);
-}
-
-void addLarge(int v, int prev, int dep, int delta) {
-    large->update(dep, delta);
-    for (int w : adj[v]) if (w != prev && !heavy[w]) addLarge(w, v, dep + 1, delta);
+void add(FenwickTree<ll> *ft, int v, int prev, int dep, int delta) {
+    ft->update(dep, delta);
+    for (int w : adj[v]) if (w != prev && !heavy[w]) add(ft, w, v, dep + 1, delta);
 }
 
 void dfs(int v, int prev, int dep, bool keep = 0) {
     vector<ll> tempAns(sz(queries[v]));
+    fill(all(tempAns), 0);
+    vector<bool> seen(sz(queries[v]));
+    fill(all(seen), false);
     int maxSZ = -1, heavyInd = -1;
     for (int w : adj[v]) {
         if (w != prev && SZ[w] > maxSZ) {
@@ -117,33 +119,67 @@ void dfs(int v, int prev, int dep, bool keep = 0) {
     if (heavyInd != -1) {
         dfs(heavyInd, v, dep + 1, 1);
         heavy[heavyInd] = 1;
-        FOR(i, sz(queries[v])) {
-            int d = queries[v][i];
-            tempAns[i] = large->rsq(dep, min(dep + d, N));
-        }
     }
+    bool before = true;
     for (int w : adj[v]) {
         if (w != prev && !heavy[w]) {
-            addSmall(w, v, dep + 1, 1);
+            add(small, w, v, dep + 1, 1);
             FOR(i, sz(queries[v])) {
                 int d = queries[v][i];
-                tempAns[i] += (large->rsq(dep, min(dep + d, N)) + 1) * small->rsq(dep, min(dep + d, N));
+                if (!seen[i]) tempAns[i] = i == 0 ? 0 : tempAns[i - 1];
+                seen[i] = true;
+                if (dep + d > maxDep[w]) break;
             }
-            addSmall(w, v, dep + 1, -1);
-            addLarge(w, v, dep + 1, 1);
+            FOR(i, sz(queries[v])) {
+                int d = queries[v][i];
+                if (before) tempAns[i] += (exclude->rsq(dep, min(dep + d, N)) + 1) * small->rsq(dep, min(dep + d, N));
+                else tempAns[i] += (include->rsq(dep, min(dep + d, N)) + 1) * small->rsq(dep, min(dep + d, N));
+                if (dep + d > maxDep[w]) break;
+            }
+            add(small, w, v, dep + 1, -1);
+            add(include, w, v, dep + 1, 1);
+            add(exclude, w, v, dep + 1, 1);
+        } else if (w != prev && heavy[w]) {
+            FOR(i, sz(queries[v])) {
+                int d = queries[v][i];
+                if (!seen[i]) tempAns[i] = i == 0 ? 0 : tempAns[i - 1];
+                seen[i] = true;
+                if (dep + d > maxDep[w]) break;
+            }
+            FOR(i, sz(queries[v])) {
+                int d = queries[v][i];
+                tempAns[i] += (exclude->rsq(dep, min(dep + d, N)) + 1) * large->rsq(dep, min(dep + d, N));
+                if (dep + d > maxDep[w]) break;
+            }
+            before = false;
         }
+    }
+    FOR(i, sz(queries[v])) {
+        if (!seen[i]) tempAns[i] = i == 0 ? 0 : tempAns[i - 1];
+        seen[i] = true;
     }
     FOR(i, sz(queries[v])) {
         int d = queries[v][i];
         ans[{v, d}] = tempAns[i] + 1;
     }
+    for (int w : adj[v]) {
+        if (w == prev || heavy[w]) continue;
+        add(exclude, w, v, dep + 1, -1);
+    }
+    include->update(dep, 1);
     large->update(dep, 1);
+    for (int w : adj[v]) {
+        if (w == prev || heavy[w]) continue;
+        add(large, w, v, dep + 1, 1);
+    }
     if (heavyInd != -1) heavy[heavyInd] = 0;
     if (!keep) {
+        include->update(dep, -1);
         large->update(dep, -1);
         for (int w : adj[v]) {
             if (w == prev || heavy[w]) continue;
-            addLarge(w, v, dep + 1, -1);
+            add(include, w, v, dep + 1, -1);
+            add(large, w, v, dep + 1, -1);
         }
     }
 }
@@ -173,8 +209,11 @@ int main() {
         queries[i].erase(unique(all(queries[i])), queries[i].end());
     }
     small = new FenwickTree<ll>(N);
+    include = new FenwickTree<ll>(N);
+    exclude = new FenwickTree<ll>(N);
     large = new FenwickTree<ll>(N);
     preDfs(0, -1, 1);
+    FOR(i, N) sort(all(adj[i]), maxDepCmp);
     dfs(0, -1, 1);
     for (pii p : q) cout << ans[{p.f, p.s}] << nl;
     return 0;
