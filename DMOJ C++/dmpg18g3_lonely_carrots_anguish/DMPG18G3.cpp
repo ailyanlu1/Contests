@@ -87,15 +87,17 @@ bool maxDepCmp(const int &a, const int &b) {
     return maxDep[a] < maxDep[b];
 }
 
-void preDfs(int v, int prev, int dep) {
+int preDfs(int v, int prev, int dep) {
     maxDep[v] = dep;
     SZ[v] = 1;
     for (int w : adj[v]) {
         if (w == prev) continue;
-        preDfs(w, v, dep + 1);
+        SZ[v] += preDfs(w, v, dep + 1);
         MAX(maxDep[v], maxDep[w]);
-        SZ[v] += SZ[w];
     }
+    int ret = SZ[v];
+    SZ[v] += sz(queries[v]) * (1 + sz(adj[v]));
+    return ret;
 }
 
 void add(FenwickTree<ll> *ft, int v, int prev, int dep, int delta) {
