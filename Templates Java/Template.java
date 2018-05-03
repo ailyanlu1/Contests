@@ -168,6 +168,7 @@ public class Template {
     private static boolean stdIn = true;
     private static boolean stdOut = true;
     private static boolean crash = true;
+    private static boolean flush = false;
     
     public static void main(String[] args) throws Exception {
         String packageName = "";
@@ -189,8 +190,9 @@ public class Template {
                 e.printStackTrace(out);
                 if (crash) throw new Exception();
             }
-            out.flush();
+            if (flush) out.flush();
         }
+        in.close();
         out.close();
     }
     
