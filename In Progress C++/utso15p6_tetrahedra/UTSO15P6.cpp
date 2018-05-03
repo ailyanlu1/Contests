@@ -1,65 +1,48 @@
 #include <bits/stdc++.h>
+using namespace std;
 
-#define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
+#define MIN(a, b) ((a) = min((a), (b)))
+#define MAX(a, b) ((a) = max((a), (b)))
 #define pb push_back
+#define eb emplace_back
 #define mp make_pair
-#define l(x) (x << 1)
-#define r(x) (x << 1 | 1)
-#define m(x, y) (x + (y - x) / 2)
-#define Min(a, b) (a = min(a, b))
-#define Max(a, b) (a = max(a, b))
 #define f first
 #define s second
-#define ri(x) scanf("%d", &x)
-#define rll(x) scanf("%lld", &x)
-#define rllu(x) scanf("%llu", &x)
-#define rf(x) scanf("%f", &x)
-#define rd(x) scanf("%lf", &x)
-#define rc(x) scanf(" %c", &x)
-#define rs(x) scanf("%s", x)
-#define For(i, a, b) for (int i = (a); i < (b); i++)
+#define all(a) (a).begin(), (a).end()
+#define For(i, a, b) for (auto i = (a); i < (b); i++)
 #define FOR(i, b) For(i, 0, b)
-#define Forit(i, c) for (auto i = (c).begin(); i != (c).end(); i++)
-#define Rev(i, a, b) for (int i = (a); i > (b); i--)
+#define Rev(i, a, b) for (auto i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
-#define Revit(i, c) for (auto i = (c).rbegin(); i != (c).rend(); i++)
-#define Fill(a, x) memset(a, x, sizeof(a))
-#define randi(a, b) (rand() % (b - a + 1) + a)
+#define sz(a) ((int) (a).size())
+#define nl '\n'
+#define sp ' '
+
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define pill pair<int, ll>
+#define plli pair<ll, int>
+#define pdd pair<double, double>
+#define uset unordered_set
+#define umap unordered_map
+#define pq priority_queue
+template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
+template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
+
+template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
+struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
 using namespace std;
 using namespace std::placeholders;
 
-typedef long long ll;
-typedef unsigned long long llu;
-typedef pair<int, int> pii;
-typedef pair<float, float> pff;
-typedef pair<int, float> pif;
-typedef pair<float, int> pfi;
-typedef pair<double, double> pdd;
-typedef pair<int, double> pid;
-typedef pair<double, int> pdi;
-typedef pair<ll, ll> pll;
-typedef pair<int, ll> pill;
-typedef pair<ll, int> plli;
-typedef pair<llu, llu> pllu;
-typedef pair<int, llu> pillu;
-typedef pair<llu, int> pllui;
-typedef map<int, int> mii;
-typedef map<int, ll> mill;
-typedef map<ll, int> mlli;
-typedef unordered_map<int, int> umii;
-typedef unordered_map<int, ll> umill;
-typedef unordered_map<ll, int> umlli;
-
-template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
-
-class Vector {
+struct Vector {
 private:
-    int d;               // dimension of the vector
-    double *data;        // array of vector's components
+    int d;                          // dimension of the vector
+    double *data = nullptr;         // array of vector's components
 
 public:
     Vector() {}
@@ -72,10 +55,11 @@ public:
     Vector(int d) {
         this->d = d;
         this->data = new double[d];
+        for (int i = 0; i < d; i++) data[i] = 0.0;
     }
 
     /**
-     * Initializes a vector from either an array.
+     * Initializes a vector from an array.
      *
      * @param d the dimension of the vector
      * @param a the array
@@ -84,8 +68,47 @@ public:
         this->d = d;
         // defensive copy so that client can't alter our copy of data[]
         this->data = new double[d];
-        for (int i = 0; i < d; i++)
-            this->data[i] = a[i];
+        for (int i = 0; i < d; i++) this->data[i] = a[i];
+    }
+
+    Vector(const Vector &v) {
+        this->d = v.d;
+        this->data = new double[this->d];
+        for (int i = 0; i < d; i++) {
+            this->data[i] = v.data[i];
+        }
+    }
+
+    Vector &operator = (const Vector &v) {
+        if (this != &v) {
+            delete this->data;
+            this->d = v.d;
+            this->data = new double[this->d];
+            for (int i = 0; i < d; i++) {
+                this->data[i] = v.data[i];
+            }
+        }
+        return *this;
+    }
+
+    Vector(Vector &&v) {
+        this->d = v.d;
+        this->data = v.data;
+        v.data = nullptr;
+    }
+
+    Vector &operator = (Vector &&v) {
+        if (this != &v) {
+            delete this->data;
+            this->d = v.d;
+            this->data = v.data;
+            v.data = nullptr;
+        }
+        return *this;
+    }
+
+    ~Vector() {
+        delete data;
     }
 
     /**
@@ -120,7 +143,7 @@ public:
      * @return the dot product of this vector and that vector
      * @throws invalid_argument if the dimensions of the two vectors are not equal
      */
-    double operator ^ (Vector &that) {
+    double operator * (Vector &that) {
         return dot(that);
     }
 
@@ -170,7 +193,7 @@ public:
      * @return the 3-D cross product of this vector and that vector
      * @throws invalid_argument if the two vectors are not 3-dimensional
      */
-    Vector &operator * (Vector &that) {
+    Vector &operator ^ (Vector &that) {
         return cross3D(that);
     }
 
@@ -313,15 +336,13 @@ public:
     }
 
     /**
-     * Returns the angle of this 2-D vector to horizontal.
+     * Returns the direction cosine of this angle in the ith dimension.
      *
-     *
-     * @return the angle of this 2-D vector to horizontal
-     * @throws IllegalArgumentException if this vector is not 2-dimensional
+     * @param i the direction number (0-indexed)
+     * @return the direction cosine of this angle in the ith dimension
      */
-    double angle() {
-        if (d != 2) throw invalid_argument("Vector must be 2-dimensional");
-        return atan2(data[1], data[0]);
+    double directionCosine(int i) {
+        return data[i] / magnitude();
     }
 
     /**
@@ -342,12 +363,14 @@ public:
      * @param that vector representing the axis of rotation
      * @param theta the angle in radians
      * @return a vector that is this vector rotated theta radians around that vector
+     * @throws invalid_argument if the dimensions of the two vectors are not equal
+     * @throws invalid_argument if the two vectors are not 2-dimensional or 3-dimensional
      */
     Vector &rotate(Vector &that, double theta) {
         if (d == 2 && that.d == 2) {
             Vector *r = new Vector(2);
             r->data[0] = that.data[0] + (data[0] - that.data[0]) * cos(theta) - (data[1] - that.data[1]) * sin(theta);
-            r->data[0] = that.data[1] + (data[0] - that.data[0]) * sin(theta) + (data[1] - that.data[1]) * cos(theta);
+            r->data[1] = that.data[1] + (data[0] - that.data[0]) * sin(theta) + (data[1] - that.data[1]) * cos(theta);
             return *r;
         } else if (d == 3 && that.d == 3) {
             Vector *r = new Vector(3);
@@ -361,31 +384,31 @@ public:
     }
 };
 
+typedef double T;
+constexpr static T EPS = 1e-9;
+
 struct Point2D {
 public:
-    double x;
-    double y;
+    T x;
+    T y;
 
-    Point2D() {};
+    Point2D() {}
 
     /**
      * Initializes a new point (x, y).
      * @param x the x-coordinate
      * @param y the y-coordinate
      */
-    Point2D(double x, double y) {
-        if (x == 0.0) this->x = 0.0;  // convert -0.0 to +0.0
-        else          this->x = x;
-
-        if (y == 0.0) this->y = 0.0;  // convert -0.0 to +0.0
-        else          this->y = y;
+    Point2D(T x, T y) {
+        this->x = x;
+        this->y = y;
     }
 
     /**
      * Returns the x-coordinate.
      * @return the x-coordinate
      */
-    double getX() {
+    T getX() {
         return x;
     }
 
@@ -393,7 +416,7 @@ public:
      * Returns the y-coordinate.
      * @return the y-coordinate
      */
-    double getY() {
+    T getY() {
         return y;
     }
 
@@ -407,7 +430,7 @@ public:
 
     /**
      * Returns the angle of this point in polar coordinates.
-     * @return the angle (in radians) of this point in polar coordiantes (between –&pi;/2 and &pi;/2)
+     * @return the angle (in radians) of this point in polar coordiantes (between -&pi;/2 and &pi;/2)
      */
     double theta() {
         return atan2(y, x);
@@ -415,26 +438,26 @@ public:
 
     /**
      * Returns the angle between this point and that point.
-     * @return the angle in radians (between –&pi; and &pi;) between this point and that point (0 if equal)
+     * @return the angle in radians (between -&pi; and &pi;) between this point and that point (0 if equal)
      */
     double angleTo(Point2D &that) {
-        double dx = that.x - x;
-        double dy = that.y - y;
+        T dx = that.x - x;
+        T dy = that.y - y;
         return atan2(dy, dx);
     }
 
     /**
-     * Returns true if a→b→c is a counterclockwise turn.
+     * Returns true if a->b->c is a counterclockwise turn.
      * @param a first point
      * @param b second point
      * @param c third point
-     * @return { -1, 0, +1 } if a→b→c is a { clockwise, collinear; counterclockwise } turn.
+     * @return { -1, 0, +1 } if a->b->c is a { clockwise, collinear; counterclockwise } turn.
      */
     static int ccw(Point2D &a, Point2D &b, Point2D &c) {
-        double area2 = (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x);
-        if      (area2 < 0) return -1;
-        else if (area2 > 0) return +1;
-        else                return  0;
+        T area2 = (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x);
+        if      (area2 < -EPS) return -1;
+        else if (area2 > EPS) return +1;
+        else                  return  0;
     }
 
     /**
@@ -444,7 +467,7 @@ public:
      * @param c third point
      * @return twice the signed area of the triangle a-b-c
      */
-    static double area2(Point2D &a, Point2D &b, Point2D &c) {
+    static T area2(Point2D &a, Point2D &b, Point2D &c) {
         return (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x);
     }
 
@@ -456,8 +479,8 @@ public:
      * @return a point that is this point rotated theta radians around that point
      */
     Point2D &rotate(Point2D &that, double theta) {
-        double x = that.x + (this->x - that.x) * cos(theta) - (this->y - that.y) * sin(theta);
-        double y = that.y + (this->x - that.x) * sin(theta) + (this->y - that.y) * cos(theta);
+        T x = that.x + (this->x - that.x) * cos(theta) - (this->y - that.y) * sin(theta);
+        T y = that.y + (this->x - that.x) * sin(theta) + (this->y - that.y) * cos(theta);
         return *(new Point2D(x, y));
     }
 
@@ -467,8 +490,8 @@ public:
      * @return the Euclidean distance between this point and that point
      */
     double distanceTo(Point2D &that) {
-        double dx = x - that.x;
-        double dy = y - that.y;
+        T dx = x - that.x;
+        T dy = y - that.y;
         return sqrt(dx*dx + dy*dy);
     }
 
@@ -477,9 +500,9 @@ public:
      * @param that the other point
      * @return the square of the Euclidean distance between this point and that point
      */
-    double distanceSquaredTo(Point2D &that) {
-        double dx = x - that.x;
-        double dy = y - that.y;
+    T distanceSquaredTo(Point2D &that) {
+        T dx = x - that.x;
+        T dy = y - that.y;
         return dx*dx + dy*dy;
     }
 
@@ -490,7 +513,7 @@ public:
      * @returns whether this point is on the line segment pq
      */
     bool onSegment(Point2D &p, Point2D &q) {
-        return x <= max(p.x, q.x) && x >= min(p.x, q.x) && y <= max(p.y, q.y) && y >= min(p.y, q.y);
+        return x <= max(p.x, q.x) + EPS && x >= min(p.x, q.x) - EPS && y <= max(p.y, q.y) + EPS && y >= min(p.y, q.y) - EPS;
     }
 
     /**
@@ -530,17 +553,17 @@ public:
      * @param p2 one point on the second line
      * @param q2 the other point on the second line
      * @return the point of intersection of the 2 lines
-     * @throws runtime_error if there is no point of intersection
+     * @throws RuntimeException if there is no point of intersection
      */
     static Point2D &intersection(Point2D &p1, Point2D &q1, Point2D &p2, Point2D &q2) {
-        double A1 = q1.y - p1.y;
-        double B1 = p1.x - q1.x;
-        double C1 = A1 * p1.x + B1 * p1.y;
-        double A2 = q2.y - p2.y;
-        double B2 = p2.x - q2.x;
-        double C2 = A2 * p2.x + B2 * p2.y;
-        double det = A1 * B2 - A2 * B1;
-        if (abs(det) <= 1e-12) throw runtime_error("The lines do not intersect");
+        T A1 = q1.y - p1.y;
+        T B1 = p1.x - q1.x;
+        T C1 = A1 * p1.x + B1 * p1.y;
+        T A2 = q2.y - p2.y;
+        T B2 = p2.x - q2.x;
+        T C2 = A2 * p2.x + B2 * p2.y;
+        T det = A1 * B2 - A2 * B1;
+        if (abs(det) <= EPS) throw runtime_error("The lines do not intersect");
         Point2D *r = new Point2D((B2 * C1 - B1 * C2) / det, (A1 * C2 - A2 * C1) / det);
         return *r;
     }
@@ -558,10 +581,10 @@ public:
      *         argument point
      */
     int compareTo(Point2D &that) {
-        if (y < that.y) return -1;
-        if (y > that.y) return +1;
-        if (x < that.x) return -1;
-        if (x > that.x) return +1;
+        if (y < that.y - EPS) return -1;
+        if (y > that.y + EPS) return +1;
+        if (x < that.x - EPS) return -1;
+        if (x > that.x + EPS) return +1;
         return 0;
     }
 
@@ -573,7 +596,7 @@ public:
      *         {@code false} otherwise
      */
     bool operator == (const Point2D &other) const {
-        return x == other.x && y == other.y;
+        return abs(x - other.x) <= EPS && abs(y - other.y) <= EPS;
     }
 
     /**
@@ -584,7 +607,7 @@ public:
      *         {@code false} otherwise
      */
     bool operator != (const Point2D &other) const {
-        return x != other.x || y != other.y;
+        return abs(x - other.x) > EPS || abs(y - other.y) > EPS;
     }
 
     // X ORDER
@@ -592,85 +615,85 @@ public:
     /**
      * Compares two points by x-coordinate. Less than comparator.
      */
-    static bool xOrderLt(Point2D &p, Point2D &q) { return p.x < q.x; }
+    static bool xOrderLt(Point2D &p, Point2D &q) { return q.x - p.x < EPS; }
 
     /**
      * Compares two points by x-coordinate. Less than or equal to comparator.
      */
-    static bool xOrderLe(Point2D &p, Point2D &q) { return p.x < q.x; }
+    static bool xOrderLe(Point2D &p, Point2D &q) { return q.x - p.x < -EPS; }
 
     /**
      * Compares two points by x-coordinate. Greater than comparator.
      */
-    static bool xOrderGt(Point2D &p, Point2D &q) { return p.x > q.x; }
+    static bool xOrderGt(Point2D &p, Point2D &q) { return p.x - q.x < EPS; }
 
     /**
      * Compares two points by x-coordinate. Greater than or equal to comparator.
      */
-    static bool xOrderGe(Point2D &p, Point2D &q) { return p.x >= q.x; }
+    static bool xOrderGe(Point2D &p, Point2D &q) { return p.x - q.x < -EPS; }
 
     // Y ORDER
 
     /**
      * Compares two points by y-coordinate. Less than comparator.
      */
-    static bool yOrderLt(Point2D &p, Point2D &q) { return p.y < q.y; }
+    static bool yOrderLt(Point2D &p, Point2D &q) { return q.y - p.y < EPS; }
 
     /**
      * Compares two points by y-coordinate. Less than or equal to comparator.
      */
-    static bool yOrderLe(Point2D &p, Point2D &q) { return p.y <= q.y; }
+    static bool yOrderLe(Point2D &p, Point2D &q) { return q.y - p.y < -EPS; }
 
     /**
      * Compares two points by y-coordinate. Greater than comparator.
      */
-    static bool yOrderGt(Point2D &p, Point2D &q) { return p.y > q.y; }
+    static bool yOrderGt(Point2D &p, Point2D &q) { return p.y - q.y < EPS; }
 
     /**
      * Compares two points by y-coordinate. Greater than or equal to comparator.
      */
-    static bool yOrderGe(Point2D &p, Point2D &q) { return p.y >= q.y; }
+    static bool yOrderGe(Point2D &p, Point2D &q) { return p.y - q.y < -EPS; }
 
     // R ORDER
 
     /**
      * Compares two points by polar radius. Less than comparator.
      */
-    static bool rOrderLt(Point2D &p, Point2D &q) { return (p.x*p.x + p.y*p.y) < (q.x*q.x + q.y*q.y); }
+    static bool rOrderLt(Point2D &p, Point2D &q) { return (q.x*q.x + q.y*q.y) - (p.x*p.x + p.y*p.y) < EPS; }
 
     /**
      * Compares two points by polar radius. Less than or equal to comparator.
      */
-    static bool rOrderLe(Point2D &p, Point2D &q) { return (p.x*p.x + p.y*p.y) <= (q.x*q.x + q.y*q.y); }
+    static bool rOrderLe(Point2D &p, Point2D &q) { return (q.x*q.x + q.y*q.y) - (p.x*p.x + p.y*p.y) < -EPS; }
 
     /**
      * Compares two points by polar radius. Greater than comparator.
      */
-    static bool rOrderGt(Point2D &p, Point2D &q) { return (p.x*p.x + p.y*p.y) > (q.x*q.x + q.y*q.y); }
+    static bool rOrderGt(Point2D &p, Point2D &q) { return (p.x*p.x + p.y*p.y) - (q.x*q.x + q.y*q.y) < EPS; }
 
     /**
      * Compares two points by polar radius. Greater than or equal to comparator.
      */
-    static bool rOrderGe(Point2D &p, Point2D &q) { return (p.x*p.x + p.y*p.y) >= (q.x*q.x + q.y*q.y); }
+    static bool rOrderGe(Point2D &p, Point2D &q) { return (p.x*p.x + p.y*p.y) - (q.x*q.x + q.y*q.y) < -EPS; }
 
-    // Polar Order
+    // POLAR ORDER
 
     /**
      * Compares two points by polar angle (between 0 and 2&pi;) with respect to this point.
      * Less than comparator.
      */
     bool polarOrderLt(Point2D &q1, Point2D &q2) {
-        double dx1 = q1.x - x;
-        double dy1 = q1.y - y;
-        double dx2 = q2.x - x;
-        double dy2 = q2.y - y;
+        T dx1 = q1.x - x;
+        T dy1 = q1.y - y;
+        T dx2 = q2.x - x;
+        T dy2 = q2.y - y;
 
-        if      (dy1 >= 0 && dy2 < 0) return true;    // q1 above; q2 below
-        else if (dy2 >= 0 && dy1 < 0) return false;   // q1 below; q2 above
-        else if (dy1 == 0 && dy2 == 0) {              // 3-collinear and horizontal
-            if      (dx1 >= 0 && dx2 < 0) return true;
-            else if (dx2 >= 0 && dx1 < 0) return false;
-            else                          return false;
+        if      (dy1 >= -EPS && dy2 < -EPS) return true;    // q1 above; q2 below
+        else if (dy2 >= -EPS && dy1 < -EPS) return false;   // q1 below; q2 above
+        else if (abs(dy1) <= EPS && abs(dy2) <= EPS) {      // 3-collinear and horizontal
+            if      (dx1 >= -EPS && dx2 < -EPS) return true;
+            else if (dx2 >= -EPS && dx1 < EPS)  return false;
+            else                                return false;
         }
         else return ccw(*this, q1, q2) > 0;     // both above or below
         // Note: ccw() recomputes dx1, dy1, dx2, and dy2
@@ -681,17 +704,17 @@ public:
      * Less than or equal to comparator.
      */
     bool polarOrderLe(Point2D &q1, Point2D &q2) {
-        double dx1 = q1.x - x;
-        double dy1 = q1.y - y;
-        double dx2 = q2.x - x;
-        double dy2 = q2.y - y;
+        T dx1 = q1.x - x;
+        T dy1 = q1.y - y;
+        T dx2 = q2.x - x;
+        T dy2 = q2.y - y;
 
-        if      (dy1 >= 0 && dy2 < 0) return true;    // q1 above; q2 below
-        else if (dy2 >= 0 && dy1 < 0) return false;   // q1 below; q2 above
-        else if (dy1 == 0 && dy2 == 0) {              // 3-collinear and horizontal
-            if      (dx1 >= 0 && dx2 < 0) return true;
-            else if (dx2 >= 0 && dx1 < 0) return false;
-            else                          return true;
+        if      (dy1 >= -EPS && dy2 < -EPS) return true;    // q1 above; q2 below
+        else if (dy2 >= -EPS && dy1 < -EPS) return false;   // q1 below; q2 above
+        else if (abs(dy1) <= EPS && abs(dy2) <= EPS) {      // 3-collinear and horizontal
+            if      (dx1 >= -EPS && dx2 < -EPS) return true;
+            else if (dx2 >= -EPS && dx1 < EPS)  return false;
+            else                                return true;
         }
         else return ccw(*this, q1, q2) > 0;     // both above or below
         // Note: ccw() recomputes dx1, dy1, dx2, and dy2
@@ -702,17 +725,17 @@ public:
      * Greater than comparator.
      */
     bool polarOrderGt(Point2D &q1, Point2D &q2) {
-        double dx1 = q1.x - x;
-        double dy1 = q1.y - y;
-        double dx2 = q2.x - x;
-        double dy2 = q2.y - y;
+        T dx1 = q1.x - x;
+        T dy1 = q1.y - y;
+        T dx2 = q2.x - x;
+        T dy2 = q2.y - y;
 
-        if      (dy1 >= 0 && dy2 < 0) return false;   // q1 above; q2 below
-        else if (dy2 >= 0 && dy1 < 0) return true;    // q1 below; q2 above
-        else if (dy1 == 0 && dy2 == 0) {              // 3-collinear and horizontal
-            if      (dx1 >= 0 && dx2 < 0) return false;
-            else if (dx2 >= 0 && dx1 < 0) return true;
-            else                          return false;
+        if      (dy1 >= -EPS && dy2 < -EPS) return false;   // q1 above; q2 below
+        else if (dy2 >= -EPS && dy1 < -EPS) return true;    // q1 below; q2 above
+        else if (abs(dy1) <= EPS && abs(dy2) <= EPS) {      // 3-collinear and horizontal
+            if      (dx1 >= -EPS && dx2 < -EPS) return false;
+            else if (dx2 >= -EPS && dx1 < EPS)  return true;
+            else                                return false;
         }
         else return ccw(*this, q1, q2) > 0;     // both above or below
         // Note: ccw() recomputes dx1, dy1, dx2, and dy2
@@ -723,87 +746,79 @@ public:
      * Greater than or equal to comparator.
      */
     bool polarOrderGe(Point2D &q1, Point2D &q2) {
-        double dx1 = q1.x - x;
-        double dy1 = q1.y - y;
-        double dx2 = q2.x - x;
-        double dy2 = q2.y - y;
+        T dx1 = q1.x - x;
+        T dy1 = q1.y - y;
+        T dx2 = q2.x - x;
+        T dy2 = q2.y - y;
 
-        if      (dy1 >= 0 && dy2 < 0) return false;   // q1 above; q2 below
-        else if (dy2 >= 0 && dy1 < 0) return true;    // q1 below; q2 above
-        else if (dy1 == 0 && dy2 == 0) {              // 3-collinear and horizontal
-            if      (dx1 >= 0 && dx2 < 0) return false;
-            else if (dx2 >= 0 && dx1 < 0) return true;
-            else                          return true;
+        if      (dy1 >= -EPS && dy2 < -EPS) return false;   // q1 above; q2 below
+        else if (dy2 >= -EPS && dy1 < -EPS) return true;    // q1 below; q2 above
+        else if (abs(dy1) <= EPS && abs(dy2) <= EPS) {      // 3-collinear and horizontal
+            if      (dx1 >= -EPS && dx2 < -EPS) return false;
+            else if (dx2 >= -EPS && dx1 < EPS)  return true;
+            else                                return true;
         }
         else return ccw(*this, q1, q2) > 0;     // both above or below
         // Note: ccw() recomputes dx1, dy1, dx2, and dy2
     }
 
-    // Atan2 Order
+    // ATAN2 ORDER
 
     /**
-     * Compares two points by atan2() angle (between –&pi; and &pi;) with respect to this point.
+     * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Less than comparator.
      */
-    bool atan2OrderLt(Point2D &q1, Point2D &q2) { return angleTo(q1) < angleTo(q2); }
+    bool atan2OrderLt(Point2D &q1, Point2D &q2) { return angleTo(q1) - angleTo(q2) < EPS; }
 
     /**
-     * Compares two points by atan2() angle (between –&pi; and &pi;) with respect to this point.
+     * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Less than or equal to comparator.
      */
-    bool atan2OrderLe(Point2D &q1, Point2D &q2) { return angleTo(q1) <= angleTo(q2); }
+    bool atan2OrderLe(Point2D &q1, Point2D &q2) { return angleTo(q1) - angleTo(q2) < -EPS; }
 
     /**
-     * Compares two points by atan2() angle (between –&pi; and &pi;) with respect to this point.
+     * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Greater than comparator.
      */
-    bool atan2OrderGt(Point2D &q1, Point2D &q2) { return angleTo(q1) > angleTo(q2); }
+    bool atan2OrderGt(Point2D &q1, Point2D &q2) { return angleTo(q1) - angleTo(q2) < EPS; }
 
     /**
-     * Compares two points by atan2() angle (between –&pi; and &pi;) with respect to this point.
+     * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Greater than or equal to comparator.
      */
-    bool atan2OrderGe(Point2D &q1, Point2D &q2) { return angleTo(q1) >= angleTo(q2); }
+    bool atan2OrderGe(Point2D &q1, Point2D &q2) { return angleTo(q1) - angleTo(q2) < -EPS; }
 
-    // DistanceTo Order
+    // DISTANCETO ORDER
 
     /**
      * Compares two points by distance to this point. Less than comparator.
      */
-    bool distanceToOrderLt(Point2D &p, Point2D &q) { return distanceSquaredTo(p) < distanceSquaredTo(q); }
+    bool distanceToOrderLt(Point2D &p, Point2D &q) { return distanceSquaredTo(p) - distanceSquaredTo(q) < EPS; }
 
     /**
      * Compares two points by distance to this point. Less than or equal to comparator.
      */
-    bool distanceToOrderLe(Point2D &p, Point2D &q) { return distanceSquaredTo(p) <= distanceSquaredTo(q); }
+    bool distanceToOrderLe(Point2D &p, Point2D &q) { return distanceSquaredTo(p) - distanceSquaredTo(q) < -EPS; }
 
     /**
      * Compares two points by distance to this point. Greater than comparator.
      */
-    bool distanceToOrderGt(Point2D &p, Point2D &q) { return distanceSquaredTo(p) > distanceSquaredTo(q); }
+    bool distanceToOrderGt(Point2D &p, Point2D &q) { return distanceSquaredTo(p) - distanceSquaredTo(q) < EPS; }
 
     /**
      * Compares two points by distance to this point. Greater than or equal to comparator.
      */
-    bool distanceToOrderGe(Point2D &p, Point2D &q) { return distanceSquaredTo(p) >= distanceSquaredTo(q); }
+    bool distanceToOrderGe(Point2D &p, Point2D &q) { return distanceSquaredTo(p) - distanceSquaredTo(q) < -EPS; }
 };
 
-struct Point2D_hash {
-    size_t operator ()(const Point2D &p) const {
-        return 31 * hash<double> {}(p.x) + hash<double> {}(p.y);
-    }
-};
-
-Vector T[2][4];
+Vector TT[2][4];
 double totalArea = 0.0;
 
 int main() {
     FOR(t, 2) {
         FOR(p, 4) {
-            T[t][p] = Vector(3);
-            FOR(i, 3) {
-                rd(T[t][p][i]);
-            }
+            TT[t][p] = Vector(3);
+            FOR(i, 3) cin >> TT[t][p][i];
         }
     }
     Vector A, B, C, AB, AC, BC, cross, normal, proj, x, y;
@@ -815,38 +830,36 @@ int main() {
             check.clear();
             intersect.clear();
             border.clear();
-            A = T[t][(p + 1) % 4];
-            B = T[t][(p + 2) % 4];
-            C = T[t][(p + 3) % 4];
+            A = TT[t][(p + 1) % 4];
+            B = TT[t][(p + 2) % 4];
+            C = TT[t][(p + 3) % 4];
             AB = B - A;
             AC = C - A;
-            cross = AB * AC;
+            cross = AB ^ AC;
             faceArea = cross.magnitude() / 2.0;
             borderArea = 0.0;
             normal = cross.direction();
             x = AB.direction();
-            y = x * normal;
+            y = x ^ normal;
             face[0] = Point2D(0, 0);
-            face[1] = Point2D(AB ^ x, AB ^ y);
-            face[2] = Point2D(AC ^ x, AC ^ y);
+            face[1] = Point2D(AB * x, AB * y);
+            face[2] = Point2D(AC * x, AC * y);
             FOR(q, 4) {
-                FOR(r, 4) {
-                    if (q == r) continue;
-                    B = T[t ^ 1][q];
-                    C = T[t ^ 1][r];
+                For(r, q + 1, 4) {
+                    B = TT[t ^ 1][q];
+                    C = TT[t ^ 1][r];
                     AB = B - A;
                     AC = C - A;
-                    abn = AB ^ normal;
-                    acn = AC ^ normal;
+                    abn = AB * normal;
+                    acn = AC * normal;
                     if (copysign(1, abn) != copysign(1, acn)) {
-                        BC = C - B;
-                        proj = BC - BC.projectionOn(normal);
-                        check.pb(Point2D(BC ^ x, BC ^ y));
+                        check.pb(Point2D(AB * x, AB * y));
+                        check.pb(Point2D(AC * x, AC * y));
                     }
                 }
             }
-            if (check.size() > 2) {
-                check.erase(unique(check.begin(), check.end()), check.end());
+            check.erase(unique(check.begin(), check.end()), check.end());
+            if (check.size() >= 3) {
                 avgX = avgY = 0.0;
                 for (Point2D &pp : check) {
                     avgX += pp.x;
@@ -884,8 +897,8 @@ int main() {
                         }
                     }
                 }
-                if (border.size() > 2) {
-                    border.erase(unique(border.begin(), border.end()), border.end());
+                border.erase(unique(border.begin(), border.end()), border.end());
+                if (border.size() >= 3) {
                     avgX = avgY = 0.0;
                     for (Point2D &pp : border) {
                         avgX += pp.x;
@@ -900,10 +913,9 @@ int main() {
                     borderArea /= 2.0;
                 }
             }
-            printf("%.6f %.6f\n", faceArea, borderArea);
             totalArea += faceArea - borderArea;
         }
     }
-    printf("%.6f\n", totalArea);
+    cout << fixed << setprecision(6) << totalArea << nl;
     return 0;
 }
