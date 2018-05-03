@@ -620,7 +620,7 @@ public:
     /**
      * Compares two points by x-coordinate. Less than or equal to comparator.
      */
-    static bool xOrderLe(Point2D &p, Point2D &q) { return q.x - p.x < -EPS; }
+    static bool xOrderLe(Point2D &p, Point2D &q) { return q.x - p.x <= -EPS; }
 
     /**
      * Compares two points by x-coordinate. Greater than comparator.
@@ -630,7 +630,7 @@ public:
     /**
      * Compares two points by x-coordinate. Greater than or equal to comparator.
      */
-    static bool xOrderGe(Point2D &p, Point2D &q) { return p.x - q.x < -EPS; }
+    static bool xOrderGe(Point2D &p, Point2D &q) { return p.x - q.x <= -EPS; }
 
     // Y ORDER
 
@@ -642,7 +642,7 @@ public:
     /**
      * Compares two points by y-coordinate. Less than or equal to comparator.
      */
-    static bool yOrderLe(Point2D &p, Point2D &q) { return q.y - p.y < -EPS; }
+    static bool yOrderLe(Point2D &p, Point2D &q) { return q.y - p.y <= -EPS; }
 
     /**
      * Compares two points by y-coordinate. Greater than comparator.
@@ -652,7 +652,7 @@ public:
     /**
      * Compares two points by y-coordinate. Greater than or equal to comparator.
      */
-    static bool yOrderGe(Point2D &p, Point2D &q) { return p.y - q.y < -EPS; }
+    static bool yOrderGe(Point2D &p, Point2D &q) { return p.y - q.y <= -EPS; }
 
     // R ORDER
 
@@ -664,7 +664,7 @@ public:
     /**
      * Compares two points by polar radius. Less than or equal to comparator.
      */
-    static bool rOrderLe(Point2D &p, Point2D &q) { return (q.x*q.x + q.y*q.y) - (p.x*p.x + p.y*p.y) < -EPS; }
+    static bool rOrderLe(Point2D &p, Point2D &q) { return (q.x*q.x + q.y*q.y) - (p.x*p.x + p.y*p.y) <= -EPS; }
 
     /**
      * Compares two points by polar radius. Greater than comparator.
@@ -674,7 +674,7 @@ public:
     /**
      * Compares two points by polar radius. Greater than or equal to comparator.
      */
-    static bool rOrderGe(Point2D &p, Point2D &q) { return (p.x*p.x + p.y*p.y) - (q.x*q.x + q.y*q.y) < -EPS; }
+    static bool rOrderGe(Point2D &p, Point2D &q) { return (p.x*p.x + p.y*p.y) - (q.x*q.x + q.y*q.y) <= -EPS; }
 
     // POLAR ORDER
 
@@ -774,7 +774,7 @@ public:
      * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Less than or equal to comparator.
      */
-    bool atan2OrderLe(Point2D &q1, Point2D &q2) { return angleTo(q1) - angleTo(q2) < -EPS; }
+    bool atan2OrderLe(Point2D &q1, Point2D &q2) { return angleTo(q1) - angleTo(q2) <= -EPS; }
 
     /**
      * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
@@ -786,7 +786,7 @@ public:
      * Compares two points by atan2() angle (between -&pi; and &pi;) with respect to this point.
      * Greater than or equal to comparator.
      */
-    bool atan2OrderGe(Point2D &q1, Point2D &q2) { return angleTo(q1) - angleTo(q2) < -EPS; }
+    bool atan2OrderGe(Point2D &q1, Point2D &q2) { return angleTo(q1) - angleTo(q2) <= -EPS; }
 
     // DISTANCETO ORDER
 
@@ -798,7 +798,7 @@ public:
     /**
      * Compares two points by distance to this point. Less than or equal to comparator.
      */
-    bool distanceToOrderLe(Point2D &p, Point2D &q) { return distanceSquaredTo(p) - distanceSquaredTo(q) < -EPS; }
+    bool distanceToOrderLe(Point2D &p, Point2D &q) { return distanceSquaredTo(p) - distanceSquaredTo(q) <= -EPS; }
 
     /**
      * Compares two points by distance to this point. Greater than comparator.
@@ -808,7 +808,7 @@ public:
     /**
      * Compares two points by distance to this point. Greater than or equal to comparator.
      */
-    bool distanceToOrderGe(Point2D &p, Point2D &q) { return distanceSquaredTo(p) - distanceSquaredTo(q) < -EPS; }
+    bool distanceToOrderGe(Point2D &p, Point2D &q) { return distanceSquaredTo(p) - distanceSquaredTo(q) <= -EPS; }
 };
 
 Vector TT[2][4];
