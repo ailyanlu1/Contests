@@ -188,6 +188,7 @@ public class Template {
             } catch (Exception e) {
                 out.println("Exception thrown on test case " + i);
                 e.printStackTrace(out);
+                out.flush();
                 if (crash) throw new Exception();
             }
             if (flush) out.flush();
