@@ -192,14 +192,12 @@ void solve() {
         dfs1(c, -1, 0);
         large.clear();
         sort(all(adj[c]), maxCntCmp);
-        int curSum = 1;
         for (int w : adj[c]) {
             if (exclude[w]) continue;
             small.clear();
             small.resize(maxCnt[w] + 1);
             fill(all(small), 0);
             while (sz(large) < sz(small)) large.pb(0);
-            curSum += maxCnt[w];
             dfs2(w, c, 0);
             if (A[c]) small.insert(small.begin(), 0);
             FOR(i, sz(small)) ans[i] += small[i];
