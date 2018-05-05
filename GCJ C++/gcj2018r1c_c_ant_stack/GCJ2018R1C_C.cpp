@@ -55,9 +55,7 @@ void solve (int t) {
             if (best[j] < LL_INF && j > ind) ind = j;
         }
     }
-    int ans = 0;
-    while (best[ans + 1] < LL_INF) ans++;
-    cout << "Case #" << t << ": " << ans << nl;
+    cout << "Case #" << t << ": " << ind << nl;
 }
 
 int main() {
