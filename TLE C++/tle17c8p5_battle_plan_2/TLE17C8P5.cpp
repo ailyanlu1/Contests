@@ -64,7 +64,11 @@ int main() {
     int lg;
     for (lg = 0; (1 << lg) < N; lg++);
     FOR(k, K) {
-        FOR(i, N) dp[i][0] = upper_bound(preA + i, preA + N, (i == 0 ? 0 : preA[i - 1]) + B[k]) - preA;
+        int ii = 0;
+        FOR(i, N) {
+            while (ii < N && preA[ii] - (i == 0 ? 0 : preA[i - 1]) <= B[k]) ii++;
+            dp[i][0] = ii;
+        }
         For(j, 1, lg) FOR(i, N) dp[i][j] = dp[i][j - 1] == N ? N : dp[dp[i][j - 1]][j - 1];
         FOR(i, sz(queries[k])) {
             int cur = queries[k][i].f.f;
