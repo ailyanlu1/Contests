@@ -1,4 +1,5 @@
-﻿using System;
+﻿// http://codeforces.com/contest/321/problem/C
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Threading;
 using static System.Diagnostics.Debug;
 
-namespace Template {
+namespace Round190D1C {
     public class Program {
         public class Reader {
             private TextReader reader;
@@ -55,11 +56,35 @@ namespace Template {
         private static bool crash = true;
         private static bool flush = false;
 
-        private static int MEMORY_LIMIT_MB = -1; // TODO CHANGE MEMORY LIMIT
-
         public static void Main(string[] args) {
-            Thread T = new Thread(new ThreadStart(start), MEMORY_LIMIT_MB * 1000000);
+            Thread T = new Thread(new ThreadStart(start), 1 << 27);
             T.Start();
+        }
+
+        static int N;
+        static char[] ans;
+        static List<int>[] adj;
+        static bool[] exclude;
+
+        static int getSize(int v, int prev) {
+            int size = 1;
+            foreach (int w in adj[v]) if (w != prev && !exclude[w]) size += getSize(w, v);
+            return size;
+        }
+
+        static int getCentroid(int v, int prev, int treeSize) {
+            int n = treeSize;
+            int size = 1;
+            bool hasCentroid = true;
+            foreach (int w in adj[v]) {
+                if (w == prev || exclude[w]) continue;
+                int ret = getCentroid(w, v, treeSize);
+                if (ret >= 0) return ret;
+                hasCentroid &= -ret <= n / 2;
+                size += -ret;
+            }
+            hasCentroid &= n - size <= n / 2;
+            return hasCentroid ? v : -size;
         }
 
         public static void start() {
@@ -84,7 +109,31 @@ namespace Template {
 
         // TODO CODE GOES IN THIS METHOD
         public static void run(int testCaseNum) {
-            
+            N = In.ReadInt();
+            adj = new List<int>[N];
+            exclude = new bool[N];
+            ans = new char[N];
+            for (int i = 0; i < N; i++) {
+                adj[i] = new List<int>();
+                exclude[i] = false;
+            }
+            for (int i = 0; i < N - 1; i++) {
+                int a = In.ReadInt() - 1, b = In.ReadInt() - 1;
+                adj[a].Add(b);
+                adj[b].Add(a);
+            }
+            Queue<Tuple<int, char>> q = new Queue<Tuple<int, char>>();
+            q.Enqueue(new Tuple<int, char>(0, 'A'));
+            while (q.Count() > 0) {
+                int v = q.Peek().Item1;
+                int c = getCentroid(v, -1, getSize(v, -1));
+                ans[c] = q.Peek().Item2;
+                q.Dequeue();
+                exclude[c] = true;
+                foreach (int w in adj[c]) if (!exclude[w]) q.Enqueue(new Tuple<int, char>(w, (char) (ans[c] + 1)));
+            }
+            for (int i = 0; i < N; i++) Out.Write(ans[i] + " ");
+            Out.WriteLine();
         }
     }
 }
