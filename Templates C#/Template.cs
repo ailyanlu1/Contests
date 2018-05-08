@@ -55,10 +55,10 @@ namespace Template {
         private static bool crash = true;
         private static bool flush = false;
 
-        private static int MEMORY_LIMIT_MB = -1; // TODO CHANGE MEMORY LIMIT
+        private static int STACK_MEMORY_LIMIT_MB = -1; // TODO CHANGE MEMORY LIMIT FOR STACK
 
         public static void Main(string[] args) {
-            Thread T = new Thread(new ThreadStart(start), MEMORY_LIMIT_MB * 1000000);
+            Thread T = new Thread(new ThreadStart(start), STACK_MEMORY_LIMIT_MB * 1000000);
             T.Start();
         }
 
