@@ -1,13 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
 #define MIN(a, b) ((a) = min((a), (b)))
 #define MAX(a, b) ((a) = max((a), (b)))
 #define pb push_back
+#define eb emplace_back
 #define mp make_pair
 #define f first
 #define s second
@@ -543,65 +543,6 @@ void flush() { output->flush(); }
  * - Iterator first, int count
  ******************************************************************************/
 
-template <typename T, class Comparator> void merge_sort(T *st, T *en, Comparator cmp) {
-    const int CUTOFF = 7;
-    int n = en - st;
-    T *aux = new T[n];
-    for (int i = 0; i < n; i++) aux[i] = st[i];
-    bool flag = true;
-    int len = 1;
-    for (; len * 2 <= CUTOFF && len < n; len *= 2);
-    for (int lo = 0; lo < n; lo += len + len) {
-        int hi = min(lo + len + len - 1, n - 1);
-        for (int i = lo; i < hi + 1; i++) {
-            for (int j = i; j > lo && cmp(aux[j], aux[j - 1]); j--) {
-                T temp = aux[j];
-                aux[j] = aux[j - 1];
-                aux[j - 1] = temp;
-            }
-        }
-    }
-    len *= 2;
-    for (; len < n; len *= 2) {
-        if (flag) {
-            for (int lo = 0; lo < n; lo += len + len) {
-                int mid = lo + len - 1;
-                int hi = min(lo + len + len - 1, n - 1);
-                if (mid + 1 < n && !cmp(aux[mid + 1], aux[mid])) {
-                    for (int i = lo; i < hi + 1; i++) st[i] = aux[i];
-                } else {
-                    int i = lo, j = mid + 1;
-                    for (int k = lo; k < hi + 1; k++) {
-                        if (i > mid) st[k] = aux[j++];
-                        else if (j > hi) st[k] = aux[i++];
-                        else if (cmp(aux[j], aux[i])) st[k] = aux[j++];
-                        else st[k] = aux[i++];
-                    }
-                }
-            }
-        } else {
-            for (int lo = 0; lo < n; lo += len + len) {
-                int mid = lo + len - 1;
-                int hi = min(lo + len + len - 1, n - 1);
-                if (mid + 1 < n && !cmp(st[mid + 1], st[mid])) {
-                    for (int i = lo; i < hi + 1; i++) aux[i] = st[i];
-                } else {
-                    int i = lo, j = mid + 1;
-                    for (int k = lo; k < hi + 1; k++) {
-                        if (i > mid) aux[k] = st[j++];
-                        else if (j > hi) aux[k] = st[i++];
-                        else if (cmp(st[j], st[i])) aux[k] = st[j++];
-                        else aux[k] = st[i++];
-                    }
-                }
-            }
-        }
-        flag = !flag;
-    }
-    if (flag) for (int i = 0; i < n; i++) st[i] = aux[i];
-    delete[] (aux);
-}
-
 struct Point2D {
 public:
     ll x, y;
@@ -674,9 +615,9 @@ private:
 
     Node *construct(Node *n, Point2D *points, int lo, int hi, bool partition, ll xmin, ll ymin, ll xmax, ll ymax) {
         if (lo > hi) return nullptr;
-        if (partition == VERTICAL) merge_sort(points + lo, points + hi + 1, Point2D::xOrderLt);
-        else merge_sort(points + lo, points + hi + 1, Point2D::yOrderLt);
         int mid = lo + (hi - lo) / 2;
+        if (partition == VERTICAL) nth_element(points + lo, points + mid, points + hi + 1, Point2D::xOrderLt);
+        else nth_element(points + lo, points + mid, points + hi + 1, Point2D::yOrderLt);
         Point2D *p = &points[mid];
         n = new Node(p, new Rectangle(xmin, ymin, xmax, ymax));
         if (partition == VERTICAL) {

@@ -51,7 +51,7 @@ private:
     int N;
     // int *array;
 
-    void propogate(int cur) {
+    void propagate(int cur) {
         if (tree[cur].lazy != 0) {
             tree[cur * 2].maxVal += tree[cur].lazy;
             tree[cur * 2].lazy += tree[cur].lazy;
@@ -72,7 +72,7 @@ private:
     }
 
     void update(int cur, int cL, int cR, int l, int r, int val) {
-        if (cL != cR) propogate(cur);
+        if (cL != cR) propagate(cur);
         if (cL > r || cR < l) return;
         if (cL >= l && cR <= r) {
             tree[cur].maxVal += val;
@@ -86,7 +86,7 @@ private:
     }
 
     int rMaxQ(int cur, int cL, int cR, int l, int r) {
-        if (cL != cR) propogate(cur);
+        if (cL != cR) propagate(cur);
         if (cL > r || cR < l) return INT_MIN;
         if (cL >= l && cR <= r) return tree[cur].maxVal;
         int m = cL + (cR - cL) / 2;

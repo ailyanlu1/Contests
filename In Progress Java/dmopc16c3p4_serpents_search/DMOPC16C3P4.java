@@ -1,61 +1,204 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.math.*;
+import java.util.*;
 
 public class DMOPC16C3P4 {
+    private static DMOPC16C3P4 o = new DMOPC16C3P4();
     public static class Reader {
-        private BufferedReader in;
-        private StringTokenizer st;
+        private final int BUFFER_SIZE = 1 << 16;
+        private int LENGTH = -1;
+        private DataInputStream din;
+        private byte[] buffer;
+        private int bufferPointer, bytesRead;
 
-        public Reader(InputStream inputStream) { in = new BufferedReader(new InputStreamReader(inputStream)); }
-
-        public Reader(String fileName) throws FileNotFoundException { in = new BufferedReader(new FileReader(fileName)); }
-
-        public String next() throws IOException {
-            while (st == null || !st.hasMoreTokens()) {
-                st = new StringTokenizer(in.readLine().trim());
-            }
-            return st.nextToken();
+        public Reader(InputStream inputStream) {
+            din = new DataInputStream(inputStream);
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
         }
 
-        public String next(String delim) throws IOException {
-            while (st == null || !st.hasMoreTokens()) {
-                st = new StringTokenizer(in.readLine().trim());
+        public Reader(String file_name) throws IOException {
+            din = new DataInputStream(new FileInputStream(file_name));
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public byte nextByte() throws IOException {
+            byte ret = 0;
+            byte c = read();
+            while (c <= ' ') c = read();
+            boolean neg = (c == '-');
+            if (neg) c = read();
+            do {
+                ret *= 10;
+                ret += c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            if (neg) return (byte) (-ret);
+            return ret;
+        }
+
+        public int nextInt() throws IOException {
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ') c = read();
+            boolean neg = (c == '-');
+            if (neg) c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            if (neg) return -ret;
+            return ret;
+        }
+
+        public long nextLong() throws IOException {
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ') c = read();
+            boolean neg = (c == '-');
+            if (neg) c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            if (neg) return -ret;
+            return ret;
+        }
+
+        public double nextDouble() throws IOException {
+            double ret = 0, div = 1;
+            byte c = read();
+            while (c <= ' ') c = read();
+            boolean neg = (c == '-');
+            if (neg) c = read();
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+            if (c == '.') while ((c = read()) >= '0' && c <= '9') ret += (c - '0') / (div *= 10);
+            if (neg) return -ret;
+            return ret;
+        }
+
+        public char nextChar() throws IOException {
+            byte c;
+            do {
+                c = read();
+            } while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1);
+            return (char) c;
+        }
+
+        public String next() throws IOException {
+            byte[] buf = new byte[LENGTH];
+            int cnt = 0, c;
+            c = read();
+            while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) c = read();
+            buf[cnt++] = (byte) c;
+            while ((c = read()) != -1) {
+                if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) break;
+                buf[cnt++] = (byte) c;
             }
-            return st.nextToken(delim);
+            return new String(buf, 0, cnt);
         }
         
         public String nextLine() throws IOException {
-            st = null;
-            return in.readLine();
+            byte[] buf = new byte[LENGTH];
+            int cnt = 0, c;
+            while ((c = read()) != -1) {
+                if (c == '\n' || c == '\r') break;
+                buf[cnt++] = (byte) c;
+            }
+            return new String(buf, 0, cnt);
+        }
+        
+        public void setLength(int length) {
+            LENGTH = length;
         }
 
-        // public BigInteger nextBigInteger() throws IOException { return new BigInteger(next()); }
+        private void fillBuffer() throws IOException {
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+            if (bytesRead == -1) buffer[0] = -1;
+        }
 
-        public byte nextByte() throws IOException { return Byte.parseByte(next()); }
-        public byte nextByte(String delim) throws IOException { return Byte.parseByte(next(delim)); }
-        public char nextChar() throws IOException { return next().charAt(0); }
-        public char nextChar(String delim) throws IOException { return next(delim).charAt(0); }
-        public double nextDouble() throws IOException { return Double.parseDouble(next()); }
-        public double nextDouble(String delim) throws IOException { return Double.parseDouble(next(delim)); }
-        public float nextFloat() throws IOException { return Float.parseFloat(next()); }
-        public float nextFloat(String delim) throws IOException { return Float.parseFloat(next(delim)); }
-        public int nextInt() throws IOException { return Integer.parseInt(next()); }
-        public int nextInt(String delim) throws IOException { return Integer.parseInt(next(delim)); }
-        public long nextLong() throws IOException { return Long.parseLong(next()); }
-        public long nextLong(String delim) throws IOException { return Long.parseLong(next(delim)); }
-        public short nextShort() throws IOException { return Short.parseShort(next()); }
-        public short nextShort(String delim) throws IOException { return Short.parseShort(next(delim)); }
-    } // Reader class
+        private byte read() throws IOException {
+            if (bufferPointer == bytesRead) fillBuffer();
+            return buffer[bufferPointer++];
+        }
+
+        public void close() throws IOException {
+            if (din == null) return;
+            din.close();
+        }
+    }
+    
+    private static Reader in;
+    private static PrintWriter out;
+    
+    private static int NUM_OF_TEST_CASES = 1; // TODO CHANGE NUMBER OF TEST CASES
+    
+    // TODO CHANGE FILE NAMES
+    private static final String INPUT_FILE_NAME = "input.txt";
+    private static final String OUTPUT_FILE_NAME = "output.txt";
+    
+    private static boolean stdIn = true;
+    private static boolean stdOut = true;
+    
+    public static void main(String[] args) throws Exception {
+        String packageName = "";
+        if (!stdIn || !stdOut) {
+            try {
+                packageName = o.getClass().getPackage().toString().split(" ")[1] + "/";
+            } catch (NullPointerException e) {}
+        }
+        if (stdIn) in = new Reader(System.in);
+        else in = new Reader(packageName + INPUT_FILE_NAME);
+        if (stdOut) out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
+        else out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + OUTPUT_FILE_NAME)));
+        
+        for (int i = 1; i <= NUM_OF_TEST_CASES; i++) {
+            try {
+                run(i);
+            } catch (Exception e) {
+                out.println("Exception thrown on test case " + i);
+                e.printStackTrace(out);
+            }
+            out.flush();
+        }
+        out.close();
+    }
+    
+    private static final long MAXXY = (long) (1e9 + 1);
+    
+    // TODO CODE GOES IN THIS METHOD
+    public static void run(int testCaseNum) throws Exception {
+        int N = in.nextInt();
+        Point2D[] points = new Point2D[N];
+        for (int i = 0; i < N; i++) {
+            long x = in.nextLong();
+            long y = in.nextLong();
+            points[i] = new Point2D(x, y);
+        }
+        KdTree tree = new KdTree(-MAXXY, -MAXXY, MAXXY, MAXXY, points);
+        int Q = in.nextInt();
+        for (int i = 0; i < Q; i++) {
+            long x = in.nextLong();
+            long y = in.nextLong();
+            Point2D q = new Point2D(x, y);
+            Pair<Point2D, Integer> nearest = tree.nearest(q);
+            out.println(nearest.first.distanceSquaredTo(q) + " " + nearest.second);
+//            long closest = Long.MAX_VALUE;
+//            int count = 0;
+//            for (int j = 0; j < N; j++) {
+//                if (points[j].distanceSquaredTo(q) < closest) {
+//                    closest = points[j].distanceSquaredTo(q);
+//                    count = 1;
+//                } else if (points[j].distanceSquaredTo(q) == closest) {
+//                    count++;
+//                }
+//            }
+//            out.println(closest + " " + count);
+//            if (nearest.first.distanceSquaredTo(q) != closest || nearest.second != count) {
+//                throw new Exception("Error");
+//            }
+        }
+    }
     
     public static class Pair<Item, Item2> {
         public Item first;
@@ -218,44 +361,5 @@ public class DMOPC16C3P4 {
             }
             return nearest;
         }
-    }
-    
-    private static Reader in = new Reader(System.in);
-    private static PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
-    
-    private static final long MAXXY = (long) (1e9 + 1);
-    
-    public static void main(String[] args) throws Exception {
-        int N = in.nextInt();
-        Point2D[] points = new Point2D[N];
-        for (int i = 0; i < N; i++) {
-            long x = in.nextLong();
-            long y = in.nextLong();
-            points[i] = new Point2D(x, y);
-        }
-        KdTree tree = new KdTree(-MAXXY, -MAXXY, MAXXY, MAXXY, points);
-        int Q = in.nextInt();
-        for (int i = 0; i < Q; i++) {
-            long x = in.nextLong();
-            long y = in.nextLong();
-            Point2D q = new Point2D(x, y);
-            Pair<Point2D, Integer> nearest = tree.nearest(q);
-            out.println(nearest.first.distanceSquaredTo(q) + " " + nearest.second);
-//            long closest = Long.MAX_VALUE;
-//            int count = 0;
-//            for (int j = 0; j < N; j++) {
-//                if (points[j].distanceSquaredTo(q) < closest) {
-//                    closest = points[j].distanceSquaredTo(q);
-//                    count = 1;
-//                } else if (points[j].distanceSquaredTo(q) == closest) {
-//                    count++;
-//                }
-//            }
-//            out.println(closest + " " + count);
-//            if (nearest.first.distanceSquaredTo(q) != closest || nearest.second != count) {
-//                throw new Exception("Error");
-//            }
-        }
-        out.close();
     }
 }

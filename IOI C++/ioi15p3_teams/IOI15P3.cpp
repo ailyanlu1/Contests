@@ -49,7 +49,7 @@ typedef unordered_map<ll, int> umlli;
 
 int n, SZ, ROOT[MAXN], L[MAXN * LGN], R[MAXN * LGN], CNT[MAXN * LGN], VAL[MAXN * 4], LAZY[MAXN * 4];
 
-void propogate(int ind) {
+void propagate(int ind) {
     if (LAZY[ind] != -1) {
         LAZY[l(ind)] = L[LAZY[ind]];
         VAL[l(ind)] = CNT[LAZY[l(ind)]];
@@ -75,7 +75,7 @@ int inc(int cur, int cL, int cR, int ind) {
 }
 
 int updateQuery(int cur1, int cur2, int cL, int cR, int ind, int k) {
-    if (cL != cR) propogate(cur2);
+    if (cL != cR) propagate(cur2);
     if (cL >= ind && CNT[cur1] - VAL[cur2] <= k) {
         int ret = CNT[cur1] - VAL[cur2];
         LAZY[cur2] = cur1;

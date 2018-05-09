@@ -62,7 +62,7 @@ struct Node {
     int up, down;
 } seg[MAXN * 3];
 
-void propogate(int parent, int child) {
+void propagate(int parent, int child) {
     seg[child].down = max(min(seg[child].down, seg[parent].down), seg[parent].up);
     seg[child].up = min(max(seg[child].up, seg[parent].up), seg[parent].down);
 }
@@ -79,8 +79,8 @@ void update(int cur, int cL, int cR, int l, int r, int op, int h) {
         }
         return;
     }
-    propogate(cur, l(cur));
-    propogate(cur, r(cur));
+    propagate(cur, l(cur));
+    propagate(cur, r(cur));
     seg[cur].down = INT_INF;
     seg[cur].up = 0;
     int m = m(cL, cR);
@@ -95,8 +95,8 @@ void update(int l, int r, int op, int h) {
 int query(int cur, int cL, int cR, int l, int r) {
     if (cL > r || cR < l) return INT_INF;
     if (cL >= l && cR <= r) return min(seg[cur].down, seg[cur].up);
-    propogate(cur, l(cur));
-    propogate(cur, r(cur));
+    propagate(cur, l(cur));
+    propagate(cur, r(cur));
     int m = m(cL, cR);
     return min(query(l(cur), cL, m, l, r), query(r(cur), m + 1, cR, l, r));
 }
