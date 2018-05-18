@@ -1,3 +1,4 @@
+// http://www.spoj.com/problems/GSS4/
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -36,55 +37,66 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
 struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
-#define MAXN 200005
-#define LGN 20
-#define MAXQ 100005
-#define MAXK 55
+#define MAXN 100005
 
-int N, K, Q, A[MAXN], B[MAXK], ans[MAXQ], dp[LGN][MAXN];
-ll preA[MAXN];
-vector<pair<pii, int>> queries[MAXK];
+int N, M, PAR[MAXN];
+ll A[MAXN], BIT[MAXN];
+
+void update(int i, ll v) {
+    for (; i <= N; i += (i & -i)) BIT[i] += v;
+}
+
+ll query(int i) {
+    ll ret = 0;
+    for (; i > 0; i -= (i & -i)) ret += BIT[i];
+    return ret;
+}
+
+ll query(int l, int r) {
+    return query(r) - query(l - 1);
+}
+
+int find(int i) {
+    while (i != PAR[i]) i = PAR[i] = PAR[PAR[i]];
+    return i;
+}
+
+void modify(int l, int r) {
+    for (int i = find(l); l <= i && i <= r; i = find(i + 1)) {
+        if (A[i] != 1) {
+            update(i, -A[i]);
+            A[i] = (ll) sqrt(A[i]);
+            update(i, A[i]);
+            if (A[i] == 1) PAR[i] = i + 1;
+        }
+    }
+}
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> N >> K >> Q;
-    FOR(i, N) {
-        cin >> A[i];
-        preA[i] = (i == 0 ? 0 : preA[i - 1]) + A[i];
-    }
-    FOR(i, K) cin >> B[i];
-    FOR(i, Q) {
-        int j, l, r;
-        cin >> j >> l >> r;
-        j--; l--; r--;
-        queries[j].pb({{l, r}, i});
-    }
-    int lg;
-    for (lg = 0; (1 << lg) < N; lg++);
-    FOR(k, K) {
-        int ii = 0;
-        FOR(i, N) {
-            while (ii < N && preA[ii] - (i == 0 ? 0 : preA[i - 1]) <= B[k]) ii++;
-            dp[0][i] = ii;
+    int t = 1;
+    while (cin >> N) {
+        FOR(i, N + 1) {
+            BIT[i] = 0;
+            PAR[i] = i;
         }
-        For(j, 1, lg) FOR(i, N) dp[j][i] = dp[j - 1][i] == N ? N : dp[j - 1][dp[j - 1][i]];
-        FOR(i, sz(queries[k])) {
-            int cur = queries[k][i].f.f;
-            ll cost = 0;
-            int en = queries[k][i].f.s + 1;
-            REV(j, lg - 1) {
-                if (dp[j][cur] == cur) break;
-                if (dp[j][cur] < en) {
-                    cur = dp[j][cur];
-                    cost += 1 << j;
-                }
-            }
-            if (dp[0][cur] >= en) ans[queries[k][i].s] = cost + 1;
-            else ans[queries[k][i].s] = -1;
+        PAR[N + 1] = N + 1;
+        cout << "Case #" << t++ << ":" << nl;
+        For(i, 1, N + 1) {
+            cin >> A[i];
+            update(i, A[i]);
         }
+        cin >> M;
+        int t, l, r;
+        FOR(i, M) {
+            cin >> t >> l >> r;
+            if (l > r) swap(l, r);
+            if (t == 0) modify(l, r);
+            else cout << query(l, r) << nl;
+        }
+        cout << nl;
     }
-    FOR(i, Q) cout << ans[i] << nl;
     return 0;
 }

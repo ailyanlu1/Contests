@@ -1,5 +1,9 @@
+// http://www.spoj.com/problems/ORDERSET/
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
+using namespace __gnu_pbds;
 
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
@@ -36,55 +40,38 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
 struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
-#define MAXN 200005
-#define LGN 20
-#define MAXQ 100005
-#define MAXK 55
+template<typename T, typename Cmp = less<T>> using ordered_set = tree<T, null_type, Cmp, rb_tree_tag, tree_order_statistics_node_update>;
 
-int N, K, Q, A[MAXN], B[MAXK], ans[MAXQ], dp[LGN][MAXN];
-ll preA[MAXN];
-vector<pair<pii, int>> queries[MAXK];
+int Q;
+ordered_set<int> T;
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> N >> K >> Q;
-    FOR(i, N) {
-        cin >> A[i];
-        preA[i] = (i == 0 ? 0 : preA[i - 1]) + A[i];
-    }
-    FOR(i, K) cin >> B[i];
+    cin >> Q;
+    char op;
+    int x;
     FOR(i, Q) {
-        int j, l, r;
-        cin >> j >> l >> r;
-        j--; l--; r--;
-        queries[j].pb({{l, r}, i});
-    }
-    int lg;
-    for (lg = 0; (1 << lg) < N; lg++);
-    FOR(k, K) {
-        int ii = 0;
-        FOR(i, N) {
-            while (ii < N && preA[ii] - (i == 0 ? 0 : preA[i - 1]) <= B[k]) ii++;
-            dp[0][i] = ii;
-        }
-        For(j, 1, lg) FOR(i, N) dp[j][i] = dp[j - 1][i] == N ? N : dp[j - 1][dp[j - 1][i]];
-        FOR(i, sz(queries[k])) {
-            int cur = queries[k][i].f.f;
-            ll cost = 0;
-            int en = queries[k][i].f.s + 1;
-            REV(j, lg - 1) {
-                if (dp[j][cur] == cur) break;
-                if (dp[j][cur] < en) {
-                    cur = dp[j][cur];
-                    cost += 1 << j;
-                }
-            }
-            if (dp[0][cur] >= en) ans[queries[k][i].s] = cost + 1;
-            else ans[queries[k][i].s] = -1;
+        cin >> op >> x;
+        switch (op) {
+        case 'I':
+            T.insert(x);
+            break;
+        case 'D':
+            T.erase(x);
+            break;
+        case 'K':
+            if (x > sz(T)) cout << "invalid" << nl;
+            else cout << *T.find_by_order(x - 1) << nl;
+            break;
+        case 'C':
+            cout << T.order_of_key(x) << nl;
+            break;
+        default:
+            i--;
+            break;
         }
     }
-    FOR(i, Q) cout << ans[i] << nl;
     return 0;
 }
