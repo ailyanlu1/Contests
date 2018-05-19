@@ -37,7 +37,7 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
 struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
-#define MAXN 200005
+#define MAXN 100005
 #define MAXLGN 18
 
 int N, Q, lg, ind, par[MAXN], head[MAXN], depth[MAXN], rmq[MAXLGN][MAXN * 2];
