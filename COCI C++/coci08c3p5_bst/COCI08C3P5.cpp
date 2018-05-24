@@ -1,56 +1,60 @@
 #include <bits/stdc++.h>
+using namespace std;
 
-#define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
+#define MIN(a, b) ((a) = min((a), (b)))
+#define MAX(a, b) ((a) = max((a), (b)))
 #define pb push_back
+#define eb emplace_back
 #define mp make_pair
-#define l(x) (x << 1)
-#define r(x) (x << 1 | 1)
-#define mid(x, y) (x + (y - x) / 2)
 #define f first
 #define s second
-#define ri(x) scanf("%d", &x)
-#define rll(x) scanf("%lld", &x)
-#define rllu(x) scanf("%llu", &x)
-#define rf(x) scanf("%f", &x)
-#define rd(x) scanf("%lf", &x)
-#define rc(x) scanf(" %c", &x)
-#define rs(x) scanf("%s", x)
-#define Fill(a, x) memset(a, x, sizeof(a))
-#define randi(a, b) (rand() % (b - a + 1) + a)
+#define all(a) (a).begin(), (a).end()
+#define For(i, a, b) for (auto i = (a); i < (b); i++)
+#define FOR(i, b) For(i, 0, b)
+#define Rev(i, a, b) for (auto i = (a); i > (b); i--)
+#define REV(i, a) Rev(i, a, -1)
+#define sz(a) ((int) (a).size())
+#define nl '\n'
+#define sp ' '
 
-using namespace std;
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define pill pair<int, ll>
+#define plli pair<ll, int>
+#define pdd pair<double, double>
+#define uset unordered_set
+#define umap unordered_map
+#define pq priority_queue
+template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
+template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
-typedef long long ll;
-typedef unsigned long long llu;
-typedef pair<int, int> pii;
-typedef pair<float, float> pff;
-typedef pair<double, double> pdd;
-typedef pair<ll, ll> pll;
-typedef pair<llu, llu> pllu;
-typedef map<int, int> mii;
-typedef map<int, ll> mill;
-typedef map<ll, int> mlli;
-typedef unordered_map<int, int> umii;
-typedef unordered_map<int, ll> umill;
-typedef unordered_map<ll, int> umlli;
+template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
+struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
-int N, x, curDep;
-ll cnt = 0;
-mii depth;
+int N, x;
+ll cnt = 0LL;
+map<int, int> depth;
+map<int, int>::iterator iter;
 
 int main() {
-    ri(N);
+//    freopen("in.txt", "r", stdin);
+//    freopen("out.txt", "w", stdout);
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> N;
     for (int i = 0; i < N; i++) {
-        ri(x);
-        curDep = 0;
-        auto iter = depth.lower_bound(x);
-        curDep = max(iter != depth.end() ? iter->s + 1 : 0, iter != depth.begin() ? (--iter)->s + 1 : 0);
-        depth[x] = curDep;
-        cnt += curDep;
-        printf("%lld\n", cnt);
+        cin >> x;
+        int cur = 0;
+        iter = depth.lower_bound(x);
+        if (iter != depth.end()) MAX(cur, iter->s + 1);
+        if (iter != depth.begin()) MAX(cur, (--iter)->s + 1);
+        depth[x] = cur;
+        cnt += depth[x];
+        cout << cnt << nl;
     }
     return 0;
 }
