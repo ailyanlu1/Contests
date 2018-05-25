@@ -37,11 +37,19 @@ val Out: PrintWriter = PrintWriter(System.out)
 //val Out: PrintWriter = PrintWriter(OUTPUT_FILE_NAME)
 
 var NUM_OF_TEST_CASES: Int = 1
+var crash: Boolean = true
 val flush: Boolean = false
 
 fun main(args : Array<String>) {
     for (i in 1..NUM_OF_TEST_CASES) {
-        run(i)
+        try {
+            run(i)
+        } catch (e : Exception) {
+            Out.println("Exception thrown on test case $i")
+            e.printStackTrace(Out)
+            Out.flush()
+            if (crash) throw Exception()
+        }
         if (flush) Out.flush()
     }
     In.close()
