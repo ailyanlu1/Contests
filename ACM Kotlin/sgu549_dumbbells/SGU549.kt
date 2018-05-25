@@ -1,4 +1,4 @@
-// http://codeforces.com/problemsets/acmsguru/problem/99999/115
+// http://codeforces.com/problemsets/acmsguru/problem/99999/549
 import java.io.*
 import java.math.*
 import java.util.*
@@ -38,48 +38,42 @@ val Out: PrintWriter = PrintWriter(System.out)
 //val Out: PrintWriter = PrintWriter(OUTPUT_FILE_NAME)
 
 var NUM_OF_TEST_CASES: Int = 1
+val crash: Boolean = true
 val flush: Boolean = false
 
-fun main(args : Array<String>) {
+fun main(args: Array<String>) {
     for (i in 1..NUM_OF_TEST_CASES) {
-        run(i)
+        try {
+            run(i)
+        } catch (e : Exception) {
+            Out.println("Exception thrown on test case $i")
+            e.printStackTrace(Out)
+            Out.flush()
+            if (crash) throw Exception()
+        }
         if (flush) Out.flush()
     }
     In.close()
     Out.close()
 }
 
+
 fun run(testCaseNum: Int) {
-    var year = 2001
-    var day = In.nextInt()
-    var month = In.nextInt()
-    if (month !in 1..12) {
-        Out.println("Impossible")
-        return
+    var N = In.nextInt()
+    var K = In.nextInt()
+    var costs = Array(4005, { ArrayList<Int>() })
+    for (i in 0 until N) costs[In.nextInt()].add(In.nextInt())
+    costs.sortWith(compareBy{ -it.size })
+    var numSets = costs[K - 1].size
+    var sum = ArrayList<Int>()
+    for (i in 0 until costs.size) {
+        if (costs[i].size < numSets) break
+        costs[i].sortDescending()
+        sum.add(0)
+        for (j in 0 until numSets) sum[i] += costs[i][j]
     }
-    when (month) {
-        1, 3, 5, 7, 8, 10, 12 -> {
-            if (day !in 1..31) {
-                Out.println("Impossible")
-                return
-            }
-        }
-        2 -> {
-            if (day !in 1..28) {
-                Out.println("Impossible")
-                return
-            }
-        }
-        else -> {
-            if (day !in 1..30) {
-                Out.println("Impossible")
-                return
-            }
-        }
-    }
-    if (month <= 2) {
-        month += 12;
-        year--;
-    }
-    Out.println((day + (13 * (month + 1) / 5) + year + year / 4 - year / 100 + year / 400 + 5) % 7 + 1)
+    sum.sortDescending()
+    var maxCost = 0
+    for (i in 0 until K) maxCost += sum[i]
+    Out.println("$numSets $maxCost")
 }

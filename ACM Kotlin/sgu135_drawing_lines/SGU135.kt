@@ -26,7 +26,7 @@ class Reader {
     fun nextDouble(): Double = next().toDouble()
     fun nextInt(): Int = next().toInt()
     fun nextLong(): Long  = next().toLong()
-    fun close() : Unit = In.close();
+    fun close() : Unit = In.close()
 } // Reader class
 
 val INPUT_FILE_NAME = "input.txt"
