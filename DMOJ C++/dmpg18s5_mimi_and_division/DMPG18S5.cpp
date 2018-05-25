@@ -47,7 +47,7 @@ int query(int l, int r, int x) {
         ret += A[l] % x == 0;
         l++;
     }
-    while (l / BSZ < r / BSZ) {
+    while (l + BSZ - 1 <= r) {
         ret += LARGE[l / BSZ][x];
         l += BSZ;
     }

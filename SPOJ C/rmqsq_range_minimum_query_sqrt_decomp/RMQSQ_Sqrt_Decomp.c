@@ -59,7 +59,7 @@ int main() {
             MIN(ans, SMALL[l]);
             l++;
         }
-        while (l + BSZ <= r) {
+        while (l + BSZ - 1 <= r) {
             MIN(ans, LARGE[l / BSZ]);
             l += BSZ;
         }
