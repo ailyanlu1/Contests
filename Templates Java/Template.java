@@ -22,34 +22,6 @@ public class Template {
             bufferPointer = bytesRead = 0;
         }
 
-        public byte nextByte() throws IOException {
-            byte ret = 0;
-            byte c = read();
-            while (c <= ' ') c = read();
-            boolean neg = (c == '-');
-            if (neg) c = read();
-            do {
-                ret *= 10;
-                ret += c - '0';
-            } while ((c = read()) >= '0' && c <= '9');
-            if (neg) return (byte) (-ret);
-            return ret;
-        }
-        
-        public short nextShort() throws IOException {
-            short ret = 0;
-            byte c = read();
-            while (c <= ' ') c = read();
-            boolean neg = (c == '-');
-            if (neg) c = read();
-            do {
-                ret *= 10;
-                ret += c - '0';
-            } while ((c = read()) >= '0' && c <= '9');
-            if (neg) return (short) (-ret);
-            return ret;
-        }
-
         public int nextInt() throws IOException {
             int ret = 0;
             byte c = read();
@@ -76,20 +48,6 @@ public class Template {
             return ret;
         }
         
-        public float nextFloat() throws IOException {
-            float ret = 0, div = 1;
-            byte c = read();
-            while (c <= ' ') c = read();
-            boolean neg = (c == '-');
-            if (neg) c = read();
-            do {
-                ret = ret * 10 + c - '0';
-            } while ((c = read()) >= '0' && c <= '9');
-            if (c == '.') while ((c = read()) >= '0' && c <= '9') ret += (c - '0') / (div *= 10);
-            if (neg) return -ret;
-            return ret;
-        }
-
         public double nextDouble() throws IOException {
             double ret = 0, div = 1;
             byte c = read();
@@ -189,7 +147,6 @@ public class Template {
         out.close();
     }
     
-    // TODO CODE GOES IN THIS METHOD
     public static void run(int testCaseNum) throws Exception {
         
     }

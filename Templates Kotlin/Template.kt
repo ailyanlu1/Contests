@@ -28,15 +28,17 @@ class Reader {
     fun close() : Unit = In.close()
 } // Reader class
 
-val INPUT_FILE_NAME = "input.txt"
-val OUTPUT_FILE_NAME = "output.txt"
-
 val In: Reader = Reader(System.`in`)
 val Out: PrintWriter = PrintWriter(System.out)
 //val In: Reader = Reader(INPUT_FILE_NAME)
 //val Out: PrintWriter = PrintWriter(OUTPUT_FILE_NAME)
 
-var NUM_OF_TEST_CASES: Int = 1
+var NUM_OF_TEST_CASES: Int = 1 // TODO CHANGE NUMBER OF TEST CASES
+
+// TODO CHANGE FILE NAMES
+val INPUT_FILE_NAME = "input.txt"
+val OUTPUT_FILE_NAME = "output.txt"
+
 val crash: Boolean = true
 val flush: Boolean = false
 
