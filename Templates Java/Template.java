@@ -3,7 +3,6 @@ import java.math.*;
 import java.util.*;
 
 public class Template {
-    private static Template o = new Template();
     public static class Reader {
         private final int BUFFER_SIZE = 1 << 16;
         private int LENGTH = -1;
@@ -171,17 +170,10 @@ public class Template {
     private static boolean flush = false;
     
     public static void main(String[] args) throws Exception {
-        String packageName = "";
-        if (!stdIn || !stdOut) {
-            try {
-                packageName = o.getClass().getPackage().toString().split(" ")[1] + "/";
-            } catch (NullPointerException e) {}
-        }
         if (stdIn) in = new Reader(System.in);
-        else in = new Reader(packageName + INPUT_FILE_NAME);
+        else in = new Reader(INPUT_FILE_NAME);
         if (stdOut) out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
-        else out = new PrintWriter(new BufferedWriter(new FileWriter(packageName + OUTPUT_FILE_NAME)));
-        
+        else out = new PrintWriter(new BufferedWriter(new FileWriter(OUTPUT_FILE_NAME)));
         for (int i = 1; i <= NUM_OF_TEST_CASES; i++) {
             try {
                 run(i);
