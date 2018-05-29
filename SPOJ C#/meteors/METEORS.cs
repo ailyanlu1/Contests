@@ -112,7 +112,7 @@ namespace METEORS {
                 update(a, value);
                 update(b + 1, -value);
             }
-        };
+        }
 
         static int N, M, K;
         static int[] ans;
