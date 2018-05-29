@@ -26,7 +26,7 @@ class Reader {
     fun nextInt(): Int = next().toInt()
     fun nextLong(): Long  = next().toLong()
     fun close() : Unit = In.close()
-} // Reader class
+}
 
 val In: Reader = Reader(System.`in`)
 val Out: PrintWriter = PrintWriter(System.out)
