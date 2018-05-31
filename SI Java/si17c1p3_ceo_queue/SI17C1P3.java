@@ -325,21 +325,7 @@ public class SI17C1P3 {
                 insert();
             }
         }
-        while ((cur = times.firstEntry()) != null && cur.getKey().first < Integer.MAX_VALUE) {
-            int k1 = R[cur.getValue().first];
-            int k2 = R[cur.getValue().second];
-            int t = cur.getKey().first;
-            x = ratings.ceilingEntry(k1);
-            if (t - x.getValue().second >= W) cnt++;
-            a = ratings.lowerEntry(x.getKey());
-            b = ratings.higherEntry(x.getKey());
-            remove();
-            x = ratings.ceilingEntry(k2);
-            if (t - x.getValue().second >= W) cnt++;
-            a = ratings.lowerEntry(x.getKey());
-            b = ratings.higherEntry(x.getKey());
-            remove();
-        }
+        removePrior(Integer.MAX_VALUE);
         out.println(cnt + ratings.size());
     }
 }
