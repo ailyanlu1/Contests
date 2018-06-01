@@ -11,23 +11,29 @@ namespace Template {
     public class Program {
         public class Reader {
             private TextReader reader;
-            private Queue<string> tokens;
+            private string[] tokens;
+            private int currentToken;
 
             public Reader(Stream s) {
                 reader = new StreamReader(s);
-                tokens = new Queue<string>();
+                tokens = new string[0];
+                currentToken = 0;
             }
 
             public Reader(string file) {
                 reader = new StreamReader(file);
-                tokens = new Queue<string>();
+                tokens = new string[0];
+                currentToken = 0;
             }
 
             public string ReadLine() { return reader.ReadLine();  }
 
             public string ReadToken() {
-                while (tokens.Count() == 0) tokens = new Queue<string>(ReadLine().Split(new[] { ' ', '\t', }, StringSplitOptions.RemoveEmptyEntries));
-                return tokens.Dequeue();
+                while (currentToken == tokens.Length) {
+                    tokens = ReadLine().Split(new[] { ' ', '\t', }, StringSplitOptions.RemoveEmptyEntries);
+                    currentToken = 0;
+                }
+                return tokens[currentToken++];
             }
 
             public char ReadChar() { return ReadToken()[0]; }
