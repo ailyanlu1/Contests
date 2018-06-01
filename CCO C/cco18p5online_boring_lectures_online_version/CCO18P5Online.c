@@ -48,18 +48,19 @@ void updateIND(int i) {
 
 int queryIND(int l, int r) {
     if (l > r) return N;
-    int q = N;
+    int ql = N;
+    int qr = N;
     for (l += N, r += N; l <= r; l >>= 1, r >>= 1) {
         if (l & 1) {
-            q = A[q] > A[IND[l]] || (A[q] == A[IND[l]] && q > IND[l]) ? q : IND[l];
+            ql = A[ql] > A[IND[l]] ? ql : IND[l];
             l++;
         }
         if (!(r & 1)) {
-            q = A[q] > A[IND[r]] || (A[q] == A[IND[r]] && q > IND[r]) ? q : IND[r];
+            qr = A[IND[r]] > A[qr] ? IND[r] : qr;
             r--;
         }
     }
-    return q;
+    return A[ql] > A[qr] ? ql : qr;
 }
 
 int main() {
