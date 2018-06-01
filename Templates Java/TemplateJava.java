@@ -2,7 +2,7 @@ import java.io.*;
 import java.math.*;
 import java.util.*;
 
-public class Template {
+public class TemplateJava {
     public static class Reader {
         private final int BUFFER_SIZE = 1 << 16;
         private int LENGTH = -1;
@@ -73,8 +73,9 @@ public class Template {
         public String next() throws IOException {
             byte[] buf = new byte[LENGTH];
             int cnt = 0, c;
-            c = read();
-            while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) c = read();
+            do {
+                c = read();
+            } while (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1);
             buf[cnt++] = (byte) c;
             while ((c = read()) != -1) {
                 if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1) break;
@@ -86,8 +87,12 @@ public class Template {
         public String nextLine() throws IOException {
             byte[] buf = new byte[LENGTH];
             int cnt = 0, c;
+            do {
+                c = read();
+            } while (c == ' ' || c == '\n' || c == '\r' || c == -1);
+            buf[cnt++] = (byte) c;
             while ((c = read()) != -1) {
-                if (c == '\n' || c == '\r') break;
+                if (c == '\n' || c == '\r' || c == -1) break;
                 buf[cnt++] = (byte) c;
             }
             return new String(buf, 0, cnt);

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using static System.Diagnostics.Debug;
 
-namespace Template {
+namespace TemplateCSharp {
     public class Program {
         public class Reader {
             private TextReader reader;
