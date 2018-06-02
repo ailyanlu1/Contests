@@ -72,16 +72,15 @@ int main() {
     FOR(i, N) {
         ri(A[i]);
         IND[N + i] = i;
-        T[i] = 0;
     }
     A[N] = 0;
-    For(i, N, 2 * N) T[i] = 0;
     Rev(i, N - 1, 0) IND[i] = A[IND[i << 1]] > A[IND[i << 1 | 1]] ? IND[i << 1] : IND[i << 1 | 1];
     int l, r, l2, r2, j, x;
     FOR(i, N) {
         l = queryIND(max(0, i - K + 1), i - 1), r = queryIND(i + 1, min(i + K - 1, N - 1));
-        if (A[i] >= A[l] && A[i] > A[r]) updateT(i, A[i] + max(A[l], A[r]));
+        if (A[i] >= A[l] && A[i] > A[r]) T[N + i] = A[i] + max(A[l], A[r]);
     }
+    Rev(i, N - 1, 0) T[i] = max(T[i << 1], T[i << 1 | 1]);
     int lastAns = T[1];
     printf("%d\n", lastAns);
     FOR(i, Q) {
