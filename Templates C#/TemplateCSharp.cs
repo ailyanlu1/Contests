@@ -37,11 +37,8 @@ namespace TemplateCSharp {
             }
 
             public char ReadChar() { return ReadToken()[0]; }
-            public sbyte ReadByte() { return sbyte.Parse(ReadToken()); }
-            public short ReadShort() { return short.Parse(ReadToken()); }
             public int ReadInt() { return int.Parse(ReadToken()); }
             public long ReadLong() { return long.Parse(ReadToken()); }
-            public float ReadFloat() { return float.Parse(ReadToken(), CultureInfo.InvariantCulture); }
             public double ReadDouble() { return double.Parse(ReadToken(), CultureInfo.InvariantCulture); }
             public decimal ReadDecimal() { return decimal.Parse(ReadToken(), CultureInfo.InvariantCulture); }
             public void Close() { reader.Close(); }
