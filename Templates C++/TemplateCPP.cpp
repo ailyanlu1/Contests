@@ -50,11 +50,11 @@ long _x;
 // reads a floating point number
 #define rd(x) do { _readSignAndNum(_x); (x) = _x; _div = 1.0; if (_c == '.') while ((_c = _getchar()) >= '0') (x) += (_c - '0') / (_div *= 10); if (_sign) (x) = -(x); } while (0)
 // reads a token into a c style string
-#define rcs(x) do{ _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) > ' '); } while (0)
+#define rcs(x) do{ _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) > ' '); (x)[_cur] = '\0'; } while (0)
 // reads a token into a std::string
 #define rs(x) do { if (!_buf) assert(0); rcs(_buf); (x) = string(_buf, _cur); } while (0)
 // reads a line into a c style string
-#define rcln(x) do { _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) >= ' '); } while (0)
+#define rcln(x) do { _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) >= ' '); (x)[_cur] = '\0'; } while (0)
 // reads a line into a std::string
 #define rln(x) do { if (!_buf) assert(0); rcln(_buf); (x) = string(_buf, _cur); } while (0)
 // sets the maximum length of a string to be read, required only for reading std::string
