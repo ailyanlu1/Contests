@@ -35,8 +35,8 @@ template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2
 struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
 #define _bufferSize 4096
-char _buffer[_bufferSize + 1], *_ptr = _buffer, _c, *_buf = nullptr;
-int _cur, _sign;
+char _buffer[_bufferSize + 1], *_ptr = _buffer, _c, _sign, *_buf = nullptr;
+int _cur;
 double _div;
 long _x;
 // returns a single character

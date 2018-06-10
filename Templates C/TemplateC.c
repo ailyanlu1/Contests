@@ -23,8 +23,8 @@
 #define REV(i, a) Rev(i, a, -1)
 
 #define _bufferSize 4096
-char _buffer[_bufferSize + 1], *_ptr = _buffer, _c;
-int _cur, _sign;
+char _buffer[_bufferSize + 1], *_ptr = _buffer, _c, _sign;
+int _cur;
 double _div;
 long _x;
 // returns a single character
