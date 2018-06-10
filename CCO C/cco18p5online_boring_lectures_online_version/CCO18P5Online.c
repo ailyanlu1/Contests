@@ -17,19 +17,31 @@
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) = min((a), (b)))
 #define MAX(a, b) ((a) = max((a), (b)))
-#define ri(x) scanf("%d", &x)
-#define rll(x) scanf("%lld", &x)
-#define rllu(x) scanf("%llu", &x)
-#define rf(x) scanf("%f", &x)
-#define rd(x) scanf("%lf", &x)
-#define rld(x) scanf("%Lf", &x)
-#define rc(x) scanf(" %c", &x)
-#define sc(x) do { scanf("%c", &x); } while (isspace(x))
-#define rs(x) scanf("%s", x)
 #define For(i, a, b) for (int i = (a); i < (b); i++)
 #define FOR(i, b) For(i, 0, b)
 #define Rev(i, a, b) for (int i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
+
+char _buffer[(1 << 12) + 1], *_ptr = _buffer, _c;
+int _cur, _sign;
+double _div;
+long _x;
+// returns a single character
+#define _getchar() (*_ptr ? *_ptr++ : (_buffer[fread(_ptr = _buffer, 1, 4096, stdin)] = '\0', *_ptr++))
+// reads the unsigned number and the sign
+#define _readSignAndNum(x) do { (x) = _getchar(); } while ((x) <= ' '); _sign = (x) == '-'; if (_sign) (x) = _getchar(); for ((x) -= '0'; (_c = _getchar()) >= '0'; (x) = ((x) << 3) + ((x) << 1) + _c - '0')
+// reads a character
+#define rc(x) do { do { (x) = _getchar(); } while ((x) <= ' '); } while (0)
+// reads an integer/long integer
+#define ri(x) do { _readSignAndNum(x); if (_sign) (x) = -(x); } while (0)
+// reads a floating point number
+#define rd(x) do { _readSignAndNum(_x); (x) = _x; _div = 1.0; if (_c == '.') while ((_c = _getchar()) >= '0') (x) += (_c - '0') / (_div *= 10); if (_sign) (x) = -(x); } while (0)
+// reads a token into a c style string
+#define rcs(x) do{ _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) > ' '); } while (0)
+// reads a line into a c style string
+#define rcln(x) do { _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) >= ' '); } while (0)
+// sets the maximum length of a string to be read, required only for reading std::string
+#define setLength(x) do { if (_buf) delete[](_buf); _buf = new char[(x) + 1]; } while (0)
 
 #define ll long long
 #define ld long double

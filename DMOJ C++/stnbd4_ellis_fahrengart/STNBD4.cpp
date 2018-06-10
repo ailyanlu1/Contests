@@ -1,13 +1,28 @@
-/*
- * STNBD4.cpp
- *
- *  Created on: Jun 14, 2017
- *      Author: Wesley Leung
- */
-
 #include <bits/stdc++.h>
 
 using namespace std;
+
+char _buffer[(1 << 12) + 1], *_ptr = _buffer, _c;
+int _cur;
+bool _sign;
+double _div;
+long _x;
+// returns a single character
+#define _getchar() (*_ptr ? *_ptr++ : (_buffer[fread(_ptr = _buffer, 1, 4096, stdin)] = '\0', *_ptr++))
+// reads the unsigned number and the sign
+#define _readSignAndNum(x) do { (x) = _getchar(); } while ((x) <= ' '); _sign = (x) == '-'; if (_sign) (x) = _getchar(); for ((x) -= '0'; (_c = _getchar()) >= '0'; (x) = ((x) << 3) + ((x) << 1) + _c - '0')
+// reads a character
+#define rc(x) do { do { (x) = _getchar(); } while ((x) <= ' '); } while (0)
+// reads an integer/long integer
+#define ri(x) do { _readSignAndNum(x); if (_sign) (x) = -(x); } while (0)
+// reads a floating point number
+#define rd(x) do { _readSignAndNum(_x); (x) = _x; _div = 1.0; if (_c == '.') while ((_c = _getchar()) >= '0') (x) += (_c - '0') / (_div *= 10); if (_sign) (x) = -(x); } while (0)
+// reads a token into a c style string
+#define rcs(x) do{ _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) > ' '); } while (0)
+// reads a line into a c style string
+#define rcln(x) do { _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) >= ' '); } while (0)
+// sets the maximum length of a string to be read, required only for reading std::string
+#define setLength(x) do { if (_buf) delete[](_buf); _buf = new char[(x) + 1]; } while (0)
 
 struct Query {
     int l, r, ind;
@@ -38,26 +53,27 @@ bool queryCmp(Query q1, Query q2) {
 }
 
 int main() {
-    scanf("%d", &N);
-    for (int i = 1; i <= N; i++) {
-        scanf("%d", &A[i].first);
+    ri(N);
+    for (int i = 0; i < N; i++) {
+        ri(A[i].first);
         A[i].second = i;
     }
-    sort(A + 1, A + N + 1);
+    sort(A, A + N);
     for (int i = 1; i <= N; i++) {
-        arr[A[i].second] = i;
+        arr[A[i - 1].second] = i;
     }
-    scanf("%d", &Q);
+    ri(Q);
     qSize = sqrt(N);
     for (int i = 0; i < Q; i++) {
-        scanf("%d%d", &l, &r);
-        q[i].l = l;
-        q[i].r = r;
+        ri(l);
+        ri(r);
+        q[i].l = l - 1;
+        q[i].r = r - 1;
         q[i].ind = i;
     }
     sort(q, q + Q, queryCmp);
-    l = N + 1;
-    r = N;
+    l = 0;
+    r = -1;
     res = 0;
     for (int i = 0; i < Q; i++) {
         while (l < q[i].l) {

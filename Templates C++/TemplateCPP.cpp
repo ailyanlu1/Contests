@@ -17,8 +17,6 @@ using namespace std;
 #define Rev(i, a, b) for (auto i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
 #define sz(a) ((int) (a).size())
-#define nl '\n'
-#define sp ' '
 
 #define ll long long
 #define ld long double
@@ -36,9 +34,34 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
 struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
+#define _bufferSize 4096
+char _buffer[_bufferSize + 1], *_ptr = _buffer, _c, *_buf = nullptr;
+int _cur, _sign;
+double _div;
+long _x;
+// returns a single character
+#define _getchar() (*_ptr ? *_ptr++ : (_buffer[fread(_ptr = _buffer, 1, _bufferSize, stdin)] = '\0', *_ptr++))
+// reads the unsigned number and the sign
+#define _readSignAndNum(x) do { (x) = _getchar(); } while ((x) <= ' '); _sign = (x) == '-'; if (_sign) (x) = _getchar(); for ((x) -= '0'; (_c = _getchar()) >= '0'; (x) = ((x) << 3) + ((x) << 1) + _c - '0')
+// reads a character
+#define rc(x) do { do { (x) = _getchar(); } while ((x) <= ' '); } while (0)
+// reads an integer/long integer
+#define ri(x) do { _readSignAndNum(x); if (_sign) (x) = -(x); } while (0)
+// reads a floating point number
+#define rd(x) do { _readSignAndNum(_x); (x) = _x; _div = 1.0; if (_c == '.') while ((_c = _getchar()) >= '0') (x) += (_c - '0') / (_div *= 10); if (_sign) (x) = -(x); } while (0)
+// reads a token into a c style string
+#define rcs(x) do{ _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) > ' '); } while (0)
+// reads a token into a std::string
+#define rs(x) do { if (!_buf) assert(0); rcs(_buf); (x) = string(_buf, _cur); } while (0)
+// reads a line into a c style string
+#define rcln(x) do { _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) >= ' '); } while (0)
+// reads a line into a std::string
+#define rln(x) do { if (!_buf) assert(0); rcln(_buf); (x) = string(_buf, _cur); } while (0)
+// sets the maximum length of a string to be read, required only for reading std::string
+#define setLength(x) do { if (_buf) delete[](_buf); _buf = new char[(x) + 1]; } while (0)
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
-    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
     return 0;
 }

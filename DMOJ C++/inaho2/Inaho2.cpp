@@ -1,71 +1,64 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define SHORT_INF 0x3f3f
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
-#define pb push_back
-#define mp make_pair
-#define l(x) ((x) << 1)
-#define r(x) ((x) << 1 | 1)
-#define m(x, y) ((x) + ((y) - (x)) / 2)
 #define MIN(a, b) ((a) = min((a), (b)))
 #define MAX(a, b) ((a) = max((a), (b)))
+#define pb push_back
+#define eb emplace_back
+#define mp make_pair
 #define f first
 #define s second
-#define ri(x) scanf("%d", &x)
-#define rll(x) scanf("%lld", &x)
-#define rllu(x) scanf("%llu", &x)
-#define rf(x) scanf("%f", &x)
-#define rd(x) scanf("%lf", &x)
-#define rld(x) scanf("%Lf", &x)
-#define rc(x) scanf(" %c", &x)
-#define sc(x) do { scanf("%c", &x); } while (isspace(x))
-#define rs(x) scanf("%s", x)
-#define For(i, a, b) for (int i = (a); i < (b); i++)
+#define all(a) (a).begin(), (a).end()
+#define For(i, a, b) for (auto i = (a); i < (b); i++)
 #define FOR(i, b) For(i, 0, b)
-#define Forit(i, c) for (auto i = (c).begin(); i != (c).end(); i++)
-#define Rev(i, a, b) for (int i = (a); i > (b); i--)
+#define Rev(i, a, b) for (auto i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
-#define Revit(i, c) for (auto i = (c).rbegin(); i != (c).rend(); i++)
-#define set0(a) memset((a), 0, sizeof(a))
-#define Fill(a, x, n) FOR(_, n) (a)[_] = (x)
-#define Fill2(a, x, n, m) FOR(_, n) FOR(__, m) (a)[_][__] = (x)
-#define Fill3(a, x, n, m, p) FOR(_, n) FOR(__, m) FOR(___, p) (a)[_][__][___] = (x)
-#define randi(a, b) (rand() % ((b) - (a) + 1) + (a))
 #define sz(a) ((int) (a).size())
-#define len(a) ((int) (a).length())
 
-typedef long long ll;
-typedef unsigned long long llu;
-typedef long double ld;
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define pill pair<int, ll>
+#define plli pair<ll, int>
+#define pdd pair<double, double>
 #define uset unordered_set
 #define umap unordered_map
 #define pq priority_queue
-typedef pair<int, int> pii;
-typedef pair<double, double> pdd;
-typedef pair<ll, ll> pll;
-typedef pair<int, ll> pill;
-typedef pair<ll, int> plli;
-typedef map<int, int> mii;
-typedef map<int, ll> mill;
-typedef map<ll, int> mlli;
-typedef map<ll, ll> mll;
-typedef umap<int, int> umii;
-typedef umap<int, ll> umill;
-typedef umap<ll, int> umlli;
-typedef umap<ll, ll> umll;
 template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
 template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 
-#define debug(fmt, x) fprintf(stderr, "%d::%s = " fmt, __LINE__, #x, (x)); fflush(stderr)
-#define debug2(x) cerr << __LINE__ << "::" << #x << " = " << (x) << '\n' << flush
-#define debugva(fmt, ...) fprintf(stderr, "%d::%s = " fmt, __LINE__, #__VA_ARGS__, __VA_ARGS__); fflush(stderr)
-#define debugarr(fmt, x, a, b) fprintf(stderr, "%d::%s = {", __LINE__, #x); For(_, a, b) { if (_ != (a)) { fprintf(stderr, ", "); } fprintf(stderr, fmt, (x)[_]); } fprintf(stderr, "}\n"); fflush(stderr)
-#define debugarr2(x, a, b) cerr << __LINE__ << "::" << #x << " = {"; For(_, a, b) { if (_ != (a)) { cerr << ", "; } cerr << (x)[_]; } cerr << "}\n" << flush
+template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
+struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
-template<typename T1, typename T2> struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * hash<T1> {}(p.first) + hash<T2> {}(p.second);}};
+#define _bufferSize 4096
+char _buffer[_bufferSize + 1], *_ptr = _buffer, _c, *_buf = nullptr;
+int _cur, _sign;
+double _div;
+long _x;
+// returns a single character
+#define _getchar() (*_ptr ? *_ptr++ : (_buffer[fread(_ptr = _buffer, 1, _bufferSize, stdin)] = '\0', *_ptr++))
+// reads the unsigned number and the sign
+#define _readSignAndNum(x) do { (x) = _getchar(); } while ((x) <= ' '); _sign = (x) == '-'; if (_sign) (x) = _getchar(); for ((x) -= '0'; (_c = _getchar()) >= '0'; (x) = ((x) << 3) + ((x) << 1) + _c - '0')
+// reads a character
+#define rc(x) do { do { (x) = _getchar(); } while ((x) <= ' '); } while (0)
+// reads an integer/long integer
+#define ri(x) do { _readSignAndNum(x); if (_sign) (x) = -(x); } while (0)
+// reads a floating point number
+#define rd(x) do { _readSignAndNum(_x); (x) = _x; _div = 1.0; if (_c == '.') while ((_c = _getchar()) >= '0') (x) += (_c - '0') / (_div *= 10); if (_sign) (x) = -(x); } while (0)
+// reads a token into a c style string
+#define rcs(x) do{ _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) > ' '); } while (0)
+// reads a token into a std::string
+#define rs(x) do { if (!_buf) assert(0); rcs(_buf); (x) = string(_buf, _cur); } while (0)
+// reads a line into a c style string
+#define rcln(x) do { _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) >= ' '); } while (0)
+// reads a line into a std::string
+#define rln(x) do { if (!_buf) assert(0); rcln(_buf); (x) = string(_buf, _cur); } while (0)
+// sets the maximum length of a string to be read, required only for reading std::string
+#define setLength(x) do { if (_buf) delete[](_buf); _buf = new char[(x) + 1]; } while (0)
 
 #define MAXN 10
 #define MAXPROD 10000000
@@ -113,26 +106,26 @@ int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
 //    const auto start_time = chrono::system_clock::now();
-    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> N >> Q;
-    FOR(i, N) cin >> L[i];
+    ri(N);
+    ri(Q);
+    FOR(i, N) ri(L[i]);
     init();
     int op, pos, x;
     FOR(q, Q) {
-        cin >> op;
+        ri(op);
         if (op == 1) {
             pos = 0;
             FOR(i, N) {
-                cin >> A[i];
+                ri(A[i]);
                 pos += (A[i] - 1) * sufProd[i];
             }
-            cin >> x;
+            ri(x);
             update(0, 0, x - ARR[pos]);
             ARR[pos] = x;
         } else if (op == 2) {
-            FOR(i, N) cin >> A[i];
-            FOR(i, N) cin >> B[i];
-            cout << rsq(0, 0) << '\n';
+            FOR(i, N) ri(A[i]);
+            FOR(i, N) ri(B[i]);
+            printf("%d\n", rsq(0, 0));
         } else {
             q--;
         }
