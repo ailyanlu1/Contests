@@ -94,11 +94,11 @@ void write(double x) { wd(x); }
 void write(ld x) { wld(x); }
 void write(const char* x) { wcs(x); }
 void write(string &x) { ws(x); }
-template <typename T, typename ...Ts> void write(T &&x, Ts &&...xs) { write(x); write(_delimiter); write(forward<Ts>(xs)...); }
-void writeln() { write('\n'); }
-template <typename ...Ts> void writeln(Ts &&...xs) { write(forward<Ts>(xs)...); write('\n'); }
+template <typename T, typename ...Ts> void write(T &&x, Ts &&...xs) { write(x); for (const char *_p = _delimiter; *_p; _putchar(*_p++)); write(forward<Ts>(xs)...); }
+void writeln() { _putchar('\n'); }
+template <typename ...Ts> void writeln(Ts &&...xs) { write(forward<Ts>(xs)...); _putchar('\n'); }
 class IOManager { public: ~IOManager() { flush(); } };
-unique_ptr<IOManager> _iomanager(new IOManager());
+unique_ptr<IOManager> _iomanager = make_unique<IOManager>();
 
 int main() {
 //    freopen("in.txt", "r", stdin);
