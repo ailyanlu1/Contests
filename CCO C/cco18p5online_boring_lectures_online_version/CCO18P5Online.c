@@ -22,20 +22,20 @@
 #define Rev(i, a, b) for (int i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
 
-char _buffer[(1 << 12) + 1], *_ptr = _buffer, _c;
-int _cur, _sign;
+#define _bufferSize 4096
+char _buffer[_bufferSize + 1], *_ptr = _buffer, _c, _sign;
+int _cur;
 double _div;
-long _x;
 // returns a single character
-#define _getchar() (*_ptr ? *_ptr++ : (_buffer[fread(_ptr = _buffer, 1, 4096, stdin)] = '\0', *_ptr++))
+#define _getchar() (*_ptr ? *_ptr++ : (_buffer[fread(_ptr = _buffer, 1, _bufferSize, stdin)] = '\0', *_ptr++))
 // reads the unsigned number and the sign
-#define _readSignAndNum(x) do { (x) = _getchar(); } while ((x) <= ' '); _sign = (x) == '-'; if (_sign) (x) = _getchar(); for ((x) -= '0'; (_c = _getchar()) >= '0'; (x) = ((x) << 3) + ((x) << 1) + _c - '0')
+#define _readSignAndNum(x) do { (x) = _getchar(); } while ((x) <= ' '); _sign = (x) == '-'; if (_sign) (x) = _getchar(); for ((x) -= '0'; (_c = _getchar()) >= '0'; (x) = (x) * 10 + _c - '0')
 // reads a character
 #define rc(x) do { do { (x) = _getchar(); } while ((x) <= ' '); } while (0)
 // reads an integer/long integer
 #define ri(x) do { _readSignAndNum(x); if (_sign) (x) = -(x); } while (0)
 // reads a floating point number
-#define rd(x) do { _readSignAndNum(_x); (x) = _x; _div = 1.0; if (_c == '.') while ((_c = _getchar()) >= '0') (x) += (_c - '0') / (_div *= 10); if (_sign) (x) = -(x); } while (0)
+#define rd(x) do { _readSignAndNum(x); if (_c == '.') for (_div = 1.0; (_c = _getchar()) >= '0'; (x) += (_c - '0') / (_div *= 10)); if (_sign) (x) = -(x); } while (0)
 // reads a token into a c style string
 #define rcs(x) do{ _cur = 0; do { _c = _getchar(); } while (_c <= ' '); do { (x)[_cur++] = _c; } while ((_c = _getchar()) > ' '); (x)[_cur] = '\0'; } while (0)
 // reads a line into a c style string
