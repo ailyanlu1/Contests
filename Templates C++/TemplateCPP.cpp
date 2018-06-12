@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
@@ -17,7 +16,6 @@ using namespace std;
 #define Rev(i, a, b) for (auto i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
 #define sz(a) ((int) (a).size())
-
 #define uint unsigned int
 #define ull unsigned long long
 #define ll long long
@@ -32,15 +30,12 @@ using namespace std;
 #define pq priority_queue
 template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
 template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
-
 template<typename T1,typename T2,typename H1=hash<T1>,typename H2=hash<T2>>struct pair_hash{size_t operator()(const pair<T1,T2>&p)const{return 31*H1{}(p.first)+H2{}(p.second);}};
 
 #define _bufferSize 4096
 #define _maxNumLength 128
 char _inputBuffer[_bufferSize+1],*_inputPtr=_inputBuffer,_outputBuffer[_bufferSize],_c,_sign,*_tempInputBuf=nullptr,_numBuf[_maxNumLength],_tempOutputBuf[_maxNumLength],_fill=' ';
-const char*_delimiter=" ";
-int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;
-ll _precisionBase=1000000;
+const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;ll _precisionBase=1000000;
 #define _getchar() (*_inputPtr?*_inputPtr++:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,stdin)]='\0',*_inputPtr++))
 #define _readSignAndNum(x) do{(x)=_getchar();}while((x)<=' ');_sign=(x)=='-';if(_sign)(x)=_getchar();for((x)-='0';(_c=_getchar())>='0';(x)=(x)*10+_c-'0')
 #define _readFloatingPoint(x,T) for(T _div=1.0;(_c=_getchar())>='0';(x)+=(_c-'0')/(_div*=10))
@@ -80,10 +75,8 @@ template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward
 void write(int x){wi(x);}void write(uint x){wi(x);}void write(ll x){wll(x);}void write(ull x){wll(x);}void write(double x){wd(x);}void write(ld x){wld(x);}
 void write(char x){wc(x);}void write(char*x){wcs(x);}void write(const char*x){wcs(x);}void write(string&x){ws(x);}
 template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const char*_p=_delimiter;*_p;_putchar(*_p++));write(forward<Ts>(xs)...);}
-void writeln(){_putchar('\n');}
-template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
-class IOManager{public:~IOManager(){flush();}};
-unique_ptr<IOManager>_iomanager=make_unique<IOManager>();
+void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
+class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager=make_unique<IOManager>();
 
 int main() {
 //    freopen("in.txt", "r", stdin);
