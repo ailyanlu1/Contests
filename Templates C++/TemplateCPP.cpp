@@ -53,15 +53,8 @@ ll _precisionBase=1000000;
 #define rcln(x) do{_cur=0;do{_c=_getchar();}while(_c<=' ');do{(x)[_cur++]=_c;}while((_c=_getchar())>=' ');(x)[_cur]='\0';}while(0)
 #define rln(x) do{if(!_tempInputBuf)assert(0);rcln(_tempInputBuf);(x)=string(_tempInputBuf,_cur);}while(0)
 #define setLength(x) do{if(_tempInputBuf)delete[](_tempInputBuf);_tempInputBuf=new char[(x)+1];}while(0)
-void read(char&x){rc(x);}
-void read(int&x){ri(x);}
-void read(uint&x){ri(x);}
-void read(ll&x){ri(x);}
-void read(ull&x){ri(x);}
-void read(double&x){rd(x);}
-void read(ld&x){rld(x);}
-void read(char*x){rcs(x);}
-void read(string&x){rs(x);}
+void read(int&x){ri(x);}void read(uint&x){ri(x);}void read(ll&x){ri(x);}void read(ull&x){ri(x);}void read(double&x){rd(x);}void read(ld&x){rld(x);}
+void read(char&x){rc(x);}void read(char*x){rcs(x);}void read(string&x){rs(x);}
 template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward<Ts>(xs)...);}
 #define flush() (fwrite(_outputBuffer,1,_outputPtr,stdout),_outputPtr=0)
 #define _putchar(x) (_outputPtr==_bufferSize?flush():_outputBuffer[_outputPtr++]=(x))
@@ -84,16 +77,8 @@ template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward
 #define setDelimiter(x) do{_delimiter=(x);}while(0)
 #define setWidth(x) do{_width=(x);}while(0)
 #define setFill(x) do{_fill=(x);}while(0)
-void write(char x){wc(x);}
-void write(int x){wi(x);}
-void write(uint x){wi(x);}
-void write(ll x){wll(x);}
-void write(ull x){wll(x);}
-void write(double x){wd(x);}
-void write(ld x){wld(x);}
-void write(char*x){wcs(x);}
-void write(const char*x){wcs(x);}
-void write(string&x){ws(x);}
+void write(int x){wi(x);}void write(uint x){wi(x);}void write(ll x){wll(x);}void write(ull x){wll(x);}void write(double x){wd(x);}void write(ld x){wld(x);}
+void write(char x){wc(x);}void write(char*x){wcs(x);}void write(const char*x){wcs(x);}void write(string&x){ws(x);}
 template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const char*_p=_delimiter;*_p;_putchar(*_p++));write(forward<Ts>(xs)...);}
 void writeln(){_putchar('\n');}
 template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
