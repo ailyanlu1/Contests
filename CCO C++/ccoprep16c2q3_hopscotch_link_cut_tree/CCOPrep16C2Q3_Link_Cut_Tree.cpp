@@ -76,11 +76,160 @@ void write(int x){wi(x);}void write(uint x){wi(x);}void write(ll x){wll(x);}void
 void write(char x){wc(x);}void write(char*x){wcs(x);}void write(const char*x){wcs(x);}void write(string&x){ws(x);}
 template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const char*_p=_delimiter;*_p;_putchar(*_p++));write(forward<Ts>(xs)...);}
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
-void flush(){_flush();}
-class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager=make_unique<IOManager>();
+void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager=make_unique<IOManager>();
+
+
+struct RootedLinkCutTree {
+private:
+    struct Node {
+    public:
+        int vertex, size;
+        Node *left = nullptr, *right = nullptr, *parent = nullptr;
+
+        Node (int vertex) : vertex(vertex), size(1) {};
+    };
+
+    int V;
+    vector<Node*> nodes;
+
+    int apply(int a, int b) {
+        return a + b;
+    }
+
+    int merge(int l, int r) {
+        return l + r;
+    }
+
+    bool isRoot(Node *x) {
+        return nullptr == x->parent || (x != x->parent->left && x != x->parent->right);
+    }
+
+    int getSize(Node *x) {
+        return nullptr == x ? 0 : x->size;
+    }
+
+    void update(Node *x) {
+        x->size = 1 + getSize(x->left) + getSize(x->right);
+    }
+
+    void connect(Node *child, Node *parent, bool hasChild, bool isLeft) {
+        if (nullptr != child) child->parent = parent;
+        if (hasChild) {
+            if (isLeft) parent->left = child;
+            else parent->right = child;
+        }
+    }
+
+    void rotate(Node *x) {
+        Node *p = x->parent;
+        Node *g = p->parent;
+        bool isRootP = isRoot(p);
+        bool isLeft = (x == p->left);
+        connect(isLeft ? x->right : x->left, p, true, isLeft);
+        connect(p, x, true, !isLeft);
+        connect(x, g, !isRootP, isRootP ? false : p == g->left);
+        update(p);
+    }
+
+    void splay(Node *x) {
+        while (!isRoot(x)) {
+            Node *p = x->parent;
+            Node *g = p->parent;
+            if (!isRoot(p)) rotate((x == p->left) == (p == g->left) ? p : x);
+            rotate(x);
+        }
+        update(x);
+    }
+
+    Node *expose(Node *x) {
+        Node *last = nullptr;
+        for (Node *y = x; nullptr != y; y = y->parent) {
+            splay(y);
+            y->left = last;
+            last = y;
+        }
+        splay(x);
+        return last;
+    }
+
+    Node *findRoot(Node *x) {
+        expose(x);
+        while (nullptr != x->right) x = x->right;
+        splay(x);
+        return x;
+    }
+
+    bool link(Node *x, Node *y) {
+        if (findRoot(x) == findRoot(y)) return false;
+        expose(x);
+        if (nullptr != x->right) throw runtime_error("x is not a root node");
+        x->parent = y;
+        return true;
+    }
+
+    void cutParent(Node *x) {
+        expose(x);
+        if (nullptr == x->right) throw runtime_error("x is a root node");
+        x->right->parent = nullptr;
+        x->right = nullptr;
+    }
+
+    int querySize(Node *x) {
+        expose(x);
+        return getSize(x);
+    }
+
+public:
+    RootedLinkCutTree(int V) : V(V), nodes(V) {
+        for (int v = 0; v < V; v++) {
+            nodes[v] = new Node(v);
+        }
+    }
+
+    void addNode(int value) {
+        nodes.push_back(new Node(V++));
+    }
+
+    bool link(int v, int w) {
+        return link(nodes[v], nodes[w]);
+    }
+
+    void cutParent(int v) {
+        cutParent(nodes[v]);
+    }
+
+    int querySize(int v) {
+        return querySize(nodes[v]);
+    }
+
+    int getV() {
+        return V;
+    }
+} *T;
+
+int N, Q;
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
+    read(N);
+    T = new RootedLinkCutTree(N + 1);
+    int t, a, b;
+    FOR(i, N) {
+        read(a);
+        T->link(i, min(i + a, N));
+    }
+    read(Q);
+    FOR(i, Q) {
+        read(t);
+        if (t == 1) {
+            read(a);
+            writeln(T->querySize(a) - 1);
+        } else {
+            read(a, b);
+            T->cutParent(a);
+            T->link(a, min(a + b, N));
+        }
+    }
     return 0;
 }

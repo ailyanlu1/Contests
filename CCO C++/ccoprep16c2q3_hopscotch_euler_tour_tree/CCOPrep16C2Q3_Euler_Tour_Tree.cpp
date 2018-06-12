@@ -76,11 +76,153 @@ void write(int x){wi(x);}void write(uint x){wi(x);}void write(ll x){wll(x);}void
 void write(char x){wc(x);}void write(char*x){wcs(x);}void write(const char*x){wcs(x);}void write(string&x){ws(x);}
 template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const char*_p=_delimiter;*_p;_putchar(*_p++));write(forward<Ts>(xs)...);}
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
-void flush(){_flush();}
-class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager=make_unique<IOManager>();
+void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager=make_unique<IOManager>();
+
+mt19937 rng(time(0));
+uniform_real_distribution<double> dis(0.0, 1.0);
+
+struct Node {
+public:
+    int vertex;
+    int val;
+    int subtreeVal = 0;
+    double priority;
+    int size;
+    Node *left = nullptr, *right = nullptr, *parent = nullptr;
+    Node (int vertex, int val, double priority, int size = 1) : vertex(vertex), val(val), priority(priority), size(size) {}
+};
+
+int size(Node *x) {
+    return x ? x->size : 0;
+}
+
+Node *root(Node *x) {
+    if (!x) return nullptr;
+    while (x->parent) x = x->parent;
+    return x;
+}
+
+int depth(Node *x) {
+    int cnt = 0;
+    if (!x) return cnt;
+    for (; x->parent; cnt++) x = x->parent;
+    return cnt;
+}
+
+void update(Node *x) {
+    if (x) {
+        x->size = 1;
+        x->subtreeVal = x->val;
+        if (x->left) {
+            x->left->parent = x;
+            x->size += x->left->size;
+            x->subtreeVal += x->left->subtreeVal;
+        }
+        if (x->right) {
+            x->right->parent = x;
+            x->size += x->right->size;
+            x->subtreeVal += x->right->subtreeVal;
+        }
+    }
+}
+
+int index(Node *x) {
+    int ind = size(x->left);
+    for (; x->parent; x = x->parent) if (x->parent->left != x) ind += 1 + size(x->parent->left);
+    return ind;
+}
+
+void merge(Node *&x, Node *l, Node *r) {
+    if (!l || !r) {
+        x = l ? l : r;
+    } else if (l->priority > r->priority) {
+        merge(l->right, l->right, r);
+        x = l;
+    } else {
+        merge(r->left, l, r->left);
+        x = r;
+    }
+    update(x);
+}
+
+void split(Node *x, Node *&l, Node *&r, int ind) {
+    if (!x) {
+        l = r = nullptr;
+        return;
+    }
+    x->parent = nullptr;
+    if (ind <= size(x->left)) {
+        split(x->left, l, x->left, ind);
+        r = x;
+    } else {
+        split(x->right, x->right, r, ind - size(x->left) - 1);
+        l = x;
+    }
+    update(x);
+}
+
+int N, Q;
+vector<Node*> pre, post;
+
+void init(int N) {
+    pre.reserve(N);
+    post.reserve(N);
+    Node *dummy = nullptr;
+    for (int i = 0; i < N; i++) {
+        pre.push_back(new Node(i, 1, dis(rng)));
+        post.push_back(new Node(i, -1, dis(rng)));
+        merge(dummy, pre.back(), post.back());
+    }
+}
+
+// adds an edge from v to w
+void addEdge(int v, int w) {
+    Node *l = nullptr, *r = nullptr;
+    split(root(pre[v]), l, r, index(pre[v]) + 1);
+    merge(l, l, root(pre[w]));
+    merge(l, l, r);
+}
+
+// cut a vertex from its parent
+void cutParent(int v) {
+    Node *l = nullptr, *mid = nullptr, *r = nullptr;
+    split(root(pre[v]), l, mid, index(pre[v]));
+    split(mid, mid, r, index(post[v]) + 1);
+    merge(l, l, r);
+}
+
+// queries the sum of the nodes from the root to v
+int queryPathFromRoot(int v) {
+    Node *l = nullptr, *r = nullptr;
+    split(root(pre[v]), l, r, index(pre[v]) + 1);
+    int ret = l->subtreeVal;
+    merge(l, l, r);
+    return ret;
+}
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
+    read(N);
+    init(N + 1);
+    int t, a, b;
+    FOR(i, N) {
+        read(a);
+        b = min(i + a, N);
+        addEdge(b, i);
+    }
+    read(Q);
+    FOR(i, Q) {
+        read(t);
+        if (t == 1) {
+            read(a);
+            writeln(queryPathFromRoot(a) - 1);
+        } else {
+            read(a, b);
+            cutParent(a);
+            b = min(a + b, N);
+            addEdge(b, a);
+        }
+    }
     return 0;
 }

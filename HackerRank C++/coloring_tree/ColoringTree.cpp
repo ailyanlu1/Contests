@@ -79,8 +79,71 @@ void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){wr
 void flush(){_flush();}
 class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager=make_unique<IOManager>();
 
+#define MAXN 100005
+
+int N, M, R, C[MAXN], temp[MAXN], cnt[MAXN], SZ[MAXN], ans[MAXN], res = 0;
+bool isHeavy[MAXN];
+vector<int> adj[MAXN];
+
+void getSize(int v, int prev) {
+    SZ[v] = 1;
+    for (int w : adj[v]) {
+        if (w == prev) continue;
+        getSize(w, v);
+        SZ[v] += SZ[w];
+    }
+}
+
+void add(int v, int prev, int delta) {
+    cnt[C[v]] += delta;
+    if (cnt[C[v]] == (delta == 1)) res += delta;
+    for (int w : adj[v]) if (w != prev && !isHeavy[w]) add(w, v, delta);
+}
+
+void dfs(int v, int prev, bool keep = 0) {
+    int maxSize = -1, heavyInd = -1;
+    for (int w : adj[v]) {
+        if (w != prev && SZ[w] > maxSize) {
+            maxSize = SZ[w];
+            heavyInd = w;
+        }
+    }
+    for (int w : adj[v]) if (w != prev && w != heavyInd) dfs(w, v, 0);
+    if (heavyInd != -1) {
+        dfs(heavyInd, v, 1);
+        isHeavy[heavyInd] = 1;
+    }
+    add(v, prev, 1);
+    ans[v] = res;
+    if (heavyInd != -1) isHeavy[heavyInd] = 0;
+    if (!keep) add(v, prev, -1);
+}
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
+    read(N, M, R);
+    R--;
+    int a, b;
+    FOR(i, N - 1) {
+        read(a, b);
+        a--; b--;
+        adj[a].pb(b);
+        adj[b].pb(a);
+    }
+    FOR(i, N) {
+        read(C[i]);
+        temp[i] = C[i];
+        isHeavy[i] = 0;
+    }
+    sort(temp, temp + N);
+    int k = unique(temp, temp + N) - temp;
+    FOR(i, N) C[i] = lower_bound(temp, temp + k, C[i]) - temp;
+    getSize(R, -1);
+    dfs(R, -1);
+    FOR(i, M) {
+        read(a);
+        writeln(ans[a - 1]);
+    }
     return 0;
 }
