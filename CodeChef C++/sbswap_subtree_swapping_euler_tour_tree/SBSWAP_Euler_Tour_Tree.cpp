@@ -71,7 +71,6 @@ Node *min(Node *x) {
 Node *max(Node *x) {
     if (!x) return nullptr;
     while (x->right) x = x->right;
-    assert(x);
     return x;
 }
 
