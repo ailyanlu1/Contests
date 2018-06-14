@@ -1,3 +1,4 @@
+// https://practice.contest.atcoder.jp/tasks/practice_1
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -83,5 +84,10 @@ int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     _iomanager.reset(new IOManager());
+    setLength(105);
+    int a, b, c;
+    string s;
+    read(a, b, c, s);
+    writeln(a + b + c, s);
     return 0;
 }

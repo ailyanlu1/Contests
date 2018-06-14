@@ -1,3 +1,4 @@
+// https://practice.contest.atcoder.jp/tasks/practice_2
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -79,9 +80,91 @@ template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const 
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager;
 
+#define MAXN 30
+ 
+int N, Q;
+char A[MAXN], dp[MAXN][MAXN];
+
+template <typename It, typename Comparator> void merge_sort_bottom_up(It st, It en, Comparator cmp) {
+    typedef typename std::iterator_traits<It>::value_type T;
+    int n = en - st;
+    T *aux = new T[n];
+    for (int i = 0; i < n; i++) aux[i] = st[i];
+    bool flag = true;
+    for (int len = 1; len < n; len *= 2) {
+        if (flag) {
+            for (int lo = 0; lo < n; lo += len + len) {
+                int mid = lo + len - 1;
+                int hi = min(lo + len + len - 1, n - 1);
+                int i = lo, j = mid + 1;
+                for (int k = lo; k <= hi; k++) {
+                    if (i > mid) st[k] = aux[j++];
+                    else if (j > hi) st[k] = aux[i++];
+                    else if (cmp(aux[j], aux[i])) st[k] = aux[j++];
+                    else st[k] = aux[i++];
+                }
+            }
+        } else {
+            for (int lo = 0; lo < n; lo += len + len) {
+                int mid = lo + len - 1;
+                int hi = min(lo + len + len - 1, n - 1);
+                int i = lo, j = mid + 1;
+                for (int k = lo; k <= hi; k++) {
+                    if (i > mid) aux[k] = st[j++];
+                    else if (j > hi) aux[k] = st[i++];
+                    else if (cmp(st[j], st[i])) aux[k] = st[j++];
+                    else aux[k] = st[i++];
+                }
+            }
+        }
+        flag = !flag;
+    }
+    if (flag) for (int i = 0; i < n; i++) st[i] = aux[i];
+    delete[] (aux);
+}
+
+bool cmp(char &a, char &b) {
+    if (dp[a - 'A'][b - 'A'] == -1) {
+        writeln('?', a, b);
+        flush();
+        scanf(" %c", &dp[a - 'A'][b - 'A']);
+    }
+    return dp[a - 'A'][b - 'A'] == '<';
+}
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     _iomanager.reset(new IOManager());
+    memset(dp, -1, sizeof(dp));
+    scanf("%d %d", &N, &Q);
+    FOR(i, N) A[i] = 'A' + i;
+    if (N == 5) {
+        if (cmp(A[0], A[1])) swap(A[0], A[1]);
+        if (cmp(A[2], A[3])) swap(A[2], A[3]);
+        if (cmp(A[0], A[2])) {
+            swap(A[0], A[2]);
+            swap(A[1], A[3]);
+        }
+        if (cmp(A[4], A[2])) {
+            if (cmp(A[3], A[4])) swap(A[3], A[4]);
+        } else {
+            swap(A[4], A[3]);
+            swap(A[3], A[2]);
+            if (cmp(A[0], A[2])) swap(A[0], A[2]);
+        }
+        if (cmp(A[1], A[3])) {
+            swap(A[0], A[4]);
+            swap(A[2], A[3]);
+            if (cmp(A[1], A[0])) swap(A[0], A[1]);
+        } else {
+            swap(A[0], A[4]);
+            swap(A[1], A[3]);
+            if (cmp(A[3], A[2])) swap(A[2], A[3]);
+        }
+    } else merge_sort_bottom_up(A, A + N, cmp);
+    write("! ");
+    FOR(i, N) write(A[i]);
+    writeln();
     return 0;
 }
