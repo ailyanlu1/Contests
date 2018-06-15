@@ -37,7 +37,7 @@ template<typename T1,typename T2,typename H1=hash<T1>,typename H2=hash<T2>>struc
 #define _maxNumLength 128
 char _inputBuffer[_bufferSize+1],*_inputPtr=_inputBuffer,_outputBuffer[_bufferSize],_c,_sign,*_tempInputBuf=nullptr,_numBuf[_maxNumLength],_tempOutputBuf[_maxNumLength],_fill=' ';
 const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;ll _precisionBase=1000000;
-#define _getchar() (*_inputPtr?*_inputPtr++:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,stdin)]='\0',*_inputPtr++))
+#define _getchar() getchar()
 #define _readSignAndNum(x) do{(x)=_getchar();}while((x)<=' ');_sign=(x)=='-';if(_sign)(x)=_getchar();for((x)-='0';(_c=_getchar())>='0';(x)=(x)*10+_c-'0')
 #define _readFloatingPoint(x,T) for(T _div=1.0;(_c=_getchar())>='0';(x)+=(_c-'0')/(_div*=10))
 #define rc(x) do{do{(x)=_getchar();}while((x)<=' ');}while(0)
@@ -57,8 +57,8 @@ template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward
 #define _putchar(x) (_outputBuffer[_outputPtr==_bufferSize?_flushBuf():_outputPtr]=(x),_outputPtr++)
 #define _writeTempBuf(x) (_tempOutputBuf[_tempOutputPtr++]=(x))
 #define _writeOutput() for(int _i=0;_i<_tempOutputPtr;_putchar(_tempOutputBuf[_i++]));_tempOutputPtr=0
-#define _writeNum(x,T,digits) _cnt=0;for(T _y=(x);_y;_y/=10,_cnt++)_numBuf[_numPtr++]='0'+_y%10;_flushNumBuf();for(;_cnt<digits;_cnt++)_writeTempBuf('0')
-#define _writeFloatingPoint(x,T) _writeNum((ull)(x),ull,1);_writeTempBuf('.');_writeNum(((x)-((ull)(x)))*_precisionBase+(T)(0.5),ull,_precision)
+#define _writeNum(x,T,digits) _cnt=0;for(T _y=(x);_y;_y/=10,_cnt++)_numBuf[_numPtr++]='0'+_y%10;for(;_cnt<digits;_cnt++)_numBuf[_numPtr++]='0';_flushNumBuf();
+#define _writeFloatingPoint(x,T) ull _I=(ull)(x);ull _F=((x)-_I)*_precisionBase+(T)(0.5);if(_F>=_precisionBase){_I++;_F=0;}_writeNum(_I,ull,1);_writeTempBuf('.');_writeNum(_F,ull,_precision)
 #define _checkFinite(x) if(std::isnan(x)){wcs("NaN");}else if(std::isinf(x)){wcs("Inf");}
 #define _flushNumBuf() for(;_numPtr;_writeTempBuf(_numBuf[--_numPtr]))
 #define _fillBuf(x) for(int _i=0;_i<(x);_i++)_putchar(_fill)
@@ -127,7 +127,7 @@ bool cmp(char &a, char &b) {
     if (dp[a - 'A'][b - 'A'] == -1) {
         writeln('?', a, b);
         flush();
-        scanf(" %c", &dp[a - 'A'][b - 'A']);
+        read(dp[a - 'A'][b - 'A']);
     }
     return dp[a - 'A'][b - 'A'] == '<';
 }
@@ -137,7 +137,7 @@ int main() {
 //    freopen("out.txt", "w", stdout);
     _iomanager.reset(new IOManager());
     memset(dp, -1, sizeof(dp));
-    scanf("%d %d", &N, &Q);
+    read(N, Q);
     FOR(i, N) A[i] = 'A' + i;
     if (N == 5) {
         if (cmp(A[0], A[1])) swap(A[0], A[1]);

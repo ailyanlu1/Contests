@@ -56,8 +56,8 @@ template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward
 #define _putchar(x) (_outputBuffer[_outputPtr==_bufferSize?_flushBuf():_outputPtr]=(x),_outputPtr++)
 #define _writeTempBuf(x) (_tempOutputBuf[_tempOutputPtr++]=(x))
 #define _writeOutput() for(int _i=0;_i<_tempOutputPtr;_putchar(_tempOutputBuf[_i++]));_tempOutputPtr=0
-#define _writeNum(x,T,digits) _cnt=0;for(T _y=(x);_y;_y/=10,_cnt++)_numBuf[_numPtr++]='0'+_y%10;_flushNumBuf();for(;_cnt<digits;_cnt++)_writeTempBuf('0')
-#define _writeFloatingPoint(x,T) _writeNum((ull)(x),ull,1);_writeTempBuf('.');_writeNum(((x)-((ull)(x)))*_precisionBase+(T)(0.5),ull,_precision)
+#define _writeNum(x,T,digits) _cnt=0;for(T _y=(x);_y;_y/=10,_cnt++)_numBuf[_numPtr++]='0'+_y%10;for(;_cnt<digits;_cnt++)_numBuf[_numPtr++]='0';_flushNumBuf();
+#define _writeFloatingPoint(x,T) ull _I=(ull)(x);ull _F=((x)-_I)*_precisionBase+(T)(0.5);if(_F>=_precisionBase){_I++;_F=0;}_writeNum(_I,ull,1);_writeTempBuf('.');_writeNum(_F,ull,_precision)
 #define _checkFinite(x) if(std::isnan(x)){wcs("NaN");}else if(std::isinf(x)){wcs("Inf");}
 #define _flushNumBuf() for(;_numPtr;_writeTempBuf(_numBuf[--_numPtr]))
 #define _fillBuf(x) for(int _i=0;_i<(x);_i++)_putchar(_fill)
