@@ -88,14 +88,14 @@ namespace MinSpanTree {
         
         public class UF {
             private int[] par;
-            private char[] rank;
+            private byte[] rank;
             
             public UF(int N) {
                 par = new int[N];
-                rank = new char[N];
+                rank = new byte[N];
                 for (int i = 0; i < N; i++) {
                     par[i] = i;
-                    rank[i] = (char) 0;
+                    rank[i] = 0;
                 }
             }
             
