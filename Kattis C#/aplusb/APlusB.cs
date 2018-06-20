@@ -1,4 +1,4 @@
-// https://open.kattis.com/problems/polymul1
+// https://open.kattis.com/problems/aplusb
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using static System.Diagnostics.Debug;
 
-namespace PolyMul1 {
+namespace APlusB {
     public class Program {
         public class Reader {
             private TextReader reader;
@@ -71,7 +71,6 @@ namespace PolyMul1 {
             else In = new Reader(INPUT_FILE_NAME);
             if (stdOut) Out = new StreamWriter(Console.OpenStandardOutput());
             else Out = new StreamWriter(OUTPUT_FILE_NAME);
-            NUM_OF_TEST_CASES = In.ReadInt();
             for (int i = 1; i <= NUM_OF_TEST_CASES; i++) {
                 try {
                     run(i);
@@ -209,7 +208,7 @@ namespace PolyMul1 {
             if (invert) for (int i = 0; i < N; i++) a[i] /= N;
         }
 
-        static void multiplyPolynomial(List<int> a, List<int> b, out List<int> res) {
+        static void multiplyPolynomial(List<long> a, List<long> b, out List<long> res) {
             int N = a.Count() + b.Count() - 1;
             while ((N & (N - 1)) != 0) N++;
             List<Complex> fa = new List<Complex>(N), fb = new List<Complex>(N);
@@ -221,26 +220,41 @@ namespace PolyMul1 {
             fft(fb, false);
             for (int i = 0; i < N; i++) fa[i] *= fb[i];
             fft(fa, true);
-            res = new List<int>(N);
-            for (int i = 0; i < N; i++) res.Add((int) Math.Round(fa[i].real()));
+            res = new List<long>(N);
+            for (int i = 0; i < N; i++) res.Add((long) Math.Round(fa[i].real()));
             while (res.Count() > 1 && res.Last() == 0) res.RemoveAt(res.Count() - 1);
         }
 
+        public static int MAXA = 50000;
+
         public static void run(int testCaseNum) {
-            List<int> A = new List<int>();
-            List<int> B = new List<int>();
-            List<int> res;
             int N = In.ReadInt();
-            for (int i = 0; i <= N; i++) A.Add(In.ReadInt());
-            int M = In.ReadInt();
-            for (int i = 0; i <= M; i++) B.Add(In.ReadInt());
-            multiplyPolynomial(A, B, out res);
-            Out.WriteLine(res.Count() - 1);
-            for (int i = 0; i < res.Count(); i++) {
-                if (i > 0) Out.Write(" ");
-                Out.Write(res[i]);
+            List<long> freq = new List<long>();
+            for (int i = 0; i < MAXA * 2 + 1; i++) freq.Add(0);
+            long cntZeros = 0;
+            for (int i = 0; i < N; i++) {
+                int a = In.ReadInt();
+                if (a == 0) cntZeros++;
+                else freq[a + MAXA]++;
             }
-            Out.WriteLine();
+            List<long> freqSq;
+            multiplyPolynomial(freq, freq, out freqSq);
+            long ans = 0;
+            for (int i = 0; i <= MAXA * 2; i++) {
+                if (freq[i] == 0) continue;
+                long add = 0;
+                if (i % 2 == 0) {
+                    int half = (i - MAXA) / 2 + MAXA;
+                    if (half >= 0 && half <= MAXA * 2) add -= freq[half];
+                }
+                if (i + MAXA < freqSq.Count()) add += freqSq[i + MAXA];
+                ans += add * freq[i];
+            }
+            if (cntZeros > 0) {
+                for (int i = 0; i < MAXA; i++) ans += 2 * cntZeros * (freq[i] * (freq[i] - 1) + freq[2 * MAXA - i] * (freq[2 * MAXA - i] - 1) + freq[i] * freq[2 * MAXA - i]);
+                ans += cntZeros * (cntZeros - 1) * (cntZeros - 2);
+            }
+            Out.WriteLine(ans);
         }
     }
 }

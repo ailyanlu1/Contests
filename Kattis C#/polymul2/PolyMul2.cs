@@ -180,7 +180,7 @@ namespace PolyMul2 {
             }
         }
 
-        static void fft(ref List<Complex> a, bool invert) {
+        static void fft(List<Complex> a, bool invert) {
             int N = a.Count();
             for (int i = 1, j = 0; i < N; i++) {
                 int bit = N >> 1;
@@ -209,7 +209,7 @@ namespace PolyMul2 {
             if (invert) for (int i = 0; i < N; i++) a[i] /= N;
         }
 
-        static void multiplyPolynomial(ref List<int> a, ref List<int> b, out List<int> res) {
+        static void multiplyPolynomial(List<int> a, List<int> b, out List<int> res) {
             int N = a.Count() + b.Count() - 1;
             while ((N & (N - 1)) != 0) N++;
             List<Complex> fa = new List<Complex>(N), fb = new List<Complex>(N);
@@ -217,10 +217,10 @@ namespace PolyMul2 {
             for (int i = a.Count(); i < N; i++) fa.Add(new Complex(0, 0));
             for (int i = 0; i < b.Count(); i++) fb.Add(new Complex(b[i]));
             for (int i = b.Count(); i < N; i++) fb.Add(new Complex(0, 0));
-            fft(ref fa, false);
-            fft(ref fb, false);
+            fft(fa, false);
+            fft(fb, false);
             for (int i = 0; i < N; i++) fa[i] *= fb[i];
-            fft(ref fa, true);
+            fft(fa, true);
             res = new List<int>(N);
             for (int i = 0; i < N; i++) res.Add((int) Math.Round(fa[i].real()));
             while (res.Count() > 1 && res.Last() == 0) res.RemoveAt(res.Count() - 1);
@@ -234,7 +234,7 @@ namespace PolyMul2 {
             for (int i = 0; i <= N; i++) A.Add(In.ReadInt());
             int M = In.ReadInt();
             for (int i = 0; i <= M; i++) B.Add(In.ReadInt());
-            multiplyPolynomial(ref A, ref B, out res);
+            multiplyPolynomial(A, B, out res);
             Out.WriteLine(res.Count() - 1);
             for (int i = 0; i < res.Count(); i++) {
                 if (i > 0) Out.Write(" ");
