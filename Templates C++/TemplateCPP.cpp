@@ -62,6 +62,7 @@ template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward
 #define _flushNumBuf() for(;_numPtr;_writeTempBuf(_numBuf[--_numPtr]))
 #define _fillBuf(x) for(int _i=0;_i<(x);_i++)_putchar(_fill)
 #define _flushTempBuf() int _tempLen=_tempOutputPtr;_fillBuf(_width-_tempLen);_writeOutput();_fillBuf(-_width-_tempLen)
+#define wb(x) do{if(x)_writeTempBuf('1');else _writeTempBuf('0');_flushTempBuf();}while(0)
 #define wc(x) do{_writeTempBuf(x); _flushTempBuf();}while(0)
 #define wi(x) do{if((x)<0){_writeTempBuf('-');_writeNum(-(x),uint,1);}else{_writeNum(x,uint,1);}_flushTempBuf();}while(0)
 #define wll(x) do{if((x)<0){_writeTempBuf('-');_writeNum(-(x),ull,1);}else{_writeNum(x,ull,1);}_flushTempBuf();}while(0)
@@ -73,7 +74,7 @@ template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward
 #define setDelimiter(x) do{_delimiter=(x);}while(0)
 #define setWidth(x) do{_width=(x);}while(0)
 #define setFill(x) do{_fill=(x);}while(0)
-void write(int x){wi(x);}void write(uint x){wi(x);}void write(ll x){wll(x);}void write(ull x){wll(x);}void write(double x){wd(x);}void write(ld x){wld(x);}
+void write(bool x){wb(x);}void write(int x){wi(x);}void write(uint x){wi(x);}void write(ll x){wll(x);}void write(ull x){wll(x);}void write(double x){wd(x);}void write(ld x){wld(x);}
 void write(char x){wc(x);}void write(char*x){wcs(x);}void write(const char*x){wcs(x);}void write(string&x){ws(x);}
 template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const char*_p=_delimiter;*_p;_putchar(*_p++));write(forward<Ts>(xs)...);}
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
