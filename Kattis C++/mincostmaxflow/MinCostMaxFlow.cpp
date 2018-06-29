@@ -87,6 +87,7 @@ typedef int costUnit;
 const flowUnit FLOW_INF = 1 << 30;
 const flowUnit FLOW_EPS = 0;
 const costUnit COST_INF = 1 << 30;
+const costUnit COST_SMALL_INF = 1 << 25;
 
 class MaxFlowMinCost {
 private:
@@ -102,6 +103,13 @@ private:
     vector<Edge> e;
     vector<int> last, prev, index;
     vector<costUnit> phi, dist;
+    bool hasNegativeEdgeCost = false;
+
+    void bellmanFord() {
+        fill(phi.begin(), phi.end(), COST_SMALL_INF);
+        phi[src] = 0;
+        for (int j = 0; j < N - 1; j++) for (int i = 0; i < (int) e.size(); i++) if (e[i].cap > FLOW_EPS) phi[e[i].to] = min(phi[e[i].to], phi[e[i].from] + e[i].cost);
+    }
 
     bool dijkstra() {
         fill(dist.begin(), dist.end(), COST_INF);
@@ -109,30 +117,29 @@ private:
         fill(index.begin(), index.end(), -1);
         dist[src] = 0;
         priority_queue<pair<costUnit, int>, vector<pair<costUnit, int>>, greater<pair<costUnit, int>>> PQ;
-        PQ.push({src, 0});
+        PQ.push({dist[src], src});
         while (!PQ.empty()) {
             pair<costUnit, int> v = PQ.top();
             PQ.pop();
-            if (v.second > dist[v.first]) continue;
-            for (int next = last[v.first]; next != -1; next = e[next].next) {
+            if (v.first > dist[v.second]) continue;
+            for (int next = last[v.second]; next != -1; next = e[next].next) {
                 if (abs(e[next].cap) <= FLOW_EPS) continue;
-                costUnit d = dist[v.first] + e[next].cost + phi[v.first] - phi[e[next].to];
+                costUnit d = dist[v.second] + e[next].cost + phi[v.second] - phi[e[next].to];
                 if (dist[e[next].to] <= d) continue;
                 dist[e[next].to] = d;
-                prev[e[next].to] = v.first;
+                prev[e[next].to] = v.second;
                 index[e[next].to] = next;
-                PQ.push({e[next].to, dist[e[next].to]});
+                PQ.push({dist[e[next].to], e[next].to});
             }
         }
         return dist[sink] != COST_INF;
     }
 
 public:
-    MaxFlowMinCost(int N) : N(N), last(N), prev(N), index(N), phi(N), dist(N) {
-        fill(last.begin(), last.end(), -1);
-    }
+    MaxFlowMinCost(int N) : N(N), last(N, -1), prev(N), index(N), phi(N), dist(N) {}
 
     void addEdge(int u, int v, flowUnit flow, costUnit cost) {
+        if (cost < 0) hasNegativeEdgeCost = true;
         e.push_back({u, v, cost, flow, last[u]});
         last[u] = (int) e.size() - 1;
         e.push_back({v, u, -cost, 0, last[v]});
@@ -145,6 +152,7 @@ public:
         flowUnit flow = 0;
         costUnit cost = 0;
         fill(phi.begin(), phi.end(), 0);
+        if (hasNegativeEdgeCost) bellmanFord();
         while (dijkstra()) {
             flowUnit aug = FLOW_INF;
             int cur = sink;
