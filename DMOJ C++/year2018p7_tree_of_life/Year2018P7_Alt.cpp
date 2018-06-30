@@ -36,9 +36,9 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
 struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
-template <const int ALPHABET_SIZE, const int OFFSET> class SuffixAutomata {
+class SuffixAutomata {
 public: // these should really be private
-    vector<array<int, ALPHABET_SIZE>> to;
+    vector<unordered_map<char, int>> to;
     vector<int> len, link;
 
 private:
@@ -51,15 +51,13 @@ public:
         link.clear();
         last = 0;
         to.emplace_back();
-        to.back().fill(-1);
         len.push_back(0);
         link.push_back(0);
     }
 
     void addLetter(char c) {
-        c -= OFFSET;
         int p = last, q;
-        if (to[p][c] != -1) {
+        if (to[p].count(c)) {
             q = to[p][c];
             if (len[q] == len[p] + 1) {
                 last = q;
@@ -76,10 +74,9 @@ public:
         } else {
             last = (int) to.size();
             to.emplace_back();
-            to.back().fill(-1);
             len.push_back(len[p] + 1);
             link.push_back(0);
-            while (to[p][c] == -1) {
+            while (to[p][c] == 0) {
                 to[p][c] = last;
                 p = link[p];
             }
@@ -112,32 +109,86 @@ public:
         last = 0;
         for (char c : s) addLetter(c);
     }
-};
+} SA;
 
-SuffixAutomata<26, 'a'> SA;
-string A, B;
-int cnt = 0;
+#define MAXN 20005
+
+int N, SZ[MAXN], ans = -1;
+bool isHeavy[MAXN];
+vector<int> adj[MAXN];
+string S[MAXN];
+
+void LCS(string &s) {
+    int p = 0, len = 0;
+    for (char c : s) {
+        while (p != 0 && !SA.to[p].count(c)) {
+            p = SA.link[p];
+            len = SA.len[p];
+        }
+        if (SA.to[p].count(c)) {
+            p = SA.to[p][c];
+            len++;
+        }
+        MAX(ans, len);
+    }
+}
+
+void getSize(int v) {
+    SZ[v] = sz(S[v]);
+    for (int w : adj[v]) {
+        getSize(w);
+        SZ[v] += SZ[w];
+    }
+}
+
+void add(int v) {
+    SA.add(S[v]);
+    for (int w : adj[v]) if (!isHeavy[w]) add(w);
+}
+
+void query(int v) {
+    LCS(S[v]);
+    for (int w : adj[v]) if (!isHeavy[w]) query(w);
+}
+
+void dfs(int v, bool keep = 0) {
+    int maxSize = -1, heavyInd = -1;
+    for (int w : adj[v]) {
+        if (SZ[w] > maxSize) {
+            maxSize = SZ[w];
+            heavyInd = w;
+        }
+    }
+    for (int w : adj[v]) if (w != heavyInd) dfs(w, 0);
+    if (heavyInd != -1) {
+        dfs(heavyInd, 1);
+        isHeavy[heavyInd] = 1;
+    }
+    for (int w : adj[v]) {
+        if (w != heavyInd) {
+            query(w);
+            add(w);
+        }
+    }
+    SA.add(S[v]);
+    if (heavyInd != -1) isHeavy[heavyInd] = 0;
+    if (!keep) SA.reset();
+}
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    cin >> A >> B;
-    SA.add(A);
-    int p = 0, len = 0;
-    for (char c : B) {
-        c -= 'a';
-        while (SA.to[p][c] == -1) {
-            if (len == 0) {
-                cout << -1 << nl;
-                return 0;
-            }
-            p = len = 0;
-            cnt++;
-        }
-        p = SA.to[p][c];
-        len++;
+    cin >> N;
+    FOR(i, N) isHeavy[i] = false;
+    int p;
+    For(i, 1, N) {
+        cin >> p;
+        adj[p - 1].pb(i);
     }
-    cout << cnt + 1 << nl;
+    FOR(i, N) cin >> S[i];
+    getSize(0);
+    dfs(0, 0);
+    cout << ans << nl;
     return 0;
 }

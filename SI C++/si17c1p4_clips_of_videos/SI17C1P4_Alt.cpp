@@ -36,9 +36,9 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
 struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
-template <const int ALPHABET_SIZE, const int OFFSET> class SuffixAutomata {
+class SuffixAutomata {
 public: // these should really be private
-    vector<array<int, ALPHABET_SIZE>> to;
+    vector<unordered_map<char, int>> to;
     vector<int> len, link;
 
 private:
@@ -51,15 +51,13 @@ public:
         link.clear();
         last = 0;
         to.emplace_back();
-        to.back().fill(-1);
         len.push_back(0);
         link.push_back(0);
     }
 
     void addLetter(char c) {
-        c -= OFFSET;
         int p = last, q;
-        if (to[p][c] != -1) {
+        if (to[p].count(c)) {
             q = to[p][c];
             if (len[q] == len[p] + 1) {
                 last = q;
@@ -76,10 +74,9 @@ public:
         } else {
             last = (int) to.size();
             to.emplace_back();
-            to.back().fill(-1);
             len.push_back(len[p] + 1);
             link.push_back(0);
-            while (to[p][c] == -1) {
+            while (to[p][c] == 0) {
                 to[p][c] = last;
                 p = link[p];
             }
@@ -112,9 +109,8 @@ public:
         last = 0;
         for (char c : s) addLetter(c);
     }
-};
+} SA;
 
-SuffixAutomata<26, 'a'> SA;
 string A, B;
 int cnt = 0;
 
@@ -126,8 +122,7 @@ int main() {
     SA.add(A);
     int p = 0, len = 0;
     for (char c : B) {
-        c -= 'a';
-        while (SA.to[p][c] == -1) {
+        while (!SA.to[p].count(c)) {
             if (len == 0) {
                 cout << -1 << nl;
                 return 0;
