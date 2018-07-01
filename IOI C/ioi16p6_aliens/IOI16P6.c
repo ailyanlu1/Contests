@@ -123,10 +123,7 @@ pll f(ll c) {
 
 ll take_photos(int n, int m, int k, int *r, int *c) {
     int i;
-    FOR(i, n) {
-        P[i] = mp(min(r[i], c[i]), max(r[i], c[i]));
-        P[i].f--;
-    }
+    FOR(i, n) P[i] = mp(min(r[i], c[i]) - 1, max(r[i], c[i]));
     qsort(P, n, sizeof(pll), cmp);
     L = 0;
     FOR(i, n) if (L == 0 || PP[L - 1].s < P[i].s) PP[L++] = P[i];
