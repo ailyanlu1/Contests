@@ -45,7 +45,7 @@ fun main(args: Array<String>) {
         try {
             run(i)
         } catch (e : Exception) {
-            Out.println("Exception thrown on test case $i")
+            Out.println("Exception thrown on test case ")
             e.printStackTrace(Out)
             Out.flush()
             if (crash) throw Exception()
@@ -56,6 +56,24 @@ fun main(args: Array<String>) {
     Out.close()
 }
 
+var MOD = 1000000007.toBigInteger()
+var ZERO = 0.toBigInteger()
+var ONE = 1.toBigInteger()
+var TWO = 2.toBigInteger()
+var THREE = 3.toBigInteger()
+
+fun pow2(base: BigInteger, exp: BigInteger): BigInteger {
+    var ret = ONE
+    var base = base
+    var exp = exp
+    while (exp > ZERO) {
+        if (exp % TWO == ONE) ret = ret * base % MOD
+        exp /= TWO
+        base = base * base % MOD
+    }
+    return ret
+} 
+
 fun run(testCaseNum: Int) {
-    
+    Out.println((pow2(TWO, In.nextLong().toBigInteger() + THREE) - 5.toBigInteger() + MOD) % MOD)   
 }
