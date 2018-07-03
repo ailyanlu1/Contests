@@ -1,3 +1,4 @@
+// https://www.spoj.com/problems/GOT/
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -82,9 +83,123 @@ template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const 
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager;
 
+#define MAXM 200005
+#define MAXN 100005
+
+int N, M, curInd, chainNum, C[MAXN], dep[MAXN], par[MAXN], chain[MAXN], size[MAXN], head[MAXN], ind[MAXN], T[MAXN * 2];
+bool ans[MAXM];
+pii CC[MAXN];
+pair<pii, pii> Q[MAXM];
+vector<int> adj[MAXN];
+
+void build() {
+    FOR(i, 2 * N) T[i] = -1;
+}
+
+void update(int i, int v) {
+    for (T[i += (N - 1)] = v; i >>= 1;) T[i] = max(T[i << 1], T[i << 1 | 1]);
+}
+
+int query(int l, int r) {
+    int ret = -1;
+    for (l += (N - 1), r += (N - 1); l <= r; l >>= 1, r >>= 1) {
+        if (l & 1) MAX(ret, T[l++]);
+        if (!(r & 1)) MAX(ret, T[r--]);
+    }
+    return ret;
+}
+
+void dfs(int v, int d, int prev) {
+    dep[v] = d;
+    par[v] = prev;
+    size[v] = 1;
+    for (int w : adj[v]) {
+        if (w == prev) continue;
+        dfs(w, d + 1, v);
+        size[v] += size[w];
+    }
+}
+
+void hld(int v, int prev) {
+    if (head[chainNum] == -1) head[chainNum] = v;
+    chain[v] = chainNum;
+    ind[v] = curInd++;
+    int maxIndex = -1;
+    for (int w : adj[v]) if (w != prev && (maxIndex == -1 || size[maxIndex] < size[w])) maxIndex = w;
+    if (maxIndex != -1) hld(maxIndex, v);
+    for (int w : adj[v]) {
+        if (w == prev || w == maxIndex) continue;
+        chainNum++;
+        hld(w, v);
+    }
+}
+
+int lca(int v, int w) {
+    while (chain[v] != chain[w]) {
+        if (dep[head[chain[v]]] < dep[head[chain[w]]]) w = par[head[chain[w]]];
+        else v = par[head[chain[v]]];
+    }
+    if (dep[v] < dep[w]) return v;
+    return w;
+}
+
+int queryUp(int v, int w, int c) {
+    int ret = -1;
+    while (chain[v] != chain[w]) {
+        MAX(ret, query(ind[head[chain[v]]], ind[v]));
+        v = par[head[chain[v]]];
+    }
+    return max(ret, query(ind[w], ind[v]));
+}
+
+int queryPath(int v, int w, int c) {
+    int lcaVertex = lca(v, w);
+    return max(queryUp(v, lcaVertex, c), queryUp(w, lcaVertex, c));
+}
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     _iomanager.reset(new IOManager());
+    while (hasNext()) {
+        read(N, M);
+        FOR(i, N) {
+            adj[i].clear();
+            head[i] = -1;
+            read(C[i]);
+            CC[i] = {C[i], i};
+        }
+        int a, b;
+        FOR(i, N - 1) {
+            read(a, b);
+            adj[--a].pb(--b);
+            adj[b].pb(a);
+        }
+        FOR(i, M) {
+            read(Q[i].s.f, Q[i].s.s, Q[i].f.f);
+            Q[i].s.f--;
+            Q[i].s.s--;
+            Q[i].f.s = i;
+        }
+        chainNum = 0;
+        curInd = 1;
+        dfs(0, 0, -1);
+        hld(0, -1);
+        sort(CC, CC + N);
+        sort(Q, Q + M);
+        int j = 0, k = 0;
+        build();
+        FOR(i, N + 1) {
+            while (j < N && i == CC[j].f) {
+                update(ind[CC[j].s], CC[j].f);
+                j++;
+            }
+            while (k < M && i == Q[k].f.f) {
+                ans[Q[k].f.s] = queryPath(Q[k].s.f, Q[k].s.s, Q[k].f.f) == Q[k].f.f;
+                k++;
+            }
+        }
+        FOR(i, M) writeln(ans[i] ? "Find" : "NotFind");
+    }
     return 0;
 }

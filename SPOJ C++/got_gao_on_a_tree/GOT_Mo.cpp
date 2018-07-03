@@ -1,3 +1,4 @@
+// https://www.spoj.com/problems/GOT/
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -82,9 +83,122 @@ template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const 
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager;
 
+#define MAXM 200005
+#define MAXN 100005
+#define MAXLGN 18
+#define BSZ 300
+
+struct Query {
+    int l, r, c, lca, ind, block;
+
+    bool operator < (const Query &q) const {
+        if (block == q.block) return r < q.r;
+        return block < q.block;
+    }
+};
+
+int N, LGN, M, ind, cur, C[MAXN], temp[MAXN + MAXM], QA[MAXM], QB[MAXM], QC[MAXM], dep[MAXN], head[MAXN], rmq[MAXLGN][MAXN * 2], pre[MAXN], post[MAXN], vert[MAXN * 2], cnt[MAXN];
+Query q[MAXM];
+bool vis[MAXN], ans[MAXM];
+vector<int> adj[MAXN];
+
+void dfs(int v, int d, int prev) {
+    vert[cur] = v;
+    pre[v] = cur++;
+    dep[v] = d;
+    head[v] = ind;
+    rmq[0][ind++] = v;
+    for (int w : adj[v]) {
+        if (w == prev) continue;
+        dfs(w, d + 1, v);
+        rmq[0][ind++] = v;
+    }
+    vert[cur] = v;
+    post[v] = cur++;
+}
+
+inline int minDepth(int v, int w) {
+    return dep[v] < dep[w] ? v : w;
+}
+
+inline int RMQ(int l, int r) {
+    int i = 31 - __builtin_clz(r - l + 1);
+    return minDepth(rmq[i][l], rmq[i][r - (1 << i) + 1]);
+}
+
+int lca(int v, int w) {
+    if (head[v] > head[w]) swap(v, w);
+    return RMQ(head[v], head[w]);
+}
+
+void update(int v) {
+    if (vis[v]) cnt[C[v]]--;
+    else cnt[C[v]]++;
+    vis[v] = !vis[v];
+}
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     _iomanager.reset(new IOManager());
+    while (hasNext()) {
+        read(N, M);
+        LGN = 32 - __builtin_clz(N * 2 - 1);
+        FOR(i, N) {
+            adj[i].clear();
+            head[i] = -1;
+            vis[i] = false;
+            read(C[i]);
+            temp[i] = C[i];
+            cnt[i] = 0;
+        }
+        int a, b;
+        FOR(i, N - 1) {
+            read(a, b);
+            adj[--a].pb(--b);
+            adj[b].pb(a);
+        }
+        FOR(i, M) {
+            read(QA[i], QB[i], QC[i]);
+            QA[i]--;
+            QB[i]--;
+            temp[N + i] = QC[i];
+        }
+        ind = cur = 0;
+        dfs(0, 0, -1);
+        FOR(i, LGN - 1) FOR(j, ind) rmq[i + 1][j] = minDepth(rmq[i][j], rmq[i][min(j + (1 << i), ind - 1)]);
+        sort(temp, temp + N + M);
+        int k = unique(temp, temp + N + M) - temp;
+        FOR(i, N) C[i] = lower_bound(temp, temp + k, C[i]) - temp;
+        FOR(i, M) QC[i] = lower_bound(temp, temp + k, QC[i]) - temp;
+        FOR(i, M) {
+            int v = QA[i], w = QB[i];
+            q[i].c = QC[i];
+            q[i].lca = lca(v, w);
+            if (pre[v] > pre[w]) swap(v, w);
+            if (q[i].lca == v) {
+                q[i].l = pre[v];
+                q[i].r = pre[w];
+            } else {
+                q[i].l = post[v];
+                q[i].r = pre[w];
+            }
+            q[i].ind = i;
+            q[i].block = q[i].l / BSZ;
+        }
+        sort(q, q + M);
+        int l = q[0].l, r = l - 1;
+        FOR(i, M) {
+            while (l < q[i].l) update(vert[l++]);
+            while (l > q[i].l) update(vert[--l]);
+            while (r < q[i].r) update(vert[++r]);
+            while (r > q[i].r) update(vert[r--]);
+            if (q[i].lca != vert[l] && q[i].lca != vert[r]) update(q[i].lca);
+            ans[q[i].ind] = cnt[q[i].c];
+            if (q[i].lca != vert[l] && q[i].lca != vert[r]) update(q[i].lca);
+        }
+        FOR(i, M) writeln(ans[i] ? "Find" : "NotFind");
+        writeln();
+    }
     return 0;
 }

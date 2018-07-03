@@ -1,3 +1,4 @@
+// https://www.spoj.com/problems/GOT/
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -82,9 +83,135 @@ template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const 
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager;
 
+#define MAXM 200005
+#define MAXN 100005
+
+int N, M, curInd, chainNum, C[MAXN], dep[MAXN], par[MAXN], chain[MAXN], size[MAXN], head[MAXN], ind[MAXN];
+int L[MAXN * 40], R[MAXN * 40], VAL[MAXN * 40], root[MAXN], curNode = 0;
+pii CC[MAXN];
+vector<int> adj[MAXN];
+
+int makeNode(int val) {
+    ++curNode;
+    assert(curNode < MAXN * 40);
+    VAL[curNode] = val;
+    L[curNode] = R[curNode] = 0;
+    return curNode;
+}
+
+int makeNode(int l, int r) {
+    ++curNode;
+    assert(curNode < MAXN * 40);
+    VAL[curNode] = max(VAL[l], VAL[r]);
+    L[curNode] = l;
+    R[curNode] = r;
+    return curNode;
+}
+
+int build(int cL, int cR) {
+    if (cL == cR) return makeNode(-1);
+    int m = cL + (cR - cL) / 2;
+    return makeNode(build(cL, m), build(m + 1, cR));
+}
+
+int update(int cur, int cL, int cR, int ind, int val) {
+    if (cL > ind || cR < ind) return cur;
+    if (cL == cR) return makeNode(val);
+    int m = cL + (cR - cL) / 2;
+    return makeNode(update(L[cur], cL, m, ind, val), update(R[cur], m + 1, cR, ind, val));
+}
+
+int query(int cur, int cL, int cR, int l, int r) {
+    if (cL > r || cR < l) return -1;
+    if (cL >= l && cR <= r) return VAL[cur];
+    int m = cL + (cR - cL) / 2;
+    return max(query(L[cur], cL, m, l, r), query(R[cur], m + 1, cR, l, r));
+}
+
+void dfs(int v, int d, int prev) {
+    dep[v] = d;
+    par[v] = prev;
+    size[v] = 1;
+    for (int w : adj[v]) {
+        if (w == prev) continue;
+        dfs(w, d + 1, v);
+        size[v] += size[w];
+    }
+}
+
+void hld(int v, int prev) {
+    if (head[chainNum] == -1) head[chainNum] = v;
+    chain[v] = chainNum;
+    ind[v] = curInd++;
+    int maxIndex = -1;
+    for (int w : adj[v]) if (w != prev && (maxIndex == -1 || size[maxIndex] < size[w])) maxIndex = w;
+    if (maxIndex != -1) hld(maxIndex, v);
+    for (int w : adj[v]) {
+        if (w == prev || w == maxIndex) continue;
+        chainNum++;
+        hld(w, v);
+    }
+}
+
+int lca(int v, int w) {
+    while (chain[v] != chain[w]) {
+        if (dep[head[chain[v]]] < dep[head[chain[w]]]) w = par[head[chain[w]]];
+        else v = par[head[chain[v]]];
+    }
+    if (dep[v] < dep[w]) return v;
+    return w;
+}
+
+int queryUp(int v, int w, int c) {
+    int ret = -1;
+    while (chain[v] != chain[w]) {
+        MAX(ret, query(root[c], 1, N, ind[head[chain[v]]], ind[v]));
+        v = par[head[chain[v]]];
+    }
+    return max(ret, query(root[c], 1, N, ind[w], ind[v]));
+}
+
+int queryPath(int v, int w, int c) {
+    int lcaVertex = lca(v, w);
+    return max(queryUp(v, lcaVertex, c), queryUp(w, lcaVertex, c));
+}
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     _iomanager.reset(new IOManager());
+    while (hasNext()) {
+        read(N, M);
+        FOR(i, N) {
+            adj[i].clear();
+            head[i] = -1;
+            read(C[i]);
+            CC[i] = {C[i], i};
+        }
+        int a, b, c;
+        FOR(i, N - 1) {
+            read(a, b);
+            adj[--a].pb(--b);
+            adj[b].pb(a);
+        }
+        chainNum = 0;
+        curInd = 1;
+        dfs(0, 0, -1);
+        hld(0, -1);
+        sort(CC, CC + N);
+        int j = 0;
+        root[0] = build(1, N);
+        FOR(i, N + 1) {
+            root[i] = root[max(i - 1, 0)];
+            while (j < N && i == CC[j].f) {
+                root[i] = update(root[i], 1, N, ind[CC[j].s], CC[j].f);
+                j++;
+            }
+        }
+        FOR(i, M) {
+            read(a, b, c);
+            writeln(queryPath(--a, --b, c) == c ? "Find" : "NotFind");
+        }
+    }
     return 0;
 }
