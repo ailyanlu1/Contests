@@ -36,9 +36,9 @@ template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
 template<typename T1, typename T2, typename H1 = hash<T1>, typename H2 = hash<T2>>
 struct pair_hash {size_t operator ()(const pair<T1, T2> &p) const {return 31 * H1 {}(p.first) + H2 {}(p.second);}};
 
-class SuffixAutomata {
+template <const int ALPHABET_SIZE, const int OFFSET> class SuffixAutomata {
 public: // these should really be private
-    vector<unordered_map<char, int>> to;
+    vector<array<int, ALPHABET_SIZE>> to;
     vector<int> len, link;
 
 private:
@@ -51,13 +51,15 @@ public:
         link.clear();
         last = 0;
         to.emplace_back();
+        to.back().fill(-1);
         len.push_back(0);
         link.push_back(0);
     }
 
     void addLetter(char c) {
+        c -= OFFSET;
         int p = last, q;
-        if (to[p].count(c)) {
+        if (to[p][c] != -1) {
             q = to[p][c];
             if (len[q] == len[p] + 1) {
                 last = q;
@@ -74,9 +76,10 @@ public:
         } else {
             last = (int) to.size();
             to.emplace_back();
+            to.back().fill(-1);
             len.push_back(len[p] + 1);
             link.push_back(0);
-            while (to[p][c] == 0) {
+            while (to[p][c] == -1) {
                 to[p][c] = last;
                 p = link[p];
             }
@@ -109,7 +112,7 @@ public:
         last = 0;
         for (char c : s) addLetter(c);
     }
-} SA;
+};
 
 #define MAXN 20005
 
@@ -117,15 +120,17 @@ int N, SZ[MAXN], ans = -1;
 bool isHeavy[MAXN];
 vector<int> adj[MAXN];
 string S[MAXN];
+SuffixAutomata<4, 'A'> SA;
 
 void LCS(string &s) {
     int p = 0, len = 0;
     for (char c : s) {
-        while (p != 0 && !SA.to[p].count(c)) {
+        c -= 'A';
+        while (p != 0 && SA.to[p][c] == -1) {
             p = SA.link[p];
             len = SA.len[p];
         }
-        if (SA.to[p].count(c)) {
+        if (SA.to[p][c] != -1) {
             p = SA.to[p][c];
             len++;
         }
@@ -186,7 +191,13 @@ int main() {
         cin >> p;
         adj[p - 1].pb(i);
     }
-    FOR(i, N) cin >> S[i];
+    FOR(i, N) {
+        cin >> S[i];
+        FOR(j, sz(S[i])) {
+            if (S[i][j] == 'G') S[i][j] = 'B';
+            else if (S[i][j] == 'T') S[i][j] = 'D';
+        }
+    }
     getSize(0);
     dfs(0, 0);
     cout << ans << nl;

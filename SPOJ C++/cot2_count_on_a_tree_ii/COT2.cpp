@@ -245,7 +245,7 @@ public:
         dfs(G, 0, 0, -1);
         hld(G, 0, -1);
         int sz = (int) sqrt(cur);
-        int temp[V];
+        int *temp = new int[V];
         for (int i = 0; i < V; i++) {
             temp[i] = arr[i];
             cnt[i] = 0;
