@@ -75,8 +75,8 @@ namespace TemplateCSharp {
                 try {
                     run(i);
                 } catch (Exception e) {
-                    Out.WriteLine("Exception thrown on test case " + i);
-                    Out.WriteLine(e.StackTrace);
+                    Console.Error.WriteLine("Exception thrown on test case " + i);
+                    Console.Error.WriteLine(e.StackTrace);
                     Out.Flush();
                     if (crash) throw new Exception();
                 }
