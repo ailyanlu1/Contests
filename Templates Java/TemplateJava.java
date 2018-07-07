@@ -143,8 +143,8 @@ public class TemplateJava {
             try {
                 run(i);
             } catch (Exception e) {
-                out.println("Exception thrown on test case " + i);
-                e.printStackTrace(out);
+                System.err.println("Exception thrown on test case " + i);
+                e.printStackTrace(System.err);
                 out.flush();
                 if (crash) throw new Exception();
             }
