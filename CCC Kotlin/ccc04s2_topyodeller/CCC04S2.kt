@@ -56,6 +56,24 @@ fun main(args: Array<String>) {
     Out.close()
 }
 
+class Yodeller(val id: Int, var score: Int, var worstRank: Int)
+
 fun run(testCaseNum: Int) {
-    
+    val N = In.nextInt()
+    val K = In.nextInt()
+    var Y = Array(N, {Yodeller(it, 0, 0)})
+    for (i in 0 until K) {
+        var round = IntArray(N, {In.nextInt()})
+        for (j in 0 until N) Y[j].score += round[Y[j].id]
+        Y.sortWith(compareByDescending<Yodeller>{it.score}.thenBy{it.id})
+        var curRank = 0
+        for (j in 0 until N) {
+            if (j == 0 || Y[j].score != Y[j - 1].score) curRank = j
+            Y[j].worstRank = Math.max(Y[j].worstRank, curRank)
+        }
+    }
+    for (i in 0 until N) {
+        if (i == 0 || Y[i].score == Y[i - 1].score) Out.println("Yodeller ${Y[i].id + 1} is the TopYodeller: score ${Y[i].score}, worst rank ${Y[i].worstRank + 1}")
+        else break
+    }
 }

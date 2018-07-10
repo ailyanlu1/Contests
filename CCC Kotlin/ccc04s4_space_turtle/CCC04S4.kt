@@ -45,7 +45,7 @@ fun main(args: Array<String>) {
         try {
             run(i)
         } catch (e : Exception) {
-            System.err.println("Exception thrown on test case $i")
+            System.err.println("Exception thrown on test case ")
             e.printStackTrace(System.err)
             Out.flush()
             if (crash) throw Exception()
@@ -57,5 +57,33 @@ fun main(args: Array<String>) {
 }
 
 fun run(testCaseNum: Int) {
-    
+    var sx = In.nextInt()
+    var sy = In.nextInt()
+    var sz = In.nextInt()
+    var dx = In.nextInt() - sx
+    var dy = In.nextInt() - sy
+    var dz = In.nextInt() - sz
+    var ans = dx * dx + dy * dy + dz * dz
+    while (true) {
+        var d = dx - In.nextInt()
+        var c = In.nextChar()
+        if (d * dx < 0) ans = Math.min(ans, dy * dy + dz * dz)
+        else ans = Math.min(ans, d * d + dy * dy + dz * dz)
+        if (c == 'E') break
+        var temp = d
+        if (c == 'L') {
+            dx = dy
+            dy = -temp
+        } else if (c == 'R') {
+            dx = -dy
+            dy = temp
+        } else if (c == 'U') {
+            dx = dz
+            dz = -temp
+        } else if (c == 'D') {
+            dx = -dz
+            dz = temp
+        }
+    }
+    Out.printf("%.2f\n", Math.sqrt(ans.toDouble()))
 }

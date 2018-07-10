@@ -41,11 +41,12 @@ val Out: PrintWriter = PrintWriter(System.out)
 //val Out: PrintWriter = PrintWriter(OUTPUT_FILE_NAME)
 
 fun main(args: Array<String>) {
-    for (i in 1..NUM_OF_TEST_CASES) {
+    var i = 1
+    while (true) {
         try {
-            run(i)
+            if (!run(i++)) break
         } catch (e : Exception) {
-            System.err.println("Exception thrown on test case $i")
+            System.err.println("Exception thrown on test case ")
             e.printStackTrace(System.err)
             Out.flush()
             if (crash) throw Exception()
@@ -56,6 +57,40 @@ fun main(args: Array<String>) {
     Out.close()
 }
 
-fun run(testCaseNum: Int) {
-    
+fun run(testCaseNum: Int): Boolean {
+    var M = In.nextInt()
+    var N = In.nextInt()
+    if (M == 0 && N == 0) return false
+    var grid = Array(M, {IntArray(N)})
+    var dp = Array(M, {IntArray(N, {-1})})
+    for (i in 0 until M) {
+        var S = In.next()
+        for (j in 0 until N) grid[i][j] = if (S[j] == '.') 0 else if (S[j] == '*') -1 else S[j] - '0'
+    }
+    dp[M - 1][0] = grid[M - 1][0]
+    for (i in M - 2 downTo 0) dp[i][0] = dp[i + 1][0] + grid[i][0]
+    for (j in 1 until N) {
+        for (i in 0 until M) {
+            if (dp[i][j - 1] != -1) {
+                var cur = dp[i][j - 1]
+                for (k in i until M) {
+                    if (grid[k][j] == -1) break
+                    cur += grid[k][j]
+                    dp[k][j] = Math.max(dp[k][j], cur)
+                }
+            }
+        }
+        for (i in M - 1 downTo 0) {
+            if (dp[i][j - 1] != -1) {
+                var cur = dp[i][j - 1]
+                for (k in i downTo 0) {
+                    if (grid[k][j] == -1) break
+                    cur += grid[k][j]
+                    dp[k][j] = Math.max(dp[k][j], cur)
+                }
+            }
+        }
+    }
+    Out.println(dp[M - 1][N - 1])
+    return true
 }
