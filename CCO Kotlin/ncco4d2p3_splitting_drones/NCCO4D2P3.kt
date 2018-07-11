@@ -88,7 +88,7 @@ fun run(testCaseNum: Int) {
     POW[0] = 1
     for (i in 1..N) {
         A[i] = In.nextInt()
-        POW[i] = (POW[i - 1] * BASE) % MOD
+        POW[i] = POW[i - 1] * BASE % MOD
     }
     var lo = 1
     var hi = N
