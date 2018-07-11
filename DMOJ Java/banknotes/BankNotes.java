@@ -2,7 +2,7 @@ import java.io.*;
 import java.math.*;
 import java.util.*;
 
-public class POI05BAN {
+public class BankNotes {
     public static class Reader {
         private final int BUFFER_SIZE = 1 << 12;
         private int LENGTH = -1;
