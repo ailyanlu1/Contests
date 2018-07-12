@@ -162,22 +162,24 @@ fun main(args: Array<String>) {
 }
 
 fun run(testCaseNum: Int) {
-    var N = In.nextInt()
-    var E = In.nextInt()
-    var A = IntArray(N)
-    var B = IntArray(N)
-    var K = E
-    for (i in 1 until N) {
-        A[i] = In.nextInt()
-        B[i] = In.nextInt()
-        K = Math.max(K, A[i] + B[i])
+    val N = In.nextInt()
+    val X = IntArray(N, {In.nextInt()})
+    val ord = Array<Int>(N, {it})
+    val done = BooleanArray(N, {false})
+    ord.sortWith(compareBy{X[it]})
+    var tot = 0
+    for (i in 0 until N) {
+        if (done[ord[i]]) continue
+        var j = ord[i]
+        var cnt = 1
+        done[j] = true
+        while (j != i) {
+            j = ord[j]
+            tot += X[j]
+            done[j] = true
+            cnt++
+        }
+        tot += Math.min(X[ord[i]] * (cnt - 1), X[ord[i]] * 2 + X[ord[0]] * (cnt + 1))
     }
-    var dp = Array(2, {IntArray(K + 1, {Math.min(it, E - 1)})})
-    for (i in 1 until N)
-        for (j in 0..K)
-            dp[i % 2][j] = Math.max((if (j >= A[i] + B[i]) dp[1 - i % 2][j] - j
-                                     else if (j >= B[i]) dp[1 - i % 2][j - B[i]] + B[i] - j
-                                     else Math.max(dp[1 - i % 2][j + A[i]] - j, dp[1 - i % 2][A[i] - 1])) + j,
-                                     if (j == 0) 0 else dp[i % 2][j - 1])
-    Out.println(dp[(N - 1) % 2][K])
+    Out.println(tot);
 }

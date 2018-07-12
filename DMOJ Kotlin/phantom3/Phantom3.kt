@@ -162,22 +162,28 @@ fun main(args: Array<String>) {
 }
 
 fun run(testCaseNum: Int) {
-    var N = In.nextInt()
-    var E = In.nextInt()
-    var A = IntArray(N)
-    var B = IntArray(N)
-    var K = E
-    for (i in 1 until N) {
-        A[i] = In.nextInt()
-        B[i] = In.nextInt()
-        K = Math.max(K, A[i] + B[i])
+    val N = Math.max(In.nextLong(), 2)
+    val M = In.nextLong() - 1
+    if (N > M) {
+        Out.println(0)
+        return
     }
-    var dp = Array(2, {IntArray(K + 1, {Math.min(it, E - 1)})})
-    for (i in 1 until N)
-        for (j in 0..K)
-            dp[i % 2][j] = Math.max((if (j >= A[i] + B[i]) dp[1 - i % 2][j] - j
-                                     else if (j >= B[i]) dp[1 - i % 2][j - B[i]] + B[i] - j
-                                     else Math.max(dp[1 - i % 2][j + A[i]] - j, dp[1 - i % 2][A[i] - 1])) + j,
-                                     if (j == 0) 0 else dp[i % 2][j - 1])
-    Out.println(dp[(N - 1) % 2][K])
+    val sqrtM = Math.floor(Math.sqrt(M.toDouble())).toInt()
+    val sieve1 = BooleanArray(sqrtM + 1, {false})
+    val sieve2 = BooleanArray((M - N + 1).toInt(), {false})
+    var cnt = M - N + 1
+    sieve1[0] = true
+    sieve1[1] = true
+    for (i in 2..sqrtM) {
+        if (!sieve1[i]) {
+            for (j in (i.toLong() * i)..sqrtM step i.toLong()) sieve1[j.toInt()] = true
+            for (j in ((N + i - 1) / i * i).toLong()..M step i.toLong()) {
+                if (j != i.toLong() && !sieve2[(j - N).toInt()]) {
+                    sieve2[(j - N).toInt()] = true
+                    cnt--
+                }
+            }
+        }
+    }
+    Out.println(cnt)
 }
