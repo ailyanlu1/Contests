@@ -181,5 +181,5 @@ fun run(testCaseNum: Int) {
         }
         tot += Math.min(X[ord[i]] * (cnt - 1), X[ord[i]] * 2 + X[ord[0]] * (cnt + 1))
     }
-    Out.println(tot);
+    Out.println(tot)
 }
