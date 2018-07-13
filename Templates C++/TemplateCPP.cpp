@@ -82,11 +82,11 @@ void write(bool x){wb(x);}void write(int x){wi(x);}void write(uint x){wi(x);}voi
 void write(char x){wc(x);}void write(char*x){wcs(x);}void write(const char*x){wcs(x);}void write(string&x){ws(x);}
 template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const char*_p=_delimiter;*_p;_putchar(*_p++));write(forward<Ts>(xs)...);}
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
-void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager;
+void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager;
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
-    _iomanager.reset(new IOManager());
+    iomanager.reset(new IOManager());
     return 0;
 }
