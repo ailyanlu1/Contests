@@ -149,7 +149,7 @@ fun main(args: Array<String>) {
     for (i in 1..NUM_OF_TEST_CASES) {
         try {
             run(i)
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             System.err.println("Exception thrown on test case $i")
             e.printStackTrace(System.err)
             Out.flush()

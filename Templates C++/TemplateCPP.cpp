@@ -16,6 +16,8 @@ using namespace std;
 #define Rev(i, a, b) for (auto i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
 #define sz(a) ((int) (a).size())
+#define nl '\n'
+#define sp ' '
 #define uint unsigned int
 #define ull unsigned long long
 #define ll long long
