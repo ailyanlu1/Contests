@@ -84,7 +84,7 @@ fun run(testCaseNum: Int) {
     val ind = IntArray(C + 1, {0})
     val mass = LongArray(C + 1, {0L})
     for (i in 0 until C) {
-        var op = In.nextChar()
+        val op = In.nextChar()
         when (op) {
             'A' -> {
                 R[i] = In.next()
@@ -113,7 +113,7 @@ fun run(testCaseNum: Int) {
                 Out.println(rsq(Math.min(x, y), Math.max(x, y)))
             }
             'R' -> {
-                var x = hs.get(In.next()) ?: -1
+                val x = hs.get(In.next()) ?: -1
                 hs.remove(R[ind[x]])
                 R[i] = In.next()
                 ind[x] = i
