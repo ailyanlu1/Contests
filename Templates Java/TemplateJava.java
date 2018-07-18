@@ -106,6 +106,11 @@ public class TemplateJava {
             LENGTH = length;
         }
 
+        public boolean hasNext() throws IOException {
+            while (peek() != -1 && peek() <= ' ') read();
+            return peek() != -1;
+        }
+
         private void fillBuffer() throws IOException {
             bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
             if (bytesRead == -1) buffer[0] = -1;
@@ -114,6 +119,11 @@ public class TemplateJava {
         private byte read() throws IOException {
             if (bufferPointer == bytesRead) fillBuffer();
             return buffer[bufferPointer++];
+        }
+
+        private byte peek() throws IOException {
+            if (bufferPointer == bytesRead) fillBuffer();
+            return buffer[bufferPointer];
         }
 
         public void close() throws IOException {

@@ -160,7 +160,7 @@ fun main(args: Array<String>) {
         try {
             run(i)
         } catch (e: Exception) {
-            System.err.println("Exception thrown on test case $i")
+            System.err.println("Exception thrown on test case ")
             e.printStackTrace(System.err)
             Out.flush()
             if (crash) throw Exception()
@@ -172,5 +172,38 @@ fun main(args: Array<String>) {
 }
 
 fun run(testCaseNum: Int) {
-    
+    In.setLength(55)
+    val st = Stack<Double>()
+    while (In.hasNext()) {
+        val S = In.next()
+        if (S == "*") {
+            val b = st.pop()
+            val a = st.pop()
+            st.push(a * b)
+        } else if (S == "/") {
+            val b = st.pop()
+            val a = st.pop()
+            st.push(a / b)
+        } else if (S == "+") {
+            val b = st.pop()
+            val a = st.pop()
+            st.push(a + b)
+        } else if (S == "-") {
+            val b = st.pop()
+            val a = st.pop()
+            st.push(a - b)
+        } else if (S == "%") {
+            val b = st.pop()
+            val a = st.pop()
+            st.push(a % b)
+        } else if (S == "^") {
+            val b = st.pop()
+            val a = st.pop()
+            st.push(Math.pow(a, b))
+        } else {
+            st.push(S.toDouble())
+        }
+    }
+    if (st.size != 1) throw Exception()
+    Out.printf("%.1f", st.pop())
 }
