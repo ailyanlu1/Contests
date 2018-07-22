@@ -1,3 +1,4 @@
+// https://www.facebook.com/hackercup/problem/232395994158286/
 import java.io.*
 import java.math.*
 import java.util.*
@@ -144,11 +145,11 @@ class Reader {
 var NUM_OF_TEST_CASES: Int = 1 // TODO CHANGE NUMBER OF TEST CASES
 
 // TODO CHANGE FILE NAMES
-val INPUT_FILE_NAME = "input.txt"
-val OUTPUT_FILE_NAME = "output.txt"
+val INPUT_FILE_NAME = "ethan_traverses_a_tree.txt"
+val OUTPUT_FILE_NAME = "ethan_traverses_a_tree_out.txt"
 
-val stdIn: Boolean = true
-val stdOut: Boolean = true
+val stdIn: Boolean = false
+val stdOut: Boolean = false
 val crash: Boolean = true
 val flush: Boolean = false
 
@@ -156,11 +157,12 @@ val In: Reader = if (stdIn) Reader(System.`in`) else Reader(INPUT_FILE_NAME)
 val Out: PrintWriter = if (stdOut) PrintWriter(System.out) else PrintWriter(OUTPUT_FILE_NAME)
 
 fun main(args: Array<String>) {
+    NUM_OF_TEST_CASES = In.nextInt()
     for (i in 1..NUM_OF_TEST_CASES) {
         try {
             run(i)
         } catch (e: Exception) {
-            System.err.println("Exception thrown on test case $i")
+            System.err.println("Exception thrown on test case ")
             e.printStackTrace(System.err)
             Out.flush()
             if (crash) throw Exception()
@@ -172,5 +174,65 @@ fun main(args: Array<String>) {
 }
 
 fun run(testCaseNum: Int) {
-    
+    val N = In.nextInt()
+    val K = In.nextInt()
+    val L = IntArray(N + 1)
+    val R = IntArray(N + 1)
+    for (i in 1..N) {
+        L[i] = In.nextInt()
+        R[i] = In.nextInt()
+    }
+    val pre = ArrayList<Int>()
+    val post = ArrayList<Int>()
+    fun preDfs(i: Int) {
+        if (i == 0) return
+        pre.add(i)
+        preDfs(L[i])
+        preDfs(R[i])
+    }
+    fun postDfs(i: Int) {
+        if (i == 0) return
+        postDfs(L[i])
+        postDfs(R[i])
+        post.add(i)
+    }
+    preDfs(1)
+    postDfs(1)
+    val par = IntArray(N + 1, {it})
+    val rnk = IntArray(N + 1, {0})
+    var cnt = N
+    fun find(p: Int): Int {
+        var q = p
+        while (q != par[q]) {
+            par[q] = par[par[q]]
+            q = par[q]
+        }
+        return q
+    }
+    fun join(p: Int, q: Int) {
+        val pr = find(p)
+        val qr = find(q)
+        if (pr == qr) return
+        if (rnk[pr] < rnk[qr]) par[pr] = qr
+        else if (rnk[pr] > rnk[qr]) par[qr] = pr
+        else {
+            par[qr] = pr
+            rnk[pr]++
+        }
+        cnt--
+    }
+    for (i in 0 until pre.size) join(pre[i], post[i])
+    Out.print("Case #$testCaseNum: ")
+    if (cnt < K) {
+        Out.println("Impossible")
+    } else {
+        val id = IntArray(N + 1, {0})
+        var cur = 0
+        for (i in 1..N) {
+            val r = find(i)
+            if (id[r] == 0) id[r] = Math.min(++cur, K)
+            id[i] = id[r]
+            Out.print("${id[i]}" + if (i == N) "\n" else " ")
+        }
+    }
 }

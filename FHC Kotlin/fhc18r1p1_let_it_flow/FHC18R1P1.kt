@@ -1,3 +1,4 @@
+// https://www.facebook.com/hackercup/problem/180494849326631/
 import java.io.*
 import java.math.*
 import java.util.*
@@ -144,11 +145,11 @@ class Reader {
 var NUM_OF_TEST_CASES: Int = 1 // TODO CHANGE NUMBER OF TEST CASES
 
 // TODO CHANGE FILE NAMES
-val INPUT_FILE_NAME = "input.txt"
-val OUTPUT_FILE_NAME = "output.txt"
+val INPUT_FILE_NAME = "let_it_flow.txt"
+val OUTPUT_FILE_NAME = "let_it_flow_out.txt"
 
-val stdIn: Boolean = true
-val stdOut: Boolean = true
+val stdIn: Boolean = false
+val stdOut: Boolean = false
 val crash: Boolean = true
 val flush: Boolean = false
 
@@ -156,11 +157,13 @@ val In: Reader = if (stdIn) Reader(System.`in`) else Reader(INPUT_FILE_NAME)
 val Out: PrintWriter = if (stdOut) PrintWriter(System.out) else PrintWriter(OUTPUT_FILE_NAME)
 
 fun main(args: Array<String>) {
+    In.setLength(1005)
+    NUM_OF_TEST_CASES = In.nextInt()
     for (i in 1..NUM_OF_TEST_CASES) {
         try {
             run(i)
         } catch (e: Exception) {
-            System.err.println("Exception thrown on test case $i")
+            System.err.println("Exception thrown on test case ")
             e.printStackTrace(System.err)
             Out.flush()
             if (crash) throw Exception()
@@ -171,6 +174,28 @@ fun main(args: Array<String>) {
     Out.close()
 }
 
+val MOD = (1e9 + 7).toLong()
+
 fun run(testCaseNum: Int) {
-    
+    val N = In.nextInt()
+    val G = Array(3, {In.next()})
+    Out.print("Case #$testCaseNum: ")
+    val dp = LongArray(3, {0L})
+    dp[0] = 1L
+    for (i in 0 until N) {
+        if (i % 2 == 0) {
+            if (G[0][i] == '#') dp[0] = 0L
+            if (G[2][i] == '#') dp[2] = 0L
+            dp[1] = if (G[1][i] == '#') 0L else (dp[0] + dp[2]) % MOD
+            dp[0] = 0L
+            dp[2] = 0L
+        } else {
+            if (G[1][i] == '#') dp[1] = 0L
+            dp[0] = if (G[0][i] == '#') 0L else dp[1]
+            dp[2] = if (G[2][i] == '#') 0L else dp[1]
+            dp[1] = 0L
+        }
+    }
+    if (N % 2 == 1 && dp[2] != 0L) throw Exception()
+    Out.println(dp[2])
 }
