@@ -204,12 +204,6 @@ public class FHC18R1P3 {
             return pq[1];
         }
 
-        /**
-         * Returns a minimum key.
-         *
-         * @return a minimum key
-         * @throws NoSuchElementException if this priority queue is empty
-         */
         public Key minKey() {
             if (n == 0) throw new NoSuchElementException("Priority queue underflow");
             return keys[pq[1]];
@@ -227,14 +221,6 @@ public class FHC18R1P3 {
             return min;
         }
 
-        /**
-         * Returns the key associated with index {@code i}.
-         *
-         * @param  i the index of the key to return
-         * @return the key associated with index {@code i}
-         * @throws IndexOutOfBoundsException unless {@code 0 <= i < maxN}
-         * @throws NoSuchElementException no key is associated with index {@code i}
-         */
         public Key keyOf(int i) {
             if (i < 0 || i >= maxN) throw new IndexOutOfBoundsException();
             if (!contains(i)) throw new NoSuchElementException("index is not in the priority queue");
@@ -249,15 +235,6 @@ public class FHC18R1P3 {
             sink(qp[i]);
         }
 
-        /**
-         * Decrease the key associated with index {@code i} to the specified value.
-         *
-         * @param  i the index of the key to decrease
-         * @param  key decrease the key associated with index {@code i} to this key
-         * @throws IndexOutOfBoundsException unless {@code 0 <= i < maxN}
-         * @throws IllegalArgumentException if {@code key >= keyOf(i)}
-         * @throws NoSuchElementException no key is associated with index {@code i}
-         */
         public void decreaseKey(int i, Key key) {
             if (i < 0 || i >= maxN) throw new IndexOutOfBoundsException();
             if (!contains(i)) throw new NoSuchElementException("index is not in the priority queue");
