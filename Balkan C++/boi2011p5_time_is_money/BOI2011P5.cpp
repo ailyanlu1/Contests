@@ -1,4 +1,3 @@
-// https://www.codechef.com/LTIME61B/problems/XORSORT2
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -19,6 +18,8 @@ using namespace std;
 #define sz(a) ((int) (a).size())
 #define uint unsigned int
 #define ull unsigned long long
+#define nl '\n'
+#define sp ' '
 #define ll long long
 #define ld long double
 #define pii pair<int, int>
@@ -37,7 +38,9 @@ template<typename T1,typename T2,typename H1=hash<T1>,typename H2=hash<T2>>struc
 #define _maxNumLength 128
 char _inputBuffer[_bufferSize+1],*_inputPtr=_inputBuffer,_outputBuffer[_bufferSize],_c,_sign,*_tempInputBuf=nullptr,_numBuf[_maxNumLength],_tempOutputBuf[_maxNumLength],_fill=' ';
 const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;ull _precisionBase=1000000;
+#define _peekchar() (*_inputPtr?*_inputPtr:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,stdin)]='\0',*_inputPtr))
 #define _getchar() (*_inputPtr?*_inputPtr++:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,stdin)]='\0',*_inputPtr++))
+#define _hasNext() (*_inputPtr||!feof(stdin))
 #define _readSignAndNum(x) do{(x)=_getchar();}while((x)<=' ');_sign=(x)=='-';if(_sign)(x)=_getchar();for((x)-='0';(_c=_getchar())>='0';(x)=(x)*10+_c-'0')
 #define _readFloatingPoint(x,T) for(T _div=1.0;(_c=_getchar())>='0';(x)+=(_c-'0')/(_div*=10))
 #define rc(x) do{do{(x)=_getchar();}while((x)<=' ');}while(0)
@@ -50,7 +53,7 @@ const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,
 #define rln(x) do{if(!_tempInputBuf)assert(0);rcln(_tempInputBuf);(x)=string(_tempInputBuf,_cur);}while(0)
 #define setLength(x) do{if(_tempInputBuf)delete[](_tempInputBuf);_tempInputBuf=new char[(x)+1];}while(0)
 void read(int&x){ri(x);}void read(uint&x){ri(x);}void read(ll&x){ri(x);}void read(ull&x){ri(x);}void read(double&x){rd(x);}void read(ld&x){rld(x);}
-void read(char&x){rc(x);}void read(char*x){rcs(x);}void read(string&x){rs(x);}
+void read(char&x){rc(x);}void read(char*x){rcs(x);}void read(string&x){rs(x);}bool hasNext(){while(_hasNext()&&_peekchar()<=' ')_getchar();return _hasNext();}
 template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward<Ts>(xs)...);}
 #define _flush() do{_flushBuf();fflush(stdout);}while(0)
 #define _flushBuf() (fwrite(_outputBuffer,1,_outputPtr,stdout),_outputPtr=0)
@@ -79,65 +82,104 @@ void write(bool x){wb(x);}void write(int x){wi(x);}void write(uint x){wi(x);}voi
 void write(char x){wc(x);}void write(char*x){wcs(x);}void write(const char*x){wcs(x);}void write(string&x){ws(x);}
 template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const char*_p=_delimiter;*_p;_putchar(*_p++));write(forward<Ts>(xs)...);}
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
-void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>_iomanager;
+void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager;
 
-template <typename It> long long count_inversions(It src_st, It src_en, It dst_st, It dst_en) {
-    int n = src_en - src_st;
-    if (n <= 1) return 0;
-    int mid = (n - 1) / 2;
-    long long ret = 0;
-    ret += count_inversions(dst_st, dst_st + mid + 1, src_st, src_st + mid + 1);
-    ret += count_inversions(dst_st + mid + 1, dst_en, src_st + mid + 1, src_en);
-    int i = 0, j = mid + 1;
-    for (int k = 0; k < n; k++) {
-        if (i > mid) {
-            dst_st[k] = src_st[j++];
-        } else if (j >= n) {
-            dst_st[k] = src_st[i++];
-            ret += j - (mid + 1);
-        } else if (src_st[j] < src_st[i]) {
-            dst_st[k] = src_st[j++];
-            ret += mid + 1 - i;
-        } else {
-            dst_st[k] = src_st[i++];
-            ret += j - (mid + 1);
-        }
+#define MAXN 205
+#define MAXM 10005
+#define x f
+#define y s
+
+int N, M, cnt, par[MAXN], rnk[MAXN];
+pll bestAns(LL_INF, LL_INF), bestP(LL_INF, LL_INF);
+
+struct Edge {
+    int x, y;
+    pll p;
+    ll dot = 0;
+
+    bool operator < (const Edge &e) const {
+        return dot < e.dot;
+    }
+} E[MAXM];
+
+ll operator * (const pll &a, const pll &b) {
+    return a.x * b.x + a.y * b.y;
+}
+
+void operator += (pll &a, const pll &b) {
+    a.x += b.x;
+    a.y += b.y;
+}
+
+void UF() {
+    cnt = N;
+    for (int i = 0; i < N; rnk[i++] = 0) par[i] = i;
+}
+
+int find(int p) {
+    while (p != par[p]) p = par[p] = par[par[p]];
+    return p;
+}
+
+bool join(int p, int q) {
+    p = find(p);
+    q = find(q);
+    if (p == q) return false;
+    if (rnk[p] < rnk[q]) par[p] = q;
+    else if (rnk[p] > rnk[q]) par[q] = p;
+    else {
+        par[q] = p;
+        rnk[p]++;
+    }
+    cnt--;
+    return true;
+}
+
+int ccw(pll a, pll b, pll c) {
+    ll area2 = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+    if (area2 < 0) return -1;
+    else if (area2 > 0) return 1;
+    else return 0;
+}
+
+pll mst(pll p) {
+    UF();
+    for (Edge &e : E) e.dot = p * e.p;
+    sort(E, E + M);
+    pll ret(0, 0);
+    for (Edge &e : E) {
+        if (cnt == 1) break;
+        if (join(e.x, e.y)) ret += e.p;
+    }
+    if (ret.f * ret.s < bestAns.f * bestAns.s) {
+        bestAns = ret;
+        bestP = p;
     }
     return ret;
 }
 
-template <typename It> long long count_inversions(It st, It en) {
-    typedef typename std::iterator_traits<It>::value_type T;
-    int n = en - st;
-    T *aux = new T[n];
-    for (int i = 0; i < n; i++) aux[i] = st[i];
-    long long ret = count_inversions(aux, aux + n, st, en);
-    delete[] (aux);
-    return ret / 2;
-}
-
-void solve() {
-    int N, K, P;
-    read(N, K, P);
-    --P;
-    vector<int> A(N);
-    FOR(i, N) read(A[i]);
-    vector<plli> ans;
-    FOR(i, 1 << K) {
-        vector<int> B(N);
-        FOR(j, N) B[j] = A[j] ^ i;
-        ans.eb(count_inversions(B.data(), B.data() + N), i);
+void solve(pll lo, pll hi) {
+    pll mid = mst({lo.y - hi.y, hi.x - lo.x});
+    if (ccw(lo, mid, hi) > 0) {
+        solve(lo, mid);
+        solve(mid, hi);
     }
-    sort(all(ans));
-    writeln(ans[P].s);
 }
 
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
-    _iomanager.reset(new IOManager());
-    int T;
-    read(T);
-    FOR(i, T) solve();
+    iomanager.reset(new IOManager());
+    read(N, M);
+    FOR(i, M) read(E[i].x, E[i].y, E[i].p.x, E[i].p.y);
+    solve(mst({1, 0}), mst({0, 1}));
+    writeln(bestAns.x, bestAns.y);
+    UF();
+    for (Edge &e : E) e.dot = bestP * e.p;
+    sort(E, E + M);
+    for (Edge &e : E) {
+        if (cnt == 1) break;
+        if (join(e.x, e.y)) writeln(e.x, e.y);
+    }
     return 0;
 }
