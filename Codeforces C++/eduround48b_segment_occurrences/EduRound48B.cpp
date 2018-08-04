@@ -1,3 +1,4 @@
+// http://codeforces.com/contest/1016/problem/B
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -18,10 +19,10 @@ using namespace std;
 #define sz(a) ((int) (a).size())
 #define nl '\n'
 #define sp ' '
-#define ll long long
-#define ld long double
 #define uint unsigned int
 #define ull unsigned long long
+#define ll long long
+#define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define pill pair<int, ll>
@@ -84,9 +85,28 @@ template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const 
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager;
 
+int N, M, Q, LCP[1005], cnt[1005];
+string S, T;
+
 int main() {
-//    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
+//    freopen("in.txt", "r", stdin);
     iomanager.reset(new IOManager());
+    setLength(1010);
+    read(N, M, Q, S, T);
+    LCP[0] = -1;
+    FOR(i, N + 1) cnt[i] = 0;
+    for (int i = 0, j = -1; i < M; i++, j++, LCP[i] = (i != M && T[i] == T[j]) ? LCP[j] : j) while (j >= 0 && T[i] != T[j]) j = LCP[j];
+    for (int i = 0, j = 0; i < N; i++, j++) {
+        while (j >= 0 && (j == M || S[i] != T[j])) j = LCP[j];
+        if (j == M - 1) cnt[i - j + 1]++;
+    }
+    For(i, 1, N + 1) cnt[i] += cnt[i - 1];
+    int l, r;
+    FOR(i, Q) {
+        read(l, r);
+        if (r - l + 1 < M) writeln(0);
+        else writeln(cnt[r - M + 1] - cnt[l - 1]);
+    }
     return 0;
 }

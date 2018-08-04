@@ -1,3 +1,4 @@
+// http://codeforces.com/contest/1016/problem/F
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -18,10 +19,10 @@ using namespace std;
 #define sz(a) ((int) (a).size())
 #define nl '\n'
 #define sp ' '
-#define ll long long
-#define ld long double
 #define uint unsigned int
 #define ull unsigned long long
+#define ll long long
+#define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define pill pair<int, ll>
@@ -84,9 +85,80 @@ template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const 
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager;
 
+#define MAXN 300005
+
+int N, M, par[MAXN], D[MAXN];
+bool inPath[MAXN];
+ll dist[MAXN], best2 = 0;
+vector<int> path;
+vector<pii> adj[MAXN];
+
+void dfs(int v, int prev) {
+    par[v] = prev;
+    for (pii e : adj[v]) {
+        if (e.f == prev) continue;
+        dist[e.f] = dist[v] + e.s;
+        dfs(e.f, v);
+    }
+}
+
 int main() {
-//    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
+//    freopen("in.txt", "r", stdin);
     iomanager.reset(new IOManager());
+    read(N, M);
+    int a, b, c;
+    FOR(i, N) {
+        inPath[i] = false;
+        D[i] = 0;
+    }
+    FOR(i, N - 1) {
+        read(a, b, c);
+        adj[--a].eb(--b, c);
+        adj[b].eb(a, c);
+    }
+    dfs(0, -1);
+    for (int v = N - 1; v != -1; v = par[v]) {
+        path.pb(v);
+        inPath[v] = true;
+    }
+    reverse(all(path));
+    for (int v : path) {
+        pii x = {-1, 0};
+        for (pii e : adj[v]) {
+            if (inPath[e.f]) continue;
+            else if (x.f == -1) x = e;
+            else {
+                best2 = LL_INF;
+                break;
+            }
+        }
+        if (best2 == LL_INF) break;
+        if (x.f == -1) continue;
+        if (sz(adj[x.f]) > 1) {
+            best2 = LL_INF;
+            break;
+        }
+        D[v] = x.s;
+    }
+    if (best2 < LL_INF) {
+        ll a = -LL_INF, b = -LL_INF;
+        REV(i, sz(path) - 1) {
+            int v = path[i];
+            if (D[v] > 0) {
+                MAX(best2, dist[N - 1] + max(a, b) + dist[v] + D[v]);
+                MAX(a, D[v] - dist[v]);
+            } else {
+                MAX(best2, dist[N - 1] + a + dist[v] + D[v]);
+                MAX(b, D[v] - dist[v]);
+            }
+        }
+        FOR(i, sz(path) - 2) MAX(best2, dist[N - 1] + dist[path[i]] - dist[path[i + 2]]);
+    }
+    int x;
+    FOR(i, M) {
+        read(x);
+        writeln(min(dist[N - 1], best2 + x));
+    }
     return 0;
 }

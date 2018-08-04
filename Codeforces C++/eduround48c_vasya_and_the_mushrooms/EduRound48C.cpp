@@ -1,3 +1,4 @@
+// http://codeforces.com/contest/1016/problem/C
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -18,10 +19,10 @@ using namespace std;
 #define sz(a) ((int) (a).size())
 #define nl '\n'
 #define sp ' '
-#define ll long long
-#define ld long double
 #define uint unsigned int
 #define ull unsigned long long
+#define ll long long
+#define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define pill pair<int, ll>
@@ -84,9 +85,19 @@ template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const 
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager;
 
+int N;
+ll A[2][300005], suf[300005], cur[2], dp[2][2];
+
 int main() {
-//    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
+//    freopen("in.txt", "r", stdin);
     iomanager.reset(new IOManager());
+    read(N);
+    FOR(i, 2) FOR(j, N) read(A[i][j]);
+    suf[N] = 0;
+    REV(i, N - 1) suf[i] = suf[i + 1] + A[0][i] + A[1][i];
+    FOR(i, 2) dp[i][(N - 1) % 2] = cur[i] = A[1 - i][N - 1];
+    REV(j, N - 2) FOR(i, 2) dp[i][j % 2] = max(cur[i] += suf[j + 1] + A[1 - i][j] * (2 * (N - j) - 1), A[1 - i][j] + dp[1 - i][1 - j % 2] + 2 * suf[j + 1]);
+    writeln(dp[0][0]);
     return 0;
 }

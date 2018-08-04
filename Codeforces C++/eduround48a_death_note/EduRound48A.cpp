@@ -1,3 +1,4 @@
+// http://codeforces.com/contest/1016/problem/A
 #include <bits/stdc++.h>
 using namespace std;
 #define INT_INF 0x3f3f3f3f
@@ -18,10 +19,10 @@ using namespace std;
 #define sz(a) ((int) (a).size())
 #define nl '\n'
 #define sp ' '
-#define ll long long
-#define ld long double
 #define uint unsigned int
 #define ull unsigned long long
+#define ll long long
+#define ld long double
 #define pii pair<int, int>
 #define pll pair<ll, ll>
 #define pill pair<int, ll>
@@ -84,9 +85,20 @@ template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const 
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager;
 
+int N, M;
+
 int main() {
 //    freopen("in.txt", "r", stdin);
 //    freopen("out.txt", "w", stdout);
     iomanager.reset(new IOManager());
+    read(N, M);
+    ll sum = 0;
+    int a;
+    setDelimiter("");
+    FOR(i, N) {
+        read(a);
+        write((sum + a) / M - sum / M, " \n"[i == N - 1]);
+        sum += a;
+    }
     return 0;
 }
