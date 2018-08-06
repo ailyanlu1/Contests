@@ -19,10 +19,10 @@
 #define FOR(i, b) For(i, 0, b)
 #define Rev(i, a, b) for (int i = (a); i > (b); i--)
 #define REV(i, a) Rev(i, a, -1)
-#define uint unsigned int
-#define ull unsigned long long
 #define ll long long
 #define ld long double
+#define uint unsigned int
+#define ull unsigned long long
 
 #define _bufferSize 4096
 #define _maxNumLength 128
