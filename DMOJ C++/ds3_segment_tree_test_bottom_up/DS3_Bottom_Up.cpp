@@ -117,7 +117,7 @@ int main() {
             GCD[0] = CNT[0] = 0;
             for (a += N - 1, b += N - 1; a <= b; a >>= 1, b >>= 1) {
                 if (a & 1) merge(0, 0, a++);
-                if (!(b & 1)) merge(0, b--, 0);
+                if (!(b & 1)) merge(0, 0, b--);
             }
             if (op == 'M') writeln(MN[0]);
             else if (op == 'G') writeln(GCD[0]);
