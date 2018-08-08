@@ -85,10 +85,7 @@ template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const 
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager;
 
-#define MAXN 1005
-
-int N;
-pii A[MAXN];
+int N, S, cnt = 0;
 
 int main() {
 //    freopen("in.txt", "r", stdin);
@@ -98,10 +95,9 @@ int main() {
     int a, b, c, d;
     For(i, 1, N + 1) {
         read(a, b, c, d);
-        A[i].f = -(a + b + c + d);
-        A[i].s = i;
+        if (i == 1) S = a + b + c + d;
+        else if (a + b + c + d > S) cnt++;
     }
-    sort(A + 1, A + N + 1);
-    For(i, 1, N + 1) if (A[i].s == 1) writeln(i);
+    writeln(cnt + 1);
     return 0;
 }
