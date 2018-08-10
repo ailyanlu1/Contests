@@ -204,14 +204,20 @@ int main() {
                 dotted[ra].eb(a, b);
             } else {
                 assert(link(a, b));
-                if (ra != findRoot(a)) swap(ra, rb);
-                dotted[ra].insert(dotted[ra].end(), all(dotted[rb]));
+                int ra2 = findRoot(a);
+                if (ra != ra2) swap(ra, rb);
+                if (ra != ra2) {
+                    dotted[ra2].insert(dotted[ra2].end(), all(dotted[ra]));
+                    dotted[ra].clear();
+                }
+                dotted[ra2].insert(dotted[ra2].end(), all(dotted[rb]));
                 dotted[rb].clear();
             }
         } else if (op[0] == 'r') {
             int ra = findRoot(a), rb = findRoot(b);
             assert(ra == rb);
             if (!cut(a, b)) {
+                makeRoot(ra);
                 auto it = find(all(dotted[ra]), mp(a, b));
                 if (it != dotted[ra].end()) dotted[ra].erase(it);
                 continue;
