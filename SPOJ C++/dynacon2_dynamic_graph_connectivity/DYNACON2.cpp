@@ -85,14 +85,10 @@ void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr
 
 #define MAXN 100005
 
-int N, M, SZ[MAXN], L[MAXN], R[MAXN], P[MAXN], MX[MAXN];
+int N, M, SZ[MAXN], L[MAXN], R[MAXN], P[MAXN];
 bool REV[MAXN];
 char op[8];
 vector<pii> dotted[MAXN];
-
-int size(int x) {
-    return x ? SZ[x] : 0;
-}
 
 bool isRoot(int x) {
     return !P[x] || (x != L[P[x]] && x != R[P[x]]);
@@ -105,10 +101,6 @@ void propagate(int x) {
         if (L[x]) REV[L[x]] ^= 1;
         if (R[x]) REV[R[x]] ^= 1;
     }
-}
-
-void update(int x) {
-    SZ[x] = 1 + size(L[x]) + size(R[x]);
 }
 
 void connect(int ch, int par, bool hasCh, bool isL) {
@@ -127,7 +119,6 @@ void rotate(int x) {
     connect(isL ? R[x] : L[x], p, true, isL);
     connect(p, x, true, !isL);
     connect(x, g, !isRootP, isRootP ? false : p == L[g]);
-    update(p);
 }
 
 void splay(int x) {
@@ -141,7 +132,6 @@ void splay(int x) {
         rotate(x);
     }
     propagate(x);
-    update(x);
 }
 
 int expose(int x) {
@@ -218,7 +208,7 @@ int main() {
                 dotted[rb].clear();
             }
         } else if (op[0] == 'r') {
-            assert(cut(a, b));
+            cut(a, b);
             int ra2 = findRoot(a), rb2 = findRoot(b);
             vector<pii> temp;
             vector<bool> marked(sz(dotted[ra]), false);
