@@ -197,6 +197,7 @@ int main() {
     int a, b;
     FOR(m, M) {
         read(op, a, b);
+        if (a > b) swap(a, b);
         int ra = findRoot(a), rb = findRoot(b);
         if (op[0] == 'a') {
             if (ra == rb) {
@@ -210,8 +211,13 @@ int main() {
         } else if (op[0] == 'r') {
             int ra = findRoot(a), rb = findRoot(b);
             assert(ra == rb);
-            cut(a, b);
+            if (!cut(a, b)) {
+                auto it = find(all(dotted[ra]), mp(a, b));
+                if (it != dotted[ra].end()) dotted[ra].erase(it);
+                continue;
+            }
             int ra2 = findRoot(a), rb2 = findRoot(b);
+            assert(ra2 != rb2);
             vector<pii> temp;
             vector<bool> marked(sz(dotted[ra]), false);
             temp.swap(dotted[ra]);
@@ -221,7 +227,7 @@ int main() {
                 if (rf == ra2 && rs == rb2) {
                     assert(link(temp[i].f, temp[i].s));
                     temp.erase(temp.begin() + i);
-                    swap(temp, dotted[findRoot(a)]);
+                    temp.swap(dotted[findRoot(a)]);
                     break;
                 }
                 if (rf == rb2) marked[i] = true;
