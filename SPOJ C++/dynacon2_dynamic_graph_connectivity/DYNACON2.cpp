@@ -208,6 +208,8 @@ int main() {
                 dotted[rb].clear();
             }
         } else if (op[0] == 'r') {
+            int ra = findRoot(a), rb = findRoot(b);
+            assert(ra == rb);
             cut(a, b);
             int ra2 = findRoot(a), rb2 = findRoot(b);
             vector<pii> temp;
