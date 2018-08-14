@@ -160,7 +160,7 @@ fun main(args: Array<String>) {
         try {
             run(i)
         } catch (e: Exception) {
-            System.err.println("Exception thrown on test case ")
+            System.err.println("Exception thrown on test case $i")
             e.printStackTrace(System.err)
             Out.flush()
             if (crash) throw Exception()
