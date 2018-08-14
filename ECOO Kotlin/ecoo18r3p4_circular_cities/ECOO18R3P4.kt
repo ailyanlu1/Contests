@@ -56,39 +56,28 @@ fun main(args: Array<String>) {
     Out.close()
 }
 
-val INF = 0x3f3f3f3f.toLong()
-
 fun run(testCaseNum: Int) {
     val N = In.nextInt()
-    val P = Array(N, {Pair(In.nextLong(), In.nextLong())}).toCollection(ArrayList())
-    fun check(L: Long, P: ArrayList<Pair<Long, Long>>, cnt: Int): Boolean {
-        val bnd = arrayOf(arrayOf(INF, -INF), arrayOf(INF, -INF))
-        for (p in P) {
-            bnd[0][0] = Math.min(bnd[0][0], p.first)
-            bnd[0][1] = Math.max(bnd[0][1], p.first)
-            bnd[1][0] = Math.min(bnd[1][0], p.second)
-            bnd[1][1] = Math.max(bnd[1][1], p.second)
-        }
-        if (bnd[0][1] - bnd[0][0] <= L && bnd[1][1] - bnd[1][0] <= L) return true
-        if (cnt == 3) return false
-        bnd[0][1] -= L
-        bnd[1][1] -= L
-        val Q = ArrayList<Pair<Long, Long>>()
-        for (i in 0..1) {
-            for (j in 0..(if (cnt == 1) 1 else 0)) {
-                Q.clear()
-                for (p in P) if (bnd[0][i] > p.first || p.first > bnd[0][i] + L || bnd[1][j] > p.second || p.second > bnd[1][j] + L) Q.add(p)
-                if (check(L, Q, cnt + 1)) return true
-            }
-        }
-        return false
-    }
-    var lo = 1L
-    var hi = 2e9.toLong() + 5
+    val M = In.nextInt()
+    val A = LongArray(N, {In.nextLong()})
+    val B = LongArray(N, {In.nextLong()})
+    A.sort()
+    B.sort()
+    fun f(i: Int) = (0 until N).fold(0L) { acc, j -> acc + Math.min(Math.abs(A[j] - B[(i + j) % N]), M - Math.abs(A[j] - B[(i + j) % N]))}
+    var lo = 0
+    var hi = N / 2
     while (lo < hi) {
         val mid = lo + (hi - lo) / 2
-        if (check(mid, P, 1)) hi = mid
+        if (f(mid) < f(mid + 1)) hi = mid
         else lo = mid + 1
     }
-    Out.println(lo)
+    val ans1 = f(lo)
+    lo = N / 2
+    hi = N
+    while (lo < hi) {
+        val mid = lo + (hi - lo) / 2
+        if (f(mid) < f(mid + 1)) hi = mid
+        else lo = mid + 1
+    }
+    Out.println(Math.min(ans1, f(lo)))
 }
