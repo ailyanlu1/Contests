@@ -57,7 +57,7 @@ void dfs(int v, int prev) {
             if ((prev == v && children > 1) || (prev != v && low[w] >= pre[v])) {
                 articulation[v] = true;
                 components.eb();
-                while (s.top().f != v && s.top().s != w) {
+                while (s.top().f != v || s.top().s != w) {
                     components.back().insert(s.top().f);
                     components.back().insert(s.top().s);
                     inComponent[s.top().f].insert(components.size() - 1);
