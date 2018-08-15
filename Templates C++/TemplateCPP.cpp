@@ -4,6 +4,7 @@ using namespace std;
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
 #define LD_INF numeric_limits<ld>::infinity()
+#define EPS 1e-9
 #define pb push_back
 #define eb emplace_back
 #define mp make_pair
@@ -20,6 +21,12 @@ using namespace std;
 using ll=long long;using ld=long double;using uint=unsigned int;using ull=unsigned long long;
 using pii=pair<int, int>;using pll=pair<ll, ll>;using pill=pair<int, ll>;using plli=pair<ll, int>;using pdd=pair<double, double>;
 namespace utils {
+    template<typename T>struct number{
+        static constexpr T eps(){return T(EPS);}
+        static constexpr bool less(const T&x,const T&y){return x<y-eps();}
+        static constexpr bool greater(const T&x,const T&y){return x>y+eps();}
+        static constexpr bool equal(const T&x,const T&y){return abs(x-y)<=eps();}
+    };
     template<typename T>constexpr const T&min(const T&x,const T&y){return x<y?x:y;}template<typename T>constexpr const T&max(const T&x,const T&y){return x<y?y:x;}
     template<typename T,typename...Ts>constexpr const T&min(const T&x,const Ts&...xs){return min(x,min(xs...));}
     template<typename T,typename...Ts>constexpr const T&max(const T&x,const Ts&...xs){return max(x,max(xs...));}
@@ -29,6 +36,10 @@ namespace utils {
     template<typename T,typename...Args>std::unique_ptr<T>make_unique(Args&&...args){return std::unique_ptr<T>(new T(std::forward<Args>(args)...));}
     template<typename T,typename...Args>std::shared_ptr<T>make_shared(Args&&...args){return std::shared_ptr<T>(new T(std::forward<Args>(args)...));}
 }
+#define dless utils::number<double>::less
+#define dgreater utils::number<double>::greater
+#define ldless utils::number<ld>::less
+#define ldgreater utils::number<ld>::greater
 #define min utils::min
 #define max utils::max
 #define MIN utils::MIN
