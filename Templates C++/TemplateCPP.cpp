@@ -17,35 +17,30 @@ using ll=long long;using ld=long double;using uint=unsigned int;using ull=unsign
 using pii=pair<int,int>;using pll=pair<ll,ll>;using pill=pair<int,ll>;using plli=pair<ll,int>;using pdd=pair<double,double>;using pld=pair<ld,ld>;
 constexpr const int INT_INF=0x3f3f3f3f;constexpr const ll LL_INF=0x3f3f3f3f3f3f3f3f;
 constexpr const double D_INF=numeric_limits<double>::infinity();constexpr const ld LD_INF=numeric_limits<ld>::infinity();constexpr const double EPS=1e-9;
-template<typename T1,typename T2>bool feq(const T1&x,const T2&y){return is_floating_point<std::common_type_t<T1,T2>>::value?abs(x-y)<=EPS:x==y;}
-template<typename T1,typename T2>bool flt(const T1&x,const T2&y){return is_floating_point<std::common_type_t<T1,T2>>::value?x<y-EPS:x<y;}
-template<typename T1,typename T2>bool fgt(const T1&x,const T2&y){return is_floating_point<std::common_type_t<T1,T2>>::value?x>y+EPS:x>y;}
-namespace utils {
-    template<typename T>constexpr const T&min(const T&x,const T&y){return x<y?x:y;}
-    template<typename T>constexpr const T&max(const T&x,const T&y){return x<y?y:x;}
-    template<typename T,typename...Ts>constexpr const T&min(const T&x,const Ts&...xs){return min(x,min(xs...));}
-    template<typename T,typename...Ts>constexpr const T&max(const T&x,const Ts&...xs){return max(x,max(xs...));}
-    template<typename T1,typename T2>constexpr const std::common_type_t<T1,T2>min(const T1&x,const T2&y){return x<y?x:y;}
-    template<typename T1,typename T2>constexpr const std::common_type_t<T1,T2>max(const T1&x,const T2&y){return x<y?y:x;}
-    template<typename T,typename...Ts>constexpr const std::common_type_t<T,Ts...>min(const T&x,const Ts&...xs){return min(x,min(xs...));}
-    template<typename T,typename...Ts>constexpr const std::common_type_t<T,Ts...>max(const T&x,const Ts&...xs){return max(x,max(xs...));}
-    template<typename T,typename...Ts>void MIN(T&x,const Ts&...xs){x=min(x,xs...);}
-    template<typename T,typename...Ts>void MAX(T&x,const Ts&...xs){x=max(x,xs...);}
-    template<typename T>constexpr const T&clamp(const T&v,const T&lo,const T&hi){return v<lo?lo:hi<v?hi:v;}
-    template<typename T>void CLAMP(T&v,const T&lo,const T&hi){v=clamp(v,lo,hi);}
-    template<typename T1,typename T2,typename T3>constexpr const std::common_type_t<T1,T2,T3>clamp(const T1&v,const T2&lo,const T3&hi){return v<lo?lo:hi<v?hi:v;}
-    template<typename T1,typename T2,typename T3>void CLAMP(T1&v,const T2&lo,const T3&hi){v=clamp(v,lo,hi);}
-    template<typename T,typename...Args>std::unique_ptr<T>make_unique(Args&&...args){return std::unique_ptr<T>(new T(std::forward<Args>(args)...));}
-    template<typename T,typename...Args>std::shared_ptr<T>make_shared(Args&&...args){return std::shared_ptr<T>(new T(std::forward<Args>(args)...));}
-}
-#define min utils::min
-#define max utils::max
-#define MIN utils::MIN
-#define MAX utils::MAX
-#define clamp utils::clamp
-#define CLAMP utils::CLAMP
-#define make_unique utils::make_unique
-#define make_shared utils::make_shared
+template<typename T1,typename T2>bool feq(const T1&x,const T2&y){return is_floating_point<common_type_t<T1,T2>>::value?abs(x-y)<=EPS:x==y;}
+template<typename T1,typename T2>bool flt(const T1&x,const T2&y){return is_floating_point<common_type_t<T1,T2>>::value?x<y-EPS:x<y;}
+template<typename T1,typename T2>bool fgt(const T1&x,const T2&y){return is_floating_point<common_type_t<T1,T2>>::value?x>y+EPS:x>y;}
+template<typename T>constexpr const T&_min(const T&x,const T&y){return x<y?x:y;}
+template<typename T>constexpr const T&_max(const T&x,const T&y){return x<y?y:x;}
+template<typename T,typename...Ts>constexpr const T&_min(const T&x,const Ts&...xs){return _min(x,_min(xs...));}
+template<typename T,typename...Ts>constexpr const T&_max(const T&x,const Ts&...xs){return _max(x,_max(xs...));}
+template<typename T1,typename T2>constexpr const common_type_t<T1,T2>Min(const T1&x,const T2&y){return x<y?x:y;}
+template<typename T1,typename T2>constexpr const common_type_t<T1,T2>Max(const T1&x,const T2&y){return x<y?y:x;}
+template<typename T,typename...Ts>constexpr const common_type_t<T,Ts...>Min(const T&x,const Ts&...xs){return Min(x,Min(xs...));}
+template<typename T,typename...Ts>constexpr const common_type_t<T,Ts...>Max(const T&x,const Ts&...xs){return Max(x,Max(xs...));}
+template<typename T,typename...Ts>void MIN(T&x,const Ts&...xs){x=_min(x,xs...);}
+template<typename T,typename...Ts>void MAX(T&x,const Ts&...xs){x=_max(x,xs...);}
+template<typename T>constexpr const T&_clamp(const T&v,const T&lo,const T&hi){return v<lo?lo:hi<v?hi:v;}
+template<typename T>void CLAMP(T&v,const T&lo,const T&hi){v=_clamp(v,lo,hi);}
+template<typename T1,typename T2,typename T3>constexpr const common_type_t<T1,T2,T3>_clamp(const T1&v,const T2&lo,const T3&hi){return v<lo?lo:hi<v?hi:v;}
+template<typename T1,typename T2,typename T3>void CLAMP(T1&v,const T2&lo,const T3&hi){v=_clamp(v,lo,hi);}
+template<typename T,typename...Args>unique_ptr<T>_make_unique(Args&&...args){return unique_ptr<T>(new T(forward<Args>(args)...));}
+template<typename T,typename...Args>shared_ptr<T>_make_shared(Args&&...args){return shared_ptr<T>(new T(forward<Args>(args)...));}
+#define min _min
+#define max _max
+#define clamp _clamp
+#define make_unique _make_unique
+#define make_shared _make_shared
 template<typename...Ts>using uset=unordered_set<Ts...>;template<typename...Ts>using umap=unordered_map<Ts...>;template<typename...Ts>using pq=priority_queue<Ts...>;
 template<typename T>using minpq=pq<T,vector<T>,greater<T>>;template<typename T>using maxpq=pq<T,vector<T>,less<T>>;
 template<typename T1,typename T2,typename H1=hash<T1>,typename H2=hash<T2>>struct pair_hash{size_t operator()(const pair<T1,T2>&p)const{return 31*H1{}(p.first)+H2{}(p.second);}};
