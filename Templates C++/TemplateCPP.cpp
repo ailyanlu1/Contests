@@ -34,10 +34,12 @@ namespace utils {
     template<typename T,typename...Args>std::unique_ptr<T>make_unique(Args&&...args){return std::unique_ptr<T>(new T(std::forward<Args>(args)...));}
     template<typename T,typename...Args>std::shared_ptr<T>make_shared(Args&&...args){return std::shared_ptr<T>(new T(std::forward<Args>(args)...));}
 }
-#define dless utils::number<double>::less
-#define dgreater utils::number<double>::greater
-#define ldless utils::number<ld>::less
-#define ldgreater utils::number<ld>::greater
+#define d_lt utils::number<double>::less
+#define d_gt utils::number<double>::greater
+#define d_eq utils::number<double>::equal
+#define ld_lt utils::number<ld>::less
+#define ld_gt utils::number<ld>::greater
+#define ld_eq utils::number<ld>::equal
 #define min utils::min
 #define max utils::max
 #define MIN utils::MIN
