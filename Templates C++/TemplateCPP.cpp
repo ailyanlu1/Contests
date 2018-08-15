@@ -22,10 +22,8 @@ using ll=long long;using ld=long double;using uint=unsigned int;using ull=unsign
 using pii=pair<int, int>;using pll=pair<ll, ll>;using pill=pair<int, ll>;using plli=pair<ll, int>;using pdd=pair<double, double>;
 namespace utils {
     template<typename T>struct number{
-        static constexpr T eps(){return T(EPS);}
-        static constexpr bool less(const T&x,const T&y){return x<y-eps();}
-        static constexpr bool greater(const T&x,const T&y){return x>y+eps();}
-        static constexpr bool equal(const T&x,const T&y){return abs(x-y)<=eps();}
+        static constexpr T eps(){return T(EPS);}static constexpr bool equal(const T&x,const T&y){return abs(x-y)<=eps();}
+        static constexpr bool less(const T&x,const T&y){return x<y-eps();}static constexpr bool greater(const T&x,const T&y){return x>y+eps();}
     };
     template<typename T>constexpr const T&min(const T&x,const T&y){return x<y?x:y;}template<typename T>constexpr const T&max(const T&x,const T&y){return x<y?y:x;}
     template<typename T,typename...Ts>constexpr const T&min(const T&x,const Ts&...xs){return min(x,min(xs...));}
