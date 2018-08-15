@@ -14,7 +14,7 @@ using namespace std;
 #define nl '\n'
 #define sp ' '
 using ll=long long;using ld=long double;using uint=unsigned int;using ull=unsigned long long;
-using pii=pair<int, int>;using pll=pair<ll, ll>;using pill=pair<int, ll>;using plli=pair<ll, int>;using pdd=pair<double, double>;
+using pii=pair<int,int>;using pll=pair<ll,ll>;using pill=pair<int,ll>;using plli=pair<ll,int>;using pdd=pair<double,double>;using pld=pair<ld,ld>;
 constexpr const int INT_INF=0x3f3f3f3f;constexpr const ll LL_INF=0x3f3f3f3f3f3f3f3f;
 constexpr const double D_INF=numeric_limits<double>::infinity();constexpr const ld LD_INF=numeric_limits<ld>::infinity();constexpr const double EPS=1e-9;
 template<typename T1,typename T2>bool feq(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?abs(x-y)<=EPS:x==y;}
@@ -39,7 +39,7 @@ namespace utils {
 #define make_unique utils::make_unique
 #define make_shared utils::make_shared
 template<typename...Ts>using uset=unordered_set<Ts...>;template<typename...Ts>using umap=unordered_map<Ts...>;template<typename...Ts>using pq=priority_queue<Ts...>;
-template<typename T>using minpq=pq<T, vector<T>, greater<T>>;template<typename T>using maxpq=pq<T, vector<T>, less<T>>;
+template<typename T>using minpq=pq<T,vector<T>,greater<T>>;template<typename T>using maxpq=pq<T,vector<T>,less<T>>;
 template<typename T1,typename T2,typename H1=hash<T1>,typename H2=hash<T2>>struct pair_hash{size_t operator()(const pair<T1,T2>&p)const{return 31*H1{}(p.first)+H2{}(p.second);}};
 seed_seq seq {
     (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
