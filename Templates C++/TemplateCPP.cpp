@@ -21,12 +21,20 @@ template<typename T1,typename T2>bool feq(const T1&x,const T2&y){return is_float
 template<typename T1,typename T2>bool flt(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?x<y-EPS:x<y;}
 template<typename T1,typename T2>bool fgt(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?x>y+EPS:x>y;}
 namespace utils {
-    template<typename T>constexpr const T&min(const T&x,const T&y){return x<y?x:y;}template<typename T>constexpr const T&max(const T&x,const T&y){return x<y?y:x;}
+    template<typename T>constexpr const T&min(const T&x,const T&y){return x<y?x:y;}
+    template<typename T>constexpr const T&max(const T&x,const T&y){return x<y?y:x;}
     template<typename T,typename...Ts>constexpr const T&min(const T&x,const Ts&...xs){return min(x,min(xs...));}
     template<typename T,typename...Ts>constexpr const T&max(const T&x,const Ts&...xs){return max(x,max(xs...));}
-    template<typename T,typename...Ts>void MIN(T&x,const Ts&...xs){x=min(x,xs...);}template<typename T,typename...Ts>void MAX(T&x,const Ts&...xs){x=max(x,xs...);}
+    template<typename T1,typename T2>constexpr const std::common_type_t<T1,T2>min(const T1&x,const T2&y){return x<y?x:y;}
+    template<typename T1,typename T2>constexpr const std::common_type_t<T1,T2>max(const T1&x,const T2&y){return x<y?y:x;}
+    template<typename T,typename...Ts>constexpr const std::common_type_t<T,Ts...>min(const T&x,const Ts&...xs){return min(x,min(xs...));}
+    template<typename T,typename...Ts>constexpr const std::common_type_t<T,Ts...>max(const T&x,const Ts&...xs){return max(x,max(xs...));}
+    template<typename T,typename...Ts>void MIN(T&x,const Ts&...xs){x=min(x,xs...);}
+    template<typename T,typename...Ts>void MAX(T&x,const Ts&...xs){x=max(x,xs...);}
     template<typename T>constexpr const T&clamp(const T&v,const T&lo,const T&hi){return v<lo?lo:hi<v?hi:v;}
     template<typename T>void CLAMP(T&v,const T&lo,const T&hi){v=clamp(v,lo,hi);}
+    template<typename T1,typename T2,typename T3>constexpr const std::common_type_t<T1,T2,T3>clamp(const T1&v,const T2&lo,const T3&hi){return v<lo?lo:hi<v?hi:v;}
+    template<typename T1,typename T2,typename T3>void CLAMP(T1&v,const T2&lo,const T3&hi){v=clamp(v,lo,hi);}
     template<typename T,typename...Args>std::unique_ptr<T>make_unique(Args&&...args){return std::unique_ptr<T>(new T(std::forward<Args>(args)...));}
     template<typename T,typename...Args>std::shared_ptr<T>make_shared(Args&&...args){return std::shared_ptr<T>(new T(std::forward<Args>(args)...));}
 }
@@ -50,7 +58,7 @@ mt19937 rng(seq);
 #define _bufferSize 4096
 #define _maxNumLength 128
 char _inputBuffer[_bufferSize+1],*_inputPtr=_inputBuffer,_outputBuffer[_bufferSize],_c,_sign,*_tempInputBuf=nullptr,_numBuf[_maxNumLength],_tempOutputBuf[_maxNumLength],_fill=' ';
-FILE*_input=stdin,*_output=stdout;const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;ull _precisionBase=1000000;
+FILE*_input=stdin,*_output=stdout,*_error=stderr;const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;ull _precisionBase=1000000;
 #define _peekchar() (*_inputPtr?*_inputPtr:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,_input)]='\0',*_inputPtr))
 #define _getchar() (*_inputPtr?*_inputPtr++:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,_input)]='\0',*_inputPtr++))
 #define _hasNext() (*_inputPtr||!feof(_input))
@@ -104,9 +112,13 @@ template<typename T,typename...Ts>void write(const T&x,const Ts&...xs){write(x);
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(const Ts&...xs){write(xs...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager=make_unique<IOManager>();
 void setOutput(FILE*file){flush();_output=file;}void setOutput(const char*s){flush();_output=fopen(s,"w");}void setOutput(const string&s){flush();_output=fopen(s.c_str(),"w");}
+template<typename...Ts>void debug(const Ts&...xs){FILE*_temp=_output;setOutput(_error);write(xs...);setOutput(_temp);}
+template<typename...Ts>void debugln(const Ts&...xs){FILE*_temp=_output;setOutput(_error);writeln(xs...);setOutput(_temp);}
+void setError(FILE*file){flush();_error=file;}void setError(const char*s){flush();_error=fopen(s,"w");}void setError(const string&s){flush();_error=fopen(s.c_str(),"w");}
 
 int main() {
     // setInput("in.txt");
     // setOutput("out.txt");
+    // setError("err.txt");
     return 0;
 }
