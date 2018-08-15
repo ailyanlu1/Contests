@@ -20,10 +20,10 @@ using namespace std;
 #define sp ' '
 using ll=long long;using ld=long double;using uint=unsigned int;using ull=unsigned long long;
 using pii=pair<int, int>;using pll=pair<ll, ll>;using pill=pair<int, ll>;using plli=pair<ll, int>;using pdd=pair<double, double>;
-template<typename T1,typename T2>bool fequal(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?abs(x-y)<=EPS:x==y;}
-template<typename T1,typename T2>bool fless(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?x<y-EPS:x<y;}
-template<typename T1,typename T2>bool fgreater(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?x>y+EPS:x>y;}
 namespace utils {
+    template<typename T1,typename T2>bool equal(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?abs(x-y)<=EPS:x==y;}
+    template<typename T1,typename T2>bool less(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?x<y-EPS:x<y;}
+    template<typename T1,typename T2>bool greater(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?x>y+EPS:x>y;}
     template<typename T>constexpr const T&min(const T&x,const T&y){return x<y?x:y;}template<typename T>constexpr const T&max(const T&x,const T&y){return x<y?y:x;}
     template<typename T,typename...Ts>constexpr const T&min(const T&x,const Ts&...xs){return min(x,min(xs...));}
     template<typename T,typename...Ts>constexpr const T&max(const T&x,const Ts&...xs){return max(x,max(xs...));}
@@ -33,6 +33,9 @@ namespace utils {
     template<typename T,typename...Args>std::unique_ptr<T>make_unique(Args&&...args){return std::unique_ptr<T>(new T(std::forward<Args>(args)...));}
     template<typename T,typename...Args>std::shared_ptr<T>make_shared(Args&&...args){return std::shared_ptr<T>(new T(std::forward<Args>(args)...));}
 }
+#define feq utils::equal
+#define flt utils:less
+#define fgt utils::greater
 #define min utils::min
 #define max utils::max
 #define MIN utils::MIN
