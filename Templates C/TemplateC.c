@@ -11,22 +11,22 @@
 #include <stddef.h>
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
-#define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MIN(a, b) ((a) = min((a), (b)))
-#define MAX(a, b) ((a) = max((a), (b)))
-#define For(i, a, b) for (int i = (a); i < (b); i++)
-#define FOR(i, b) For(i, 0, b)
-#define Rev(i, a, b) for (int i = (a); i > (b); i--)
-#define REV(i, a) Rev(i, a, -1)
-#define ll long long
-#define ld long double
-#define uint unsigned int
-#define ull unsigned long long
+#define min(a,b) ((a)<(b)?(a):(b))
+#define max(a,b) ((a)>(b)?(a):(b))
+#define MIN(a,b) ((a)=min((a),(b)))
+#define MAX(a,b) ((a)=max((a),(b)))
+#define For(i,a,b) for(int i=(a);i<(b);i++)
+#define FOR(i,b) For(i,0,b)
+#define Rev(i,a,b) for(int i=(a);i>(b);i--)
+#define REV(i,a) Rev(i,a,-1)
+typedef long long ll;
+typedef long double ld;
+typedef unsigned int uint;
+typedef unsigned long long ull;
 
 #define _bufferSize 4096
 #define _maxNumLength 128
-char _inputBuffer[_bufferSize + 1],*_inputPtr=_inputBuffer,_c,_sign;int _cur;
+char _inputBuffer[_bufferSize+1],*_inputPtr=_inputBuffer,_c,_sign;int _cur;
 #define _peekchar() (*_inputPtr?*_inputPtr:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,stdin)]='\0',*_inputPtr))
 #define _getchar() (*_inputPtr?*_inputPtr++:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,stdin)]='\0',*_inputPtr++))
 #define _hasNext() (*_inputPtr||!feof(stdin))
@@ -41,7 +41,7 @@ char _inputBuffer[_bufferSize + 1],*_inputPtr=_inputBuffer,_c,_sign;int _cur;
 int hasNext(){while(_hasNext()&&_peekchar()<=' ')_getchar();return _hasNext();}
 
 int main() {
-//    freopen("in.txt", "r", stdin);
-//    freopen("out.txt", "w", stdout);
+    // freopen("in.txt", "r", stdin);
+    // freopen("out.txt", "w", stdout);
     return 0;
 }

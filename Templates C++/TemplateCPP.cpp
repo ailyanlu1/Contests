@@ -3,43 +3,55 @@ using namespace std;
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
 #define D_INF numeric_limits<double>::infinity()
-#define MIN(a, b) ((a) = min((a), (b)))
-#define MAX(a, b) ((a) = max((a), (b)))
+#define LD_INF numeric_limits<ld>::infinity()
 #define pb push_back
 #define eb emplace_back
 #define mp make_pair
 #define f first
 #define s second
-#define all(a) (a).begin(), (a).end()
-#define For(i, a, b) for (auto i = (a); i < (b); i++)
-#define FOR(i, b) For(i, 0, b)
-#define Rev(i, a, b) for (auto i = (a); i > (b); i--)
-#define REV(i, a) Rev(i, a, -1)
-#define sz(a) ((int) (a).size())
+#define all(a) (a).begin(),(a).end()
+#define For(i,a,b) for(auto i=(a);i<(b);i++)
+#define FOR(i,b) For(i,0,b)
+#define Rev(i,a,b) for(auto i=(a);i>(b);i--)
+#define REV(i,a) Rev(i,a,-1)
+#define sz(a) ((int)(a).size())
 #define nl '\n'
 #define sp ' '
-#define ll long long
-#define ld long double
-#define uint unsigned int
-#define ull unsigned long long
-#define pii pair<int, int>
-#define pll pair<ll, ll>
-#define pill pair<int, ll>
-#define plli pair<ll, int>
-#define pdd pair<double, double>
-#define uset unordered_set
-#define umap unordered_map
-#define pq priority_queue
-template<typename T> using minpq = pq<T, vector<T>, greater<T>>;
-template<typename T> using maxpq = pq<T, vector<T>, less<T>>;
+using ll=long long;using ld=long double;using uint=unsigned int;using ull=unsigned long long;
+using pii=pair<int, int>;using pll=pair<ll, ll>;using pill=pair<int, ll>;using plli=pair<ll, int>;using pdd=pair<double, double>;
+namespace utils {
+    template<typename T>constexpr const T&min(const T&x,const T&y){return x<y?x:y;}template<typename T>constexpr const T&max(const T&x,const T&y){return x<y?y:x;}
+    template<typename T,typename...Ts>constexpr const T&min(const T&x,const Ts&...xs){return min(x,min(xs...));}
+    template<typename T,typename...Ts>constexpr const T&max(const T&x,const Ts&...xs){return max(x,max(xs...));}
+    template<typename T,typename...Ts>void MIN(T&x,const Ts&...xs){x=min(x,xs...);}template<typename T,typename...Ts>void MAX(T&x,const Ts&...xs){x=max(x,xs...);}
+    template<typename T,typename...Args>std::unique_ptr<T>make_unique(Args&&...args){return std::unique_ptr<T>(new T(std::forward<Args>(args)...));}
+    template<typename T,typename...Args>std::shared_ptr<T>make_shared(Args&&...args){return std::shared_ptr<T>(new T(std::forward<Args>(args)...));}
+    template<typename T>constexpr const T&clamp(const T&v,const T&lo,const T&hi){return v<lo?lo:hi<v?hi:v;}
+    template<typename T>void CLAMP(T&v,const T&lo,const T&hi){v=clamp(v,lo,hi);}
+}
+#define min utils::min
+#define max utils::max
+#define MIN utils::MIN
+#define MAX utils::MAX
+#define clamp utils::clamp
+#define CLAMP utils::CLAMP
+#define make_unique utils::make_unique
+#define make_shared utils::make_shared
+template<typename...Ts>using uset=unordered_set<Ts...>;template<typename...Ts>using umap=unordered_map<Ts...>;template<typename...Ts>using pq=priority_queue<Ts...>;
+template<typename T>using minpq=pq<T, vector<T>, greater<T>>;template<typename T>using maxpq=pq<T, vector<T>, less<T>>;
 template<typename T1,typename T2,typename H1=hash<T1>,typename H2=hash<T2>>struct pair_hash{size_t operator()(const pair<T1,T2>&p)const{return 31*H1{}(p.first)+H2{}(p.second);}};
+seed_seq seq {
+    (uint64_t)chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+    (uint64_t)__builtin_ia32_rdtsc(),(uint64_t)(uintptr_t)make_unique<char>().get()
+};
+mt19937 rng(seq);
 
 #define _bufferSize 4096
 #define _maxNumLength 128
 char _inputBuffer[_bufferSize+1],*_inputPtr=_inputBuffer,_outputBuffer[_bufferSize],_c,_sign,*_tempInputBuf=nullptr,_numBuf[_maxNumLength],_tempOutputBuf[_maxNumLength],_fill=' ';
-const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;ull _precisionBase=1000000;
-#define _peekchar() (*_inputPtr?*_inputPtr:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,stdin)]='\0',*_inputPtr))
-#define _getchar() (*_inputPtr?*_inputPtr++:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,stdin)]='\0',*_inputPtr++))
+FILE*_input=stdin,*_output=stdout;const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;ull _precisionBase=1000000;
+#define _peekchar() (*_inputPtr?*_inputPtr:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,_input)]='\0',*_inputPtr))
+#define _getchar() (*_inputPtr?*_inputPtr++:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,_input)]='\0',*_inputPtr++))
 #define _hasNext() (*_inputPtr||!feof(stdin))
 #define _readSignAndNum(x) do{(x)=_getchar();}while((x)<=' ');_sign=(x)=='-';if(_sign)(x)=_getchar();for((x)-='0';(_c=_getchar())>='0';(x)=(x)*10+_c-'0')
 #define _readFloatingPoint(x,T) for(T _div=1.0;(_c=_getchar())>='0';(x)+=(_c-'0')/(_div*=10))
@@ -53,10 +65,13 @@ const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,
 #define rln(x) do{if(!_tempInputBuf)assert(0);rcln(_tempInputBuf);(x)=string(_tempInputBuf,_cur);}while(0)
 #define setLength(x) do{if(_tempInputBuf)delete[](_tempInputBuf);_tempInputBuf=new char[(x)+1];}while(0)
 void read(int&x){ri(x);}void read(uint&x){ri(x);}void read(ll&x){ri(x);}void read(ull&x){ri(x);}void read(double&x){rd(x);}void read(ld&x){rld(x);}
-void read(char&x){rc(x);}void read(char*x){rcs(x);}void read(string&x){rs(x);}bool hasNext(){while(_hasNext()&&_peekchar()<=' ')_getchar();return _hasNext();}
-template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward<Ts>(xs)...);}
-#define _flush() do{_flushBuf();fflush(stdout);}while(0)
-#define _flushBuf() (fwrite(_outputBuffer,1,_outputPtr,stdout),_outputPtr=0)
+void read(char&x){rc(x);}void read(char*x){rcs(x);}void read(string&x){rs(x);}
+template<typename T1,typename T2>void read(pair<T1,T2>&x){read(x.first);read(x.second);}template<typename T>void read(complex<T>&x){T _re,_im;read(_re);read(_im);x.real(_re);x.imag(_im);}
+bool hasNext(){while(_hasNext()&&_peekchar()<=' ')_getchar();return _hasNext();}
+template<typename T,typename...Ts>void read(T&x,Ts&...xs){read(x);read(xs...);}
+void setInput(FILE*file){_input=file;}void setInput(const char*s){_input=fopen(s,"r");}void setInput(const string&s){_input=fopen(s.c_str(),"r");}
+#define _flush() do{_flushBuf();fflush(_output);}while(0)
+#define _flushBuf() (fwrite(_outputBuffer,1,_outputPtr,_output),_outputPtr=0)
 #define _putchar(x) (_outputBuffer[_outputPtr==_bufferSize?_flushBuf():_outputPtr]=(x),_outputPtr++)
 #define _writeTempBuf(x) (_tempOutputBuf[_tempOutputPtr++]=(x))
 #define _writeOutput() for(int _i=0;_i<_tempOutputPtr;_putchar(_tempOutputBuf[_i++]));_tempOutputPtr=0
@@ -78,15 +93,19 @@ template<typename T,typename...Ts>void read(T&&x,Ts&&...xs){read(x);read(forward
 #define setDelimiter(x) do{_delimiter=(x);}while(0)
 #define setWidth(x) do{_width=(x);}while(0)
 #define setFill(x) do{_fill=(x);}while(0)
-void write(bool x){wb(x);}void write(int x){wi(x);}void write(uint x){wi(x);}void write(ll x){wll(x);}void write(ull x){wll(x);}void write(double x){wd(x);}void write(ld x){wld(x);}
-void write(char x){wc(x);}void write(char*x){wcs(x);}void write(const char*x){wcs(x);}void write(string&x){ws(x);}
-template<typename T,typename...Ts>void write(T&&x,Ts&&...xs){write(x);for(const char*_p=_delimiter;*_p;_putchar(*_p++));write(forward<Ts>(xs)...);}
-void writeln(){_putchar('\n');}template<typename...Ts>void writeln(Ts&&...xs){write(forward<Ts>(xs)...);_putchar('\n');}
-void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager;
+void writeDelimiter(){for(const char*_p=_delimiter;*_p;_putchar(*_p++));}
+void write(const bool&x){wb(x);}void write(const int&x){wi(x);}void write(const uint&x){wi(x);}void write(const ll&x){wll(x);}void write(const ull&x){wll(x);}
+void write(const double&x){wd(x);}void write(const ld&x){wld(x);}void write(const char&x){wc(x);}void write(const char*x){wcs(x);}void write(const string&x){ws(x);}
+template<typename T1,typename T2>void write(const pair<T1,T2>&x){write(x.first);writeDelimiter();write(x.second);}
+template<typename T>void write(const complex<T>&x){write(x.real());writeDelimiter();write(x.imag());}
+template<typename T>void write(const T&x){bool _first=1;for(auto &&_i:x){if(_first)_first=0;else writeDelimiter();write(_i);}}
+template<typename T,typename...Ts>void write(const T&x,const Ts&...xs){write(x);writeDelimiter();write(xs...);}
+void writeln(){_putchar('\n');}template<typename...Ts>void writeln(const Ts&...xs){write(xs...);_putchar('\n');}
+void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager=make_unique<IOManager>();
+void setOutput(FILE*file){flush();_output=file;}void setOutput(const char*s){flush();_output=fopen(s,"w");}void setOutput(const string&s){flush();_output=fopen(s.c_str(),"w");}
 
 int main() {
-//    freopen("in.txt", "r", stdin);
-//    freopen("out.txt", "w", stdout);
-    iomanager.reset(new IOManager());
+    // setInput("in.txt");
+    // setOutput("out.txt");
     return 0;
 }
