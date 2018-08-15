@@ -177,7 +177,7 @@ public class SI17C3P4 {
                 if ((prev == v && children > 1) || (prev != v && low[w] >= pre[v])) {
                     components.add(new HashSet<Integer>());
                     int numEdges = 0;
-                    while (s.peek()[0] != v && s.peek()[1] != w) {
+                    while (s.peek()[0] != v || s.peek()[1] != w) {
                         components.get(components.size() - 1).add(s.peek()[0]);
                         components.get(components.size() - 1).add(s.peek()[1]);
                         numEdges++;
