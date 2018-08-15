@@ -98,7 +98,7 @@ void write(const bool&x){wb(x);}void write(const int&x){wi(x);}void write(const 
 void write(const double&x){wd(x);}void write(const ld&x){wld(x);}void write(const char&x){wc(x);}void write(const char*x){wcs(x);}void write(const string&x){ws(x);}
 template<typename T1,typename T2>void write(const pair<T1,T2>&x){write(x.first);writeDelimiter();write(x.second);}
 template<typename T>void write(const complex<T>&x){write(x.real());writeDelimiter();write(x.imag());}
-template<typename T>void write(const T&x){bool _first=1;for(auto &&_i:x){if(_first)_first=0;else writeDelimiter();write(_i);}}
+template<typename T>void write(const T&x){bool _first=1;for(auto&&_i:x){if(_first)_first=0;else writeDelimiter();write(_i);}}
 template<typename T,typename...Ts>void write(const T&x,const Ts&...xs){write(x);writeDelimiter();write(xs...);}
 void writeln(){_putchar('\n');}template<typename...Ts>void writeln(const Ts&...xs){write(xs...);_putchar('\n');}
 void flush(){_flush();}class IOManager{public:~IOManager(){flush();}};unique_ptr<IOManager>iomanager=make_unique<IOManager>();
