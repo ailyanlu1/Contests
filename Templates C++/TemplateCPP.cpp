@@ -53,7 +53,7 @@ char _inputBuffer[_bufferSize+1],*_inputPtr=_inputBuffer,_outputBuffer[_bufferSi
 FILE*_input=stdin,*_output=stdout;const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;ull _precisionBase=1000000;
 #define _peekchar() (*_inputPtr?*_inputPtr:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,_input)]='\0',*_inputPtr))
 #define _getchar() (*_inputPtr?*_inputPtr++:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,_input)]='\0',*_inputPtr++))
-#define _hasNext() (*_inputPtr||!feof(stdin))
+#define _hasNext() (*_inputPtr||!feof(_input))
 #define _readSignAndNum(x) do{(x)=_getchar();}while((x)<=' ');_sign=(x)=='-';if(_sign)(x)=_getchar();for((x)-='0';(_c=_getchar())>='0';(x)=(x)*10+_c-'0')
 #define _readFloatingPoint(x,T) for(T _div=1.0;(_c=_getchar())>='0';(x)+=(_c-'0')/(_div*=10))
 #define rc(x) do{do{(x)=_getchar();}while((x)<=' ');}while(0)
@@ -70,7 +70,7 @@ void read(char&x){rc(x);}void read(char*x){rcs(x);}void read(string&x){rs(x);}
 template<typename T1,typename T2>void read(pair<T1,T2>&x){read(x.first);read(x.second);}template<typename T>void read(complex<T>&x){T _re,_im;read(_re);read(_im);x.real(_re);x.imag(_im);}
 bool hasNext(){while(_hasNext()&&_peekchar()<=' ')_getchar();return _hasNext();}
 template<typename T,typename...Ts>void read(T&x,Ts&...xs){read(x);read(xs...);}
-void setInput(FILE*file){_input=file;}void setInput(const char*s){_input=fopen(s,"r");}void setInput(const string&s){_input=fopen(s.c_str(),"r");}
+void setInput(FILE*file){*_inputPtr='\0';_input=file;}void setInput(const char*s){*_inputPtr='\0';_input=fopen(s,"r");}void setInput(const string&s){*_inputPtr='\0';_input=fopen(s.c_str(),"r");}
 #define _flush() do{_flushBuf();fflush(_output);}while(0)
 #define _flushBuf() (fwrite(_outputBuffer,1,_outputPtr,_output),_outputPtr=0)
 #define _putchar(x) (_outputBuffer[_outputPtr==_bufferSize?_flushBuf():_outputPtr]=(x),_outputPtr++)
