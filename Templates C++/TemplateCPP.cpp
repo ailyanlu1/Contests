@@ -17,9 +17,9 @@ using ll=long long;using ld=long double;using uint=unsigned int;using ull=unsign
 using pii=pair<int,int>;using pll=pair<ll,ll>;using pill=pair<int,ll>;using plli=pair<ll,int>;using pdd=pair<double,double>;using pld=pair<ld,ld>;
 constexpr const int INT_INF=0x3f3f3f3f;constexpr const ll LL_INF=0x3f3f3f3f3f3f3f3f;
 constexpr const double D_INF=numeric_limits<double>::infinity();constexpr const ld LD_INF=numeric_limits<ld>::infinity();constexpr const double EPS=1e-9;
-template<typename T1,typename T2>bool feq(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?abs(x-y)<=EPS:x==y;}
-template<typename T1,typename T2>bool flt(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?x<y-EPS:x<y;}
-template<typename T1,typename T2>bool fgt(const T1&x,const T2&y){return is_floating_point<T1>::value||is_floating_point<T2>::value?x>y+EPS:x>y;}
+template<typename T1,typename T2>bool feq(const T1&x,const T2&y){return is_floating_point<std::common_type_t<T1,T2>>::value?abs(x-y)<=EPS:x==y;}
+template<typename T1,typename T2>bool flt(const T1&x,const T2&y){return is_floating_point<std::common_type_t<T1,T2>>::value?x<y-EPS:x<y;}
+template<typename T1,typename T2>bool fgt(const T1&x,const T2&y){return is_floating_point<std::common_type_t<T1,T2>>::value?x>y+EPS:x>y;}
 namespace utils {
     template<typename T>constexpr const T&min(const T&x,const T&y){return x<y?x:y;}
     template<typename T>constexpr const T&max(const T&x,const T&y){return x<y?y:x;}
