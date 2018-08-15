@@ -11,29 +11,18 @@ using namespace std;
 #define Rev(i,a,b) for(auto i=(a);i>(b);i--)
 #define REV(i,a) Rev(i,a,-1)
 #define sz(a) ((int)(a).size())
-#define nl '\n'
-#define sp ' '
 using ll=long long;using ld=long double;using uint=unsigned int;using ull=unsigned long long;
 using pii=pair<int,int>;using pll=pair<ll,ll>;using pill=pair<int,ll>;using plli=pair<ll,int>;using pdd=pair<double,double>;using pld=pair<ld,ld>;
-constexpr const int INT_INF=0x3f3f3f3f;constexpr const ll LL_INF=0x3f3f3f3f3f3f3f3f;
+constexpr const char nl='\n',sp=' ';constexpr const int INT_INF=0x3f3f3f3f;constexpr const ll LL_INF=0x3f3f3f3f3f3f3f3f;
 constexpr const double D_INF=numeric_limits<double>::infinity();constexpr const ld LD_INF=numeric_limits<ld>::infinity();constexpr const double EPS=1e-9;
 template<typename T1,typename T2>bool feq(const T1&x,const T2&y){return is_floating_point<common_type_t<T1,T2>>::value?abs(x-y)<=EPS:x==y;}
 template<typename T1,typename T2>bool flt(const T1&x,const T2&y){return is_floating_point<common_type_t<T1,T2>>::value?x<y-EPS:x<y;}
 template<typename T1,typename T2>bool fgt(const T1&x,const T2&y){return is_floating_point<common_type_t<T1,T2>>::value?x>y+EPS:x>y;}
-template<typename T>constexpr const T&_min(const T&x,const T&y){return x<y?x:y;}
-template<typename T>constexpr const T&_max(const T&x,const T&y){return x<y?y:x;}
+template<typename T>constexpr const T&_min(const T&x,const T&y){return x<y?x:y;}template<typename T>constexpr const T&_max(const T&x,const T&y){return x<y?y:x;}
 template<typename T,typename...Ts>constexpr const T&_min(const T&x,const Ts&...xs){return _min(x,_min(xs...));}
 template<typename T,typename...Ts>constexpr const T&_max(const T&x,const Ts&...xs){return _max(x,_max(xs...));}
-template<typename T1,typename T2>constexpr const common_type_t<T1,T2>Min(const T1&x,const T2&y){return x<y?x:y;}
-template<typename T1,typename T2>constexpr const common_type_t<T1,T2>Max(const T1&x,const T2&y){return x<y?y:x;}
-template<typename T,typename...Ts>constexpr const common_type_t<T,Ts...>Min(const T&x,const Ts&...xs){return Min(x,Min(xs...));}
-template<typename T,typename...Ts>constexpr const common_type_t<T,Ts...>Max(const T&x,const Ts&...xs){return Max(x,Max(xs...));}
-template<typename T,typename...Ts>void MIN(T&x,const Ts&...xs){x=_min(x,xs...);}
-template<typename T,typename...Ts>void MAX(T&x,const Ts&...xs){x=_max(x,xs...);}
-template<typename T>constexpr const T&_clamp(const T&v,const T&lo,const T&hi){return v<lo?lo:hi<v?hi:v;}
-template<typename T>void CLAMP(T&v,const T&lo,const T&hi){v=_clamp(v,lo,hi);}
-template<typename T1,typename T2,typename T3>constexpr const common_type_t<T1,T2,T3>_clamp(const T1&v,const T2&lo,const T3&hi){return v<lo?lo:hi<v?hi:v;}
-template<typename T1,typename T2,typename T3>void CLAMP(T1&v,const T2&lo,const T3&hi){v=_clamp(v,lo,hi);}
+template<typename T,typename...Ts>void MIN(T&x,const Ts&...xs){x=_min(x,xs...);}template<typename T,typename...Ts>void MAX(T&x,const Ts&...xs){x=_max(x,xs...);}
+template<typename T>constexpr const T&_clamp(const T&v,const T&lo,const T&hi){return v<lo?lo:hi<v?hi:v;}template<typename T>void CLAMP(T&v,const T&lo,const T&hi){v=_clamp(v,lo,hi);}
 template<typename T,typename...Args>unique_ptr<T>_make_unique(Args&&...args){return unique_ptr<T>(new T(forward<Args>(args)...));}
 template<typename T,typename...Args>shared_ptr<T>_make_shared(Args&&...args){return shared_ptr<T>(new T(forward<Args>(args)...));}
 #define min _min
@@ -50,8 +39,7 @@ seed_seq seq {
 };
 mt19937 rng(seq);
 
-#define _bufferSize 4096
-#define _maxNumLength 128
+constexpr int _bufferSize=4096,_maxNumLength=128;
 char _inputBuffer[_bufferSize+1],*_inputPtr=_inputBuffer,_outputBuffer[_bufferSize],_c,_sign,*_tempInputBuf=nullptr,_numBuf[_maxNumLength],_tempOutputBuf[_maxNumLength],_fill=' ';
 FILE*_input=stdin,*_output=stdout,*_error=stderr;const char*_delimiter=" ";int _cur,_outputPtr=0,_numPtr=0,_precision=6,_width=0,_tempOutputPtr=0,_cnt;ull _precisionBase=1000000;
 #define _peekchar() (*_inputPtr?*_inputPtr:(_inputBuffer[fread(_inputPtr=_inputBuffer,1,_bufferSize,_input)]='\0',*_inputPtr))
