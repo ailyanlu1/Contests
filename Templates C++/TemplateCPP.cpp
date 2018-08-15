@@ -24,10 +24,10 @@ namespace utils {
     template<typename T,typename...Ts>constexpr const T&min(const T&x,const Ts&...xs){return min(x,min(xs...));}
     template<typename T,typename...Ts>constexpr const T&max(const T&x,const Ts&...xs){return max(x,max(xs...));}
     template<typename T,typename...Ts>void MIN(T&x,const Ts&...xs){x=min(x,xs...);}template<typename T,typename...Ts>void MAX(T&x,const Ts&...xs){x=max(x,xs...);}
-    template<typename T,typename...Args>std::unique_ptr<T>make_unique(Args&&...args){return std::unique_ptr<T>(new T(std::forward<Args>(args)...));}
-    template<typename T,typename...Args>std::shared_ptr<T>make_shared(Args&&...args){return std::shared_ptr<T>(new T(std::forward<Args>(args)...));}
     template<typename T>constexpr const T&clamp(const T&v,const T&lo,const T&hi){return v<lo?lo:hi<v?hi:v;}
     template<typename T>void CLAMP(T&v,const T&lo,const T&hi){v=clamp(v,lo,hi);}
+    template<typename T,typename...Args>std::unique_ptr<T>make_unique(Args&&...args){return std::unique_ptr<T>(new T(std::forward<Args>(args)...));}
+    template<typename T,typename...Args>std::shared_ptr<T>make_shared(Args&&...args){return std::shared_ptr<T>(new T(std::forward<Args>(args)...));}
 }
 #define min utils::min
 #define max utils::max
