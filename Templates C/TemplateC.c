@@ -11,6 +11,7 @@
 #include <stddef.h>
 #define INT_INF 0x3f3f3f3f
 #define LL_INF 0x3f3f3f3f3f3f3f3f
+#define EPS 1e-9
 #define min(a,b) ((a)<(b)?(a):(b))
 #define max(a,b) ((a)>(b)?(a):(b))
 #define MIN(a,b) ((a)=min((a),(b)))
